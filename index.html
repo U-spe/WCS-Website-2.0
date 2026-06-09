@@ -1,1 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Creation Studios | Next-Gen Website Architecture</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <!-- Header/Footer Injection Logic -->
+    <script src="/js/he-fo.js" defer></script>
+    <script src="/js/index.js" defer></script>
+</head>
+<body>
 
+    <!-- Container for dynamic header injection -->
+    <div id="global-header"></div>
+
+    <main class="homepage-wrapper">
+        
+        <!-- SECTION 1: HERO (Welcome) -->
+        <section class="hero-section reveal">
+            <div class="interactive-grid"></div>
+            <div class="container hero-content">
+                <span class="animated-badge">Web Design & Coding Studio</span>
+                <h1 class="hero-main-title">We engineer digital masterpieces from code.</h1>
+                <p class="hero-desc">High-end, performance-driven web platforms packed with deep interactions, bespoke logic, and immersive user experiences.</p>
+                <div class="hero-button-group">
+                    <a href="/contact" class="btn btn-primary">Start a Project</a>
+                    <a href="/portfolio" class="btn btn-secondary">Explore Build Stack</a>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <div class="mouse-wheel"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: ABOUT US (Brief Preview) -->
+        <section class="about-preview reveal">
+            <div class="container split-layout">
+                <div class="left-text">
+                    <span class="section-tag font-burgundy">Who We Are</span>
+                    <h2>Code solvers. Experience designers.</h2>
+                    <p>At Web Creation Studios, we tear down static layouts and build digital engines. We optimize code architecture down to the millisecond while shaping highly customized visual narratives that stick.</p>
+                    <a href="/about" class="text-link">Read our philosophy &rarr;</a>
+                </div>
+                <div class="right-visual">
+                    <div class="floating-box-wrapper">
+                        <div class="glow-box deep-purple-glow"></div>
+                        <div class="image-frame">
+                            <img src="/img/home/about-abstract.jpg" alt="Abstract Code Architecture" onerror="this.src='https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: OUR TEAM (The Trio Showcase) -->
+        <section class="team-preview reveal">
+            <div class="container">
+                <div class="section-heading-centered">
+                    <span class="section-tag font-dark-blue">The Core Engine</span>
+                    <h2>Meet the Architects</h2>
+                    <p>The developers and designers transforming complex ideas into structural realities.</p>
+                </div>
+                <div class="team-interactive-cards layout-3-col">
+                    <!-- Member 1: CJ -->
+                    <a href="/ourteam/cj.html" class="team-card-link">
+                        <div class="team-glow-card" data-tilt>
+                            <div class="team-image-box">
+                                <img src="/img/team/cj.jpg" alt="CJ" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop'">
+                            </div>
+                            <div class="team-meta">
+                                <h3>CJ</h3>
+                                <p>Lead Architecture & Logic</p>
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Member 2: MJ -->
+                    <a href="/ourteam/mj.html" class="team-card-link">
+                        <div class="team-glow-card" data-tilt>
+                            <div class="team-image-box">
+                                <img src="/img/team/mj.jpg" alt="MJ" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop'">
+                            </div>
+                            <div class="team-meta">
+                                <h3>MJ</h3>
+                                <p>Creative Direction & UX UI</p>
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Member 3: DW -->
+                    <a href="/ourteam/dw.html" class="team-card-link">
+                        <div class="team-glow-card" data-tilt>
+                            <div class="team-image-box">
+                                <img src="/img/team/dw.jpg" alt="DW" onerror="this.src='https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?q=80&w=400&auto=format&fit=crop'">
+                            </div>
+                            <div class="team-meta">
+                                <h3>DW</h3>
+                                <p>Frontend Engineering</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="center-action-btn">
+                    <a href="/team" class="btn btn-secondary">View Complete Team Roster</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: SERVICES (Capabilities Grid) -->
+        <section class="services-preview reveal">
+            <div class="container">
+                <div class="split-layout align-center">
+                    <div class="sticky-header">
+                        <span class="section-tag font-deep-purple">Capabilities</span>
+                        <h2>What We Build.</h2>
+                        <p>No generic builders. No clunky frameworks. Just high-performance native deployments designed to convert users.</p>
+                        <a href="/services" class="btn btn-primary margin-top-2">Browse Menu</a>
+                    </div>
+                    <div class="services-interactive-stack">
+                        <div class="service-strip-item">
+                            <span class="strip-num">01</span>
+                            <div class="strip-content">
+                                <h4>Custom Web Applications</h4>
+                                <p>Bespoke software, API setups, custom databases, and responsive structures configured to scale.</p>
+                            </div>
+                        </div>
+                        <div class="service-strip-item">
+                            <span class="strip-num">02</span>
+                            <div class="strip-content">
+                                <h4>Premium UI/UX Design</h4>
+                                <p>Interactive digital assets, motion design, canvas integrations, and cutting edge aesthetic layouts.</p>
+                            </div>
+                        </div>
+                        <div class="service-strip-item">
+                            <span class="strip-num">03</span>
+                            <div class="strip-content">
+                                <h4>Automation & AI Integration</h4>
+                                <p>Smart workflow tooling, automated user onboarding chats, and localized AI engine implementations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: 3-STEP PROCESS -->
+        <section class="process-preview reveal">
+            <div class="container">
+                <div class="section-heading-centered">
+                    <span class="section-tag font-light-blue">Workflow Velocity</span>
+                    <h2>The Roadmap to Launch</h2>
+                    <p>A rigid, streamlined engineering process built for precision and clarity.</p>
+                </div>
+                <div class="process-cards-container layout-3-col">
+                    <div class="process-step-card">
+                        <div class="card-bg-glow"></div>
+                        <div class="step-badge">Phase 1</div>
+                        <h3>Discovery & Scope</h3>
+                        <p>We audit your requirements, map out comprehensive workflows, and draft initial structure schematics.</p>
+                    </div>
+                    <div class="process-step-card">
+                        <div class="card-bg-glow"></div>
+                        <div class="step-badge">Phase 2</div>
+                        <h3>Interactive Blueprint</h3>
+                        <p>Translating strategy into interface prototypes. High-end visual configurations with complex UI pathways.</p>
+                    </div>
+                    <div class="process-step-card">
+                        <div class="card-bg-glow"></div>
+                        <div class="step-badge">Phase 3</div>
+                        <h3>Clean Engineering</h3>
+                        <p>Writing highly responsive production-grade markup, custom state engines, and rigid speed optimizations.</p>
+                    </div>
+                </div>
+                <div class="center-action-btn">
+                    <a href="/intake" class="btn btn-outline-dark">Deep-Dive Our Method</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: WHY CHOOSE US -->
+        <section class="why-choose-preview reveal">
+            <div class="container split-layout alternate">
+                <div class="right-visual-grid">
+                    <div class="moving-grid-blocks">
+                        <div class="grid-block block-dark-blue element-bounce">100% Native</div>
+                        <div class="grid-block block-mint-green element-float">Zero Limits</div>
+                        <div class="grid-block block-deep-purple element-sink">Clean URLs</div>
+                        <div class="grid-block block-burgundy element-pulse">Ultra Fast</div>
+                    </div>
+                </div>
+                <div class="left-text-content">
+                    <span class="section-tag font-burgundy">The Advantage</span>
+                    <h2>Engineered for Performance.</h2>
+                    <p>We reject standard CMS platforms that bog down servers. By controlling every line of code, we deliver assets that load instantly, secure your database natively, and rank perfectly on search engines.</p>
+                    <ul class="advantage-bullet-list">
+                        <li><span>✓</span> Clean, localized CSS/JS structures</li>
+                        <li><span>✓</span> Dynamic layout setups tailored to your conversion path</li>
+                        <li><span>✓</span> Direct optimization for lightning fast deployments</li>
+                    </ul>
+                    <a href="/pricing" class="btn btn-primary">Check Tier Pricing</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: PORTFOLIO (Featured Trio Stack) -->
+        <section class="portfolio-preview reveal">
+            <div class="container">
+                <div class="section-heading-centered">
+                    <span class="section-tag font-dark-blue">The Vault</span>
+                    <h2>Selected Case Studies</h2>
+                    <p>A direct showcase of live, high-end interactive properties crafted by WCS.</p>
+                </div>
+                <div class="portfolio-interactive-grid">
+                    <!-- Project 1: ExitToExcel -->
+                    <div class="portfolio-project-card animate-on-scroll">
+                        <div class="project-media-container">
+                            <img src="/img/portfolio/exittoexcel.jpg" alt="ExitToExcel Website Build" onerror="this.src='https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop'">
+                            <div class="media-overlay"></div>
+                        </div>
+                        <div class="project-details">
+                            <span class="project-meta-tag">Fintech Application</span>
+                            <h3>ExitToExcel</h3>
+                            <p>Premium architectural data layout, clean client configuration hubs, and massive sheet calculations compiled smoothly.</p>
+                        </div>
+                    </div>
+                    <!-- Project 2: JetX (Silk) -->
+                    <div class="portfolio-project-card animate-on-scroll">
+                        <div class="project-media-container">
+                            <img src="/img/portfolio/jetx.jpg" alt="JetX Website Build" onerror="this.src='https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=600&auto=format&fit=crop'">
+                            <div class="media-overlay"></div>
+                        </div>
+                        <div class="project-details">
+                            <span class="project-meta-tag">Aviation Agency</span>
+                            <h3>JetX (Silk)</h3>
+                            <p>Immersive layout structures, ultra-smooth scrolling mechanisms, and premium high-contrast responsive visuals.</p>
+                        </div>
+                    </div>
+                    <!-- Project 3: VEE-R Studios -->
+                    <div class="portfolio-project-card animate-on-scroll">
+                        <div class="project-media-container">
+                            <img src="/img/portfolio/vee-r.jpg" alt="VEE-R Studios Website Build" onerror="this.src='https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop'">
+                            <div class="media-overlay"></div>
+                        </div>
+                        <div class="project-details">
+                            <span class="project-meta-tag">Creative Media House</span>
+                            <h3>VEE-R Studios</h3>
+                            <p>An interactive digital showroom built using robust modular layouts, asset sliders, and cinematic styling components.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="center-action-btn">
+                    <a href="/portfolio" class="btn btn-primary">Browse All Client Builds</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: TESTIMONIALS (3 Features) -->
+        <section class="testimonials-preview reveal">
+            <div class="container">
+                <div class="section-heading-centered">
+                    <span class="section-tag font-deep-purple">Verified Feedback</span>
+                    <h2>What Founders Say</h2>
+                    <p>Real reactions from directors, business owners, and founders who made the switch to WCS.</p>
+                </div>
+                <div class="testimonials-slider-box layout-3-col">
+                    <div class="testimonial-bubble">
+                        <p class="quote-text">"WCS completely transformed our web framework. The speed difference alone shifted our conversion funnel metrics."</p>
+                        <div class="quote-user-info">
+                            <strong>Marcus Thorne</strong>
+                            <span>Operations Director, ExitToExcel</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-bubble">
+                        <p class="quote-text">"The interface logic is flawless. Our users specifically mention how responsive and visually stunning the layout movements feel."</p>
+                        <div class="quote-user-info">
+                            <strong>Elena Vance</strong>
+                            <span>Co-Founder, JetX Global</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-bubble">
+                        <p class="quote-text">"Unmatched execution. They built our layout precisely as mapped out with zero structural delays. A masterclass in coding."</p>
+                        <div class="quote-user-info">
+                            <strong>David Sterling</strong>
+                            <span>Creative Director, VEE-R Studios</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="center-action-btn">
+                    <a href="/about" class="text-link">Read our case validation metrics &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 9: CTA (Call to Action Prompt) -->
+        <section class="cta-preview-section reveal">
+            <div class="cta-inner-glow-container">
+                <div class="container text-center-cta">
+                    <h2>Have a high-stakes vision you want brought to life?</h2>
+                    <p>Let's align your operational objectives with elite frontend architecture. Secure your development block today.</p>
+                    <div class="cta-button-cluster">
+                        <a href="/book" class="btn btn-mint">Secure Call Date</a>
+                        <a href="/contact" class="btn btn-secondary-light">Send Project Intake</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Container for dynamic footer injection -->
+    <div id="global-footer"></div>
+
+</body>
+</html>
