@@ -1,84 +1,76 @@
 // js/index.js
 document.addEventListener("DOMContentLoaded", () => {
-    initScrollRevealEngine();
-    initMouseCardTiltEffect();
-    initHeroParallaxGrid();
+    initIntersectionObserver();
+    initComponentTilts();
+    initParallaxDrift();
 });
 
 /**
- * 1. Scroll Reveal Engine
- * Automatically tracks page scroll vectors and triggers clean entries 
- * for the sections when they pierce the viewport.
+ * 1. Precision Interface Intersection Engine
+ * Dispatches active visual classes when DOM sections scroll into visible parameters.
  */
-function initScrollRevealEngine() {
-    const revealSections = document.querySelectorAll(".reveal, .portfolio-project-card");
+function initIntersectionObserver() {
+    const revealTargets = document.querySelectorAll(".reveal");
     
-    const revealCallback = (entries, observer) => {
+    const observerOptions = {
+        root: null,
+        threshold: 0.1,
+        rootMargin: "0px 0px -30px 0px"
+    };
+
+    const observerCallback = (entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add("active");
-                if(entry.target.classList.contains('portfolio-project-card')) {
-                    entry.target.style.opacity = "1";
-                }
-                observer.unobserve(entry.target); // Execution locking
+                observer.unobserve(entry.target);
             }
         });
     };
 
-    const revealObserver = new IntersectionObserver(revealCallback, {
-        root: null,
-        threshold: 0.12, // Fires when 12% of section is visible
-        rootMargin: "0px 0px -40px 0px"
-    });
-
-    revealSections.forEach(section => {
-        revealObserver.observe(section);
-    });
+    const globalObserver = new IntersectionObserver(observerCallback, observerOptions);
+    revealTargets.forEach(target => globalObserver.observe(target));
 }
 
 /**
- * 2. Mouse Coordinate Card Tilt Effect
- * Maps cursor positions over team component surfaces to skew 
- * matrix depth fields dynamically.
+ * 2. Surface Skew Coordinate Mapper
+ * Generates responsive perspective skew modifications based on local mouse movements.
  */
-function initMouseCardTiltEffect() {
-    const cards = document.querySelectorAll("[data-tilt]");
+function initComponentTilts() {
+    const tiltPanels = document.querySelectorAll("[data-tilt]");
     
-    cards.forEach(card => {
-        card.addEventListener("mousemove", (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left; 
-            const y = e.clientY - rect.top; 
+    tiltPanels.forEach(panel => {
+        panel.addEventListener("mousemove", (event) => {
+            const dimensions = panel.getBoundingClientRect();
+            const mouseX = event.clientX - dimensions.left;
+            const mouseY = event.clientY - dimensions.top;
             
-            // Normalize inputs around grid origins
-            const midX = rect.width / 2;
-            const midY = rect.height / 2;
+            const internalX = dimensions.width / 2;
+            const internalY = dimensions.height / 2;
             
-            // Scale rotational metrics
-            const rotateX = ((y - midY) / midY) * -8; 
-            const rotateY = ((x - midX) / midX) * 8;
+            const pitch = ((mouseY - internalY) / internalY) * -5; // Constrained rotational threshold
+            const yaw = ((mouseX - internalX) / internalX) * 5;
             
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+            panel.style.transform = `perspective(800px) rotateX(${pitch}deg) rotateY(${yaw}deg)`;
         });
         
-        card.addEventListener("mouseleave", () => {
-            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)`;
+        panel.addEventListener("mouseleave", () => {
+            panel.style.transform = `perspective(800px) rotateX(0deg) rotateY(0deg)`;
         });
     });
 }
 
 /**
- * 3. Hero Vector Parallax Drift
- * Slightly adjusts background alignment during initial scrolling steps.
+ * 3. Asymmetric Parallax Drift Controller
+ * Delays background vector speeds to create dimensional depth upon vertical scrolling.
  */
-function initHeroParallaxGrid() {
-    const interactiveGrid = document.querySelector(".interactive-grid");
-    if (!interactiveGrid) return;
+function initParallaxDrift() {
+    const matrixGrid = document.querySelector(".interactive-grid");
+    if (!matrixGrid) return;
     
     window.addEventListener("scroll", () => {
-        const scrolled = window.pageYOffset;
-        if (scrolled < window.innerHeight) {
-            interactiveGrid.style.transform = `translateY(${scrolled * 0.15}px)`;
+        const structuralOffset = window.pageYOffset;
+        if (structuralOffset < window.innerHeight) {
+            matrixGrid.style.transform = `translateY(${structuralOffset * 0.12}px)`;
         }
     });
 }
