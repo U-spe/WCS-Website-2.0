@@ -1,0 +1,117 @@
+<!-- header.html -->
+<header class="system-header-container">
+    <div class="header-inner-wrapper">
+        <!-- Brand Signature Space -->
+        <a href="/" class="header-branding-anchor">
+            <div class="header-logo-frame">
+                <!-- Fallback network wrapper ensures continuous delivery during local setup passes -->
+                <img src="/images/logos/wcs-logo.png" alt="WCS Logo Mark" onerror="this.style.display='none';">
+            </div>
+            <span class="header-firm-title">Web Creation Studios</span>
+        </a>
+
+        <!-- Main Workspace Routing Menu -->
+        <nav class="header-nav-menu" aria-label="Primary Application Routing">
+            <a href="/" class="nav-link">System Home</a>
+            <a href="/portfolio" class="nav-link">The Vault</a>
+            <a href="/services" class="nav-link">Capabilities</a>
+            <a href="/contact" class="nav-link header-cta-pill">Initiate Stack</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Styles appended below ensure complete container encapsulation inside your Slate Gray layout environment -->
+<style>
+    .system-header-container {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 80px;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--slate-border);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+    }
+    .header-inner-wrapper {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .header-branding-anchor {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-decoration: none;
+        transition: var(--transition-speed);
+    }
+    .header-logo-frame {
+        width: 32px;
+        height: 32px;
+        background: var(--slate-bg-card);
+        border: 1px solid var(--slate-border);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .header-logo-frame img {
+        max-width: 80%;
+        max-height: 80%;
+        object-fit: contain;
+    }
+    .header-firm-title {
+        color: var(--text-pure-white);
+        font-weight: 800;
+        font-size: 1.1rem;
+        letter-spacing: -0.01em;
+    }
+    .header-nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 2.5rem;
+    }
+    .header-nav-menu .nav-link {
+        color: var(--text-muted-slate);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: var(--transition-speed);
+        position: relative;
+        padding: 0.5rem 0;
+    }
+    .header-nav-menu .nav-link:hover {
+        color: var(--text-pure-white);
+    }
+    /* Application Path Matching State Indicators */
+    .header-nav-menu .nav-link.active-route-token {
+        color: var(--mint-green);
+    }
+    .header-nav-menu .nav-link.active-route-token::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; width: 100%; height: 2px;
+        background: var(--mint-green);
+        border-radius: 2px;
+    }
+    .header-nav-menu .header-cta-pill {
+        background: rgba(100, 255, 218, 0.1);
+        border: 1px solid var(--mint-green);
+        color: var(--mint-green) !important;
+        padding: 0.5rem 1.25rem;
+        border-radius: 4px;
+    }
+    .header-nav-menu .header-cta-pill:hover {
+        background: var(--mint-green);
+        color: var(--dark-blue) !important;
+    }
+    @media (max-width: 768px) {
+        .header-nav-menu { gap: 1.25rem; }
+        .header-nav-menu .nav-link:not(.header-cta-pill) { display: none; }
+    }
+</style>
