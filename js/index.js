@@ -1,23 +1,17 @@
 // js/index.js
 document.addEventListener("DOMContentLoaded", () => {
-    initIntersectionObserver();
-    initComponentTilts();
-    initParallaxDrift();
+    initScrollRevealEngine();
+    initTeamDrawerMechanics();
+    initSurfaceTiltParallax();
 });
 
 /**
- * 1. Precision Interface Intersection Engine
- * Dispatches active visual classes when DOM sections scroll into visible parameters.
+ * 1. Intersection Observer Engine
+ * Monitors scroll alignment and triggers CSS reveal phases smoothly.
  */
-function initIntersectionObserver() {
+function initScrollRevealEngine() {
     const revealTargets = document.querySelectorAll(".reveal");
     
-    const observerOptions = {
-        root: null,
-        threshold: 0.1,
-        rootMargin: "0px 0px -30px 0px"
-    };
-
     const observerCallback = (entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -27,50 +21,66 @@ function initIntersectionObserver() {
         });
     };
 
-    const globalObserver = new IntersectionObserver(observerCallback, observerOptions);
-    revealTargets.forEach(target => globalObserver.observe(target));
+    const sectionObserver = new IntersectionObserver(observerCallback, {
+        root: null,
+        threshold: 0.1,
+        rootMargin: "0px 0px -40px 0px"
+    });
+
+    revealTargets.forEach(target => sectionObserver.observe(target));
 }
 
 /**
- * 2. Surface Skew Coordinate Mapper
- * Generates responsive perspective skew modifications based on local mouse movements.
+ * 2. Team Expandable Accordion Engine
+ * Calculates explicit internal text heights on runtime invocation to manage transitions cleanly.
  */
-function initComponentTilts() {
-    const tiltPanels = document.querySelectorAll("[data-tilt]");
+function initTeamDrawerMechanics() {
+    const teamCards = document.querySelectorAll(".team-expand-card");
     
-    tiltPanels.forEach(panel => {
-        panel.addEventListener("mousemove", (event) => {
-            const dimensions = panel.getBoundingClientRect();
-            const mouseX = event.clientX - dimensions.left;
-            const mouseY = event.clientY - dimensions.top;
+    teamCards.forEach(card => {
+        card.addEventListener("click", () => {
+            const hiddenDrawer = card.querySelector(".card-hidden-drawer");
+            const isCurrentlyExpanded = card.classList.contains("is-expanded");
             
-            const internalX = dimensions.width / 2;
-            const internalY = dimensions.height / 2;
+            // Retract all operational team drawers to focus UI state
+            teamCards.forEach(otherCard => {
+                otherCard.classList.remove("is-expanded");
+                otherCard.querySelector(".card-hidden-drawer").style.maxHeight = null;
+            });
             
-            const pitch = ((mouseY - internalY) / internalY) * -5; // Constrained rotational threshold
-            const yaw = ((mouseX - internalX) / internalX) * 5;
-            
-            panel.style.transform = `perspective(800px) rotateX(${pitch}deg) rotateY(${yaw}deg)`;
-        });
-        
-        panel.addEventListener("mouseleave", () => {
-            panel.style.transform = `perspective(800px) rotateX(0deg) rotateY(0deg)`;
+            // If the card wasn't open, compute exact scroll heights and slide out
+            if (!isCurrentlyExpanded) {
+                card.classList.add("is-expanded");
+                hiddenDrawer.style.maxHeight = hiddenDrawer.scrollHeight + "px";
+            }
         });
     });
 }
 
 /**
- * 3. Asymmetric Parallax Drift Controller
- * Delays background vector speeds to create dimensional depth upon vertical scrolling.
+ * 3. Perspective Surface Modifier
+ * Maps localized vector planes onto process layout objects to guide interaction pathways.
  */
-function initParallaxDrift() {
-    const matrixGrid = document.querySelector(".interactive-grid");
-    if (!matrixGrid) return;
+function initSurfaceTiltParallax() {
+    const processCards = document.querySelectorAll("[data-tilt]");
     
-    window.addEventListener("scroll", () => {
-        const structuralOffset = window.pageYOffset;
-        if (structuralOffset < window.innerHeight) {
-            matrixGrid.style.transform = `translateY(${structuralOffset * 0.12}px)`;
-        }
+    processCards.forEach(card => {
+        card.addEventListener("mousemove", (e) => {
+            const bounds = card.getBoundingClientRect();
+            const coordinateX = e.clientX - bounds.left;
+            const coordinateY = e.clientY - bounds.top;
+            
+            const centerPointX = bounds.width / 2;
+            const centerPointY = bounds.height / 2;
+            
+            const computedRotateX = ((coordinateY - centerPointY) / centerPointY) * -6; 
+            const computedRotateY = ((coordinateX - centerPointX) / centerPointX) * 6;
+            
+            card.style.transform = `perspective(1000px) rotateX(${computedRotateX}deg) rotateY(${computedRotateY}deg) translateY(-5px)`;
+        });
+        
+        card.addEventListener("mouseleave", () => {
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)`;
+        });
     });
 }
