@@ -31,8 +31,8 @@ function initScrollRevealEngine() {
 }
 
 /**
- * 2. Team Expandable Accordion Engine
- * Calculates explicit internal text heights on runtime invocation to manage transitions cleanly.
+ * 2. Pro Team Expandable Card Accordion Engine
+ * Calculates explicit internal text heights on runtime invocation to manage card transformations cleanly.
  */
 function initTeamDrawerMechanics() {
     const teamCards = document.querySelectorAll(".team-expand-card");
@@ -42,13 +42,13 @@ function initTeamDrawerMechanics() {
             const hiddenDrawer = card.querySelector(".card-hidden-drawer");
             const isCurrentlyExpanded = card.classList.contains("is-expanded");
             
-            // Retract all operational team drawers to focus UI state
+            // Retract all operational team card drawers to isolate active system state
             teamCards.forEach(otherCard => {
                 otherCard.classList.remove("is-expanded");
                 otherCard.querySelector(".card-hidden-drawer").style.maxHeight = null;
             });
             
-            // If the card wasn't open, compute exact scroll heights and slide out
+            // If the card wasn't open, compute exact scroll heights and expand downwards
             if (!isCurrentlyExpanded) {
                 card.classList.add("is-expanded");
                 hiddenDrawer.style.maxHeight = hiddenDrawer.scrollHeight + "px";
