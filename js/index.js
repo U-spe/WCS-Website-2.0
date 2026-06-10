@@ -17,7 +17,6 @@ function initScrollRevealEngine() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add("active");
-                // Enhance single object components with tailored transitions
                 if(entry.target.classList.contains('portfolio-project-card')) {
                     entry.target.style.opacity = "1";
                 }
@@ -79,7 +78,6 @@ function initHeroParallaxGrid() {
     window.addEventListener("scroll", () => {
         const scrolled = window.pageYOffset;
         if (scrolled < window.innerHeight) {
-            // Apply micro drift vector calculations
             interactiveGrid.style.transform = `translateY(${scrolled * 0.15}px)`;
         }
     });
