@@ -1,6 +1,7 @@
 /* ==========================================================================
-   1. STRUCTURAL MANDATE & BASE SLATE GRAY SETTINGS
+   THE SLATE ENGINE - WCS TEAM STYLES
    ========================================================================== */
+
 :root {
     --slate-bg-main: #1E293B;      /* True Slate Gray Background */
     --slate-bg-card: #334155;      /* Secondary Container Slate */
@@ -21,10 +22,84 @@
     --transition-speed: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ==========================================================================
+   LAYERED BACKGROUND SYSTEM
+   ========================================================================== */
+
+body.slate-theme {
+    background-color: var(--slate-bg-main);
+    color: var(--text-pure-white);
+    font-family: var(--font-system);
+    overflow-x: hidden;
+    margin: 0;
+    position: relative;
+}
+
+/* Layer 1: Glows (Behind the grid) */
+.bg-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(120px);
+    opacity: 0.2;
+    border-radius: 50%;
+}
+
+.glow-1 {
+    background: var(--mint-green);
+    width: 600px;
+    height: 600px;
+    top: -100px;
+    left: -100px;
+}
+
+.glow-2 {
+    background: var(--deep-purple);
+    width: 800px;
+    height: 800px;
+    bottom: -200px;
+    right: -200px;
+}
+
+/* Layer 2: Grid Pattern (Above the glows) */
+.bg-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.15;
+    background-image: 
+        linear-gradient(to right, var(--slate-border) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--slate-border) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+/* ==========================================================================
+   1. STRUCTURAL MANDATE & BASE SLATE GRAY SETTINGS
+   ========================================================================== */
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+img,
+video,
+iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+html {
+    overflow-x: hidden;
 }
 
 body {
@@ -37,8 +112,7 @@ body {
 }
 
 .container {
-    width: 100%;
-    max-width: 1200px;
+    width: min(1200px, 90%);
     margin: 0 auto;
     padding: 0 2rem;
 }
@@ -135,7 +209,7 @@ body {
     opacity: 0.4;
     pointer-events: none;
 }
-.hero-layout { text-align: center; position: relative; z-index: 2; }
+.hero-layout { text-align: center; position: relative; z-index: 3; }
 .animated-badge {
     display: inline-block;
     padding: 0.5rem 1.2rem;
@@ -443,4 +517,24 @@ body {
     .btn-secondary { margin-left: 0; margin-top: 1rem; }
     .btn { width: 100%; }
     .project-card-inner { grid-template-columns: 80px 1fr; gap: 1.25rem; }
+}
+
+@media (max-width: 768px) {
+    .hero-grid,
+    .split-grid,
+    .team-expand-grid {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: clamp(2rem, 8vw, 4rem);
+    }
+
+    h2 {
+        font-size: clamp(1.5rem, 6vw, 3rem);
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
 }
