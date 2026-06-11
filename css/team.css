@@ -28,6 +28,20 @@ body.slate-theme {
     font-family: var(--font-system);
     overflow-x: hidden;
     margin: 0;
+    position: relative;
+}
+
+/* --- AMBIENT BACKGROUND LAYERING --- */
+/* Ensures existing grid & glow systems render perfectly behind foreground contents */
+.bg-grid, .bg-glow {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+}
+
+main, section, .container {
+    position: relative;
+    z-index: 2;
 }
 
 /* --- UTILITIES --- */
