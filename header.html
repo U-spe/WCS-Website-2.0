@@ -1,26 +1,26 @@
-<!-- header.html -->
 <header class="system-header-container">
     <div class="header-inner-wrapper">
-        <!-- Brand Signature Space -->
         <a href="/" class="header-branding-anchor">
             <div class="header-logo-frame">
-                <!-- Fallback network wrapper ensures continuous delivery during local setup passes -->
-                <img src="/images/logos/wcs-logo.png" alt="WCS Logo Mark" onerror="this.style.display='none';">
+                <img src="/images/logos/wcs-logo.png" alt="WCS Brand Logo" onerror="this.style.display='none';">
             </div>
             <span class="header-firm-title">Web Creation Studios</span>
         </a>
 
-        <!-- Main Workspace Routing Menu -->
-        <nav class="header-nav-menu" aria-label="Primary Application Routing">
-            <a href="/" class="nav-link">System Home</a>
-            <a href="/portfolio" class="nav-link">The Vault</a>
-            <a href="/services" class="nav-link">Capabilities</a>
-            <a href="/contact" class="nav-link header-cta-pill">Initiate Stack</a>
+        <nav class="header-nav-menu" aria-label="Main Website Navigation">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/about" class="nav-link">About Us</a>
+            <a href="/team" class="nav-link">Our Team</a>
+            <a href="/services" class="nav-link">Services</a>
+            <a href="/pricing" class="nav-link">Pricing</a>
+            <a href="/portfolio" class="nav-link">Portfolio</a>
+            <a href="/contact" class="nav-link">Contact</a>
+            
+            <a href="/contact" class="nav-link header-cta-pill">Build A Site</a>
         </nav>
     </div>
 </header>
 
-<!-- Styles appended below ensure complete container encapsulation inside your Slate Gray layout environment -->
 <style>
     .system-header-container {
         position: fixed;
@@ -74,7 +74,7 @@
     .header-nav-menu {
         display: flex;
         align-items: center;
-        gap: 2.5rem;
+        gap: 2rem;
     }
     .header-nav-menu .nav-link {
         color: var(--text-muted-slate);
@@ -88,7 +88,7 @@
     .header-nav-menu .nav-link:hover {
         color: var(--text-pure-white);
     }
-    /* Application Path Matching State Indicators */
+    /* Routing Link Highlight Highlight */
     .header-nav-menu .nav-link.active-route-token {
         color: var(--mint-green);
     }
@@ -105,12 +105,13 @@
         color: var(--mint-green) !important;
         padding: 0.5rem 1.25rem;
         border-radius: 4px;
+        margin-left: 0.5rem;
     }
     .header-nav-menu .header-cta-pill:hover {
         background: var(--mint-green);
         color: var(--dark-blue) !important;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
         .header-nav-menu { gap: 1.25rem; }
         .header-nav-menu .nav-link:not(.header-cta-pill) { display: none; }
     }
