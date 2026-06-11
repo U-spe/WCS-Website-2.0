@@ -1,73 +1,88 @@
 /**
  * team.js
- * Specialized Layout Actions for the Interactive Team Architecture
+ * Visual Mechanics and Kinetic Adjustments for WCS Team Page
  * Web Creation Studios
  */
 
 document.addEventListener("DOMContentLoaded", () => {
     initScrollRevealEngine();
-    initTeamDrawerMechanics();
+    initTeamCardDrawers();
+    initAmbientOrbMouseParallax();
 });
 
 /**
  * 1. Native Viewport Intersect Engine
- * Triggers layout entry variables when elements enter view fields
  */
 function initScrollRevealEngine() {
-    const revealElements = document.querySelectorAll(".reveal");
-    
-    const configuration = {
+    const reveals = document.querySelectorAll(".reveal");
+    const config = {
         root: null,
         threshold: 0.1,
         rootMargin: "0px 0px -40px 0px"
     };
 
-    const revealObserver = new IntersectionObserver((entries, observer) => {
+    const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add("active");
-                observer.unobserve(entry.target); // Execution completes once fired
+                observer.unobserve(entry.target);
             }
         });
-    }, configuration);
+    }, config);
 
-    revealElements.forEach(targetNode => revealObserver.observe(targetNode));
+    reveals.forEach(el => observer.observe(el));
 }
 
 /**
- * 2. Accordion Card Grid Framework
- * Manages clean layout transitions and ensures expanding cards closed state rules are clean
+ * 2. Modern Accordion Card Mechanics
+ * Handles layout drawer calculation logic on user clicks
  */
-function initTeamDrawerMechanics() {
-    const teamCards = document.querySelectorAll(".team-expand-card");
+function initTeamCardDrawers() {
+    const cards = document.querySelectorAll(".team-expand-card");
 
-    teamCards.forEach(activeCard => {
-        activeCard.addEventListener("click", (event) => {
-            // Prevent drawer click events from misfiring layout recalculations
-            if (event.target.closest(".card-hidden-drawer")) return;
+    cards.forEach(card => {
+        card.addEventListener("click", (e) => {
+            // Prevent nested interaction misfires inside text selections
+            if (e.target.closest(".card-hidden-drawer")) return;
 
-            const isAlreadyExpanded = activeCard.classList.contains("is-expanded");
+            const isExpanded = card.classList.contains("is-expanded");
 
-            // Step A: Close any currently expanded card systems to keep layout pristine
-            teamCards.forEach(card => {
-                if (card !== activeCard) {
-                    card.classList.remove("is-expanded");
-                }
-            });
+            // Close siblings to keep visual balance clean
+            cards.forEach(c => c.classList.remove("is-expanded"));
 
-            // Step B: Toggle state logic for targeted card instance
-            if (isAlreadyExpanded) {
-                activeCard.classList.remove("is-expanded");
-            } else {
-                activeCard.classList.add("is-expanded");
-                
-                // Optional Step C: Smooth viewport scrolling correction for compact mobile viewports
-                if (window.innerWidth < 992) {
-                    setTimeout(() => {
-                        activeCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                    }, 450); // Matches transition timelines exactly
-                }
+            if (!isExpanded) {
+                card.classList.add("is-expanded");
             }
+        });
+    });
+}
+
+/**
+ * 3. Moving Stuff: Mouse Interaction Engine
+ * Moves ambient layout layers smoothly relative to pointer offsets
+ */
+function initAmbientOrbMouseParallax() {
+    const orbs = document.querySelectorAll(".ambient-orb");
+    const nodes = document.querySelectorAll(".matrix-node");
+
+    window.addEventListener("mousemove", (e) => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        // Soft calculation matrix shift coordinates for full-page background orbs
+        const orbXShift = (mouseX - window.innerWidth / 2) * 0.03;
+        const orbYShift = (mouseY - window.innerHeight / 2) * 0.03;
+
+        orbs.forEach(orb => {
+            orb.style.transform = `translate(${orbXShift}px, ${orbYShift}px)`;
+        });
+
+        // Tighter micro-movement calculation for hero layout frame components
+        nodes.forEach((node, index) => {
+            const structuralScalar = (index + 1) * 0.15;
+            const nodeX = (mouseX - window.innerWidth / 2) * structuralScalar;
+            const nodeY = (mouseY - window.innerHeight / 2) * structuralScalar;
+            node.style.transform = `translate(${nodeX}px, ${nodeY}px)`;
         });
     });
 }
