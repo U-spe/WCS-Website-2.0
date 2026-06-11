@@ -6,42 +6,36 @@
     <title>About Our Studio | Web Creation Studios</title>
     <meta name="description" content="Discover the creative philosophy, design commitment, and history behind Web Creation Studios—crafting custom digital experiences.">
     
+    <!-- External Asset Pipelines -->
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/about.css">
     
     <script src="/js/he-fo.js" defer></script>
     <script src="/js/about.js" defer></script>
 
+    <!-- Scoped Editorial Hero Override: Completely unique from the Team page -->
     <style>
-        .about-header .header-content-alignment {
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 4rem;
-            align-items: center;
-            text-align: left;
-            padding-top: 3rem;
-            padding-bottom: 3rem;
+        .about-header {
+            position: relative;
+            padding: 10rem 0 6rem 0;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
         }
 
-        .about-header .hero-text-engine {
+        .about-header .header-content-alignment {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-        }
-
-        .about-header h1 {
-            font-size: 3.5rem;
-            line-height: 1.15;
-            margin-top: 1.25rem;
-            margin-bottom: 1.5rem;
             text-align: left;
         }
 
-        .about-header h1 span {
-            background: linear-gradient(90deg, #64FFDA, #F4E8EE);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
+        /* Top Layer Typography */
+        .about-header .hero-top-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
         }
 
         .about-header .page-tag {
@@ -54,94 +48,116 @@
             font-size: 0.85rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
+            margin: 0;
         }
 
-        /* Kinetic Right-Side Visual Target */
-        .about-header .hero-visual-engine {
-            position: relative;
-            perspective: 1000px;
+        .about-header .hero-line-accent {
+            flex-grow: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(71, 85, 105, 0.5), transparent);
         }
 
-        .about-header .hero-glass-frame {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
-            background: #0F172A;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Giant Overlap Heading */
+        .about-header h1 {
+            font-size: clamp(2.5rem, 6vw, 5.5rem);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -0.03em;
+            margin: 0 0 3rem 0;
+            text-transform: uppercase;
+            max-width: 1100px;
         }
 
-        .about-header .hero-glass-frame:hover {
-            transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
-            box-shadow: 0 40px 80px -15px rgba(100, 255, 218, 0.1);
-        }
-
-        .about-header .hero-glass-frame img {
-            width: 100%;
-            height: auto;
+        .about-header h1 span {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(244, 232, 238, 0.6);
             display: block;
-            filter: contrast(1.05) brightness(0.95);
         }
 
-        /* Floating Studio Metric Badge */
-        .about-header .studio-status-badge {
+        /* Cinematic Wide-Aspect Image Slice */
+        .about-header .cinematic-slice-container {
+            width: 100%;
+            position: relative;
+            margin-bottom: 4rem;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(100, 255, 218, 0.15);
+            box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8);
+        }
+
+        .about-header .cinematic-frame {
+            width: 100%;
+            height: 380px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .about-header .cinematic-frame img {
+            width: 100%;
+            height: 140%;
+            object-fit: cover;
             position: absolute;
-            bottom: -1.25rem;
-            right: -1rem;
-            background: rgba(51, 65, 85, 0.9);
-            backdrop-filter: blur(12px);
-            border: 1px solid #475569;
-            padding: 0.75rem 1.25rem;
-            border-radius: 8px;
+            top: -20%;
+            left: 0;
+            filter: grayscale(30%) contrast(1.1) brightness(0.85);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .about-header .cinematic-slice-container:hover img {
+            transform: scale(1.03);
+            filter: grayscale(0%) contrast(1.1) brightness(0.9);
+        }
+
+        /* Floating Technical Coordinates Overlay */
+        .about-header .frame-coordinates {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #64FFDA;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            pointer-events: none;
+            letter-spacing: 0.1em;
+        }
+
+        /* Asymmetric Bottom Narrative Row */
+        .about-header .hero-narrative-row {
+            display: grid;
+            grid-template-columns: 0.4fr 1.6fr;
+            gap: 2rem;
+            width: 100%;
+            align-items: flex-start;
+        }
+
+        .about-header .narrative-anchor-label {
+            font-family: monospace;
             font-size: 0.8rem;
-            font-weight: 700;
-            color: #F8FAFC;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 10;
+            color: rgba(244, 232, 238, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            padding-top: 0.5rem;
         }
 
-        .about-header .status-blip {
-            width: 8px;
-            height: 8px;
-            background: #64FFDA;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #64FFDA;
-            animation: blipPulse 2s infinite;
-        }
-
-        @keyframes blipPulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1); }
+        .about-header p {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            line-height: 1.6;
+            color: #94A3B8;
+            margin: 0;
+            max-width: 850px;
+            font-weight: 400;
         }
 
         /* Responsive Adaptive Layout Rules */
         @media (max-width: 900px) {
-            .about-header .header-content-alignment {
-                grid-template-columns: 1fr;
-                gap: 3.5rem;
-                text-align: center;
-                padding-top: 2rem;
-            }
-            .about-header .hero-text-engine {
-                align-items: center;
-            }
-            .about-header h1 {
-                text-align: center;
-                font-size: 2.8rem;
-            }
-            .about-header .hero-visual-engine {
-                max-width: 500px;
-                margin: 0 auto;
-                width: 100%;
-            }
-            .about-header .studio-status-badge {
-                right: 1rem;
-            }
+            .about-header { padding: 8rem 0 4rem 0; }
+            .about-header h1 { line-height: 1.0; margin-bottom: 2rem; }
+            .about-header .cinematic-frame { height: 240px; }
+            .about-header .hero-narrative-row { grid-template-columns: 1fr; gap: 0.5rem; }
         }
     </style>
 </head>
@@ -155,30 +171,42 @@
 
     <main class="about-page-wrapper">
 
+        <!-- SECTION 1: EDITORIAL SLICE HERO -->
         <section class="about-header reveal">
             <div class="container header-content-alignment">
                 
-                <div class="hero-text-engine">
+                <!-- Metadata Layer -->
+                <div class="hero-top-meta">
                     <span class="page-tag">About Web Creation Studios</span>
-                    <h1>The Studio Behind <br><span>Modern Digital Experiences</span></h1>
+                    <div class="hero-line-accent"></div>
+                </div>
+
+                <!-- Structural Editorial Typography -->
+                <h1>
+                    The Studio Behind
+                    <span>Modern Digital Experiences</span>
+                </h1>
+
+                <!-- Cinematic Wide-Aspect Focal Graphic Slice -->
+                <div class="cinematic-slice-container">
+                    <div class="cinematic-frame">
+                        <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1600&auto=format&fit=crop" alt="Web Creation Studios Editorial Concept Layout">
+                    </div>
+                    <div class="frame-coordinates">WCS // EST. 2026</div>
+                </div>
+
+                <!-- Lower Asymmetric Narrative Block -->
+                <div class="hero-narrative-row">
+                    <div class="narrative-anchor-label">[ Manifest ]</div>
                     <p>
                         Web Creation Studios was established on a singular directive: every brand deserves a tailored digital presence that looks breathtaking, performs flawlessly, and communicates its core values with absolute clarity.
                     </p>
                 </div>
 
-                <div class="hero-visual-engine">
-                    <div class="hero-glass-frame">
-                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop" alt="Web Creation Studios High-End Interface Design Work">
-                        <div class="studio-status-badge">
-                            <div class="status-blip"></div>
-                            <span>Engineered For Longevity</span>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </section>
 
+        <!-- SECTION 2: BUILT FOR YOUR VISION -->
         <section class="wcs-feature-block reveal">
             <div class="container split-feature-layout">
                 <div class="wcs-text">
@@ -192,6 +220,7 @@
             </div>
         </section>
 
+        <!-- SECTION 3: CREATIVE COMMITMENT -->
         <section class="about-intro reveal">
             <div class="container">
                 <div class="about-intro-card">
@@ -202,6 +231,7 @@
             </div>
         </section>
 
+        <!-- SECTION 4: WHY CHOOSE OUR STUDIO -->
         <section class="wcs-feature-block reverse reveal">
             <div class="container split-feature-layout">
                 <div class="wcs-text">
@@ -215,6 +245,7 @@
             </div>
         </section>
 
+        <!-- SECTION 5: DELIVERY OF EXCELLENCE -->
         <section class="wcs-feature-block wcs-philosophy reveal">
             <div class="container split-feature-layout">
                 <div class="wcs-text">
@@ -228,6 +259,7 @@
             </div>
         </section>
 
+        <!-- SECTION 6: OUR STORY -->
         <section class="story-section reveal">
             <div class="container story-content-split">
                 <div class="story-text">
@@ -264,6 +296,7 @@
             </div>
         </section>
 
+        <!-- SECTION 7: PURPOSE -->
         <section class="mission-section reveal">
             <div class="container">
                 <div class="mission-card">
@@ -274,6 +307,7 @@
             </div>
         </section>
 
+        <!-- SECTION 8: VALUES -->
         <section class="values-section reveal">
             <div class="container">
                 <div class="values-header-centered">
@@ -305,6 +339,7 @@
             </div>
         </section>
 
+        <!-- SECTION 9: CTA -->
         <section class="about-cta reveal">
             <div class="container cta-layout-box">
                 <h2>Ready To Work Together?</h2>
