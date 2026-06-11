@@ -5,11 +5,14 @@
  */
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Initialize responsive environment
+    initializeResponsiveEnvironment();
+
     // Execute dynamic injection layout sequences
     injectComponent("#global-header", "/header.html", initializeNavInteractions);
     injectComponent("#global-footer", "/footer.html");
-    
-    // Mount identity assets dynamically to document head
+
+    // Mount identity assets
     mountDynamicFavicon();
 });
 
@@ -22,14 +25,25 @@ async function injectComponent(selector, targetUrl, callback = null) {
 
     try {
         const response = await fetch(targetUrl);
-        if (!response.ok) throw new Error(`HTTP status verification failed: ${response.status}`);
-        
+
+        if (!response.ok) {
+            throw new Error(`HTTP status verification failed: ${response.status}`);
+        }
+
         const plainTextMarkup = await response.text();
         targetNode.innerHTML = plainTextMarkup;
-        
-        if (callback) callback();
+
+        if (callback) {
+            callback();
+        }
+
+        applyResponsiveAssets();
+
     } catch (systemError) {
-        console.error(`[Layout Exception] Failed to inject container from ${targetUrl}:`, systemError);
+        console.error(
+            `[Layout Exception] Failed to inject container from ${targetUrl}:`,
+            systemError
+        );
     }
 }
 
@@ -42,28 +56,115 @@ function initializeNavInteractions() {
 
     interfaceLinks.forEach(linkElement => {
         const matchingRoute = linkElement.getAttribute("href");
-        
-        // Handle root configurations and nested folders perfectly
-        if (currentPathname === matchingRoute || (matchingRoute !== "/" && currentPathname.startsWith(matchingRoute))) {
+
+        if (
+            currentPathname === matchingRoute ||
+            (matchingRoute !== "/" &&
+                currentPathname.startsWith(matchingRoute))
+        ) {
             linkElement.classList.add("active-route-token");
         }
     });
 }
 
 /**
- * Programmatically configures and mounts the site favicon link element using
- * your locked root-relative asset pathing rule.
+ * Programmatically configures and mounts the site favicon
  */
 function mountDynamicFavicon() {
     const coreFaviconPath = "/images/logos/favicon.ico";
+
     let targetFaviconNode = document.querySelector("link[rel~='icon']");
-    
+
     if (!targetFaviconNode) {
         targetFaviconNode = document.createElement("link");
         targetFaviconNode.rel = "icon";
         document.head.appendChild(targetFaviconNode);
     }
-    
+
     targetFaviconNode.href = coreFaviconPath;
     targetFaviconNode.type = "image/x-icon";
+}
+
+/**
+ * Initializes global responsive utilities
+ */
+function initializeResponsiveEnvironment() {
+    updateViewportHeight();
+    updateScreenClass();
+
+    window.addEventListener("resize", () => {
+        updateViewportHeight();
+        updateScreenClass();
+    });
+
+    detectTouchDevice();
+}
+
+/**
+ * Creates a reliable mobile viewport height variable
+ *
+ * CSS Usage:
+ * min-height: calc(var(--vh, 1vh) * 100);
+ */
+function updateViewportHeight() {
+    const vh = window.innerHeight * 0.01;
+
+    document.documentElement.style.setProperty(
+        "--vh",
+        `${vh}px`
+    );
+}
+
+/**
+ * Applies mobile/desktop body classes
+ */
+function updateScreenClass() {
+    const mobileBreakpoint = 768;
+
+    document.body.classList.toggle(
+        "mobile-layout",
+        window.innerWidth <= mobileBreakpoint
+    );
+
+    document.body.classList.toggle(
+        "desktop-layout",
+        window.innerWidth > mobileBreakpoint
+    );
+}
+
+/**
+ * Detects touch-capable devices
+ */
+function detectTouchDevice() {
+    const isTouch =
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0;
+
+    if (isTouch) {
+        document.body.classList.add("touch-device");
+    } else {
+        document.body.classList.add("pointer-device");
+    }
+}
+
+/**
+ * Applies responsive defaults to dynamically injected assets
+ */
+function applyResponsiveAssets() {
+    document.querySelectorAll("img").forEach(imageElement => {
+        imageElement.style.maxWidth = "100%";
+        imageElement.style.height = "auto";
+        imageElement.style.display = "block";
+    });
+
+    document.querySelectorAll("iframe, video").forEach(mediaElement => {
+        mediaElement.style.maxWidth = "100%";
+    });
+
+    document.querySelectorAll("table").forEach(tableElement => {
+        tableElement.style.maxWidth = "100%";
+        tableElement.style.display = "block";
+        tableElement.style.overflowX = "auto";
+    });
 }
