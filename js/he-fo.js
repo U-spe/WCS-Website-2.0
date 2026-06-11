@@ -1,15 +1,15 @@
 /**
  * he-fo.js
- * Core System Component Injector & Asset Pipeline
- * Web Creation Studios Architecture
+ * Core Dynamic Fragment Injector & Asset Pipeline
+ * Web Creation Studios
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Execute structural injection layout sequences
+    // Execute dynamic injection layout sequences
     injectComponent("#global-header", "/header.html", initializeNavInteractions);
     injectComponent("#global-footer", "/footer.html");
     
-    // Mount brand assets dynamically to document head
+    // Mount identity assets dynamically to document head
     mountDynamicFavicon();
 });
 
@@ -29,35 +29,33 @@ async function injectComponent(selector, targetUrl, callback = null) {
         
         if (callback) callback();
     } catch (systemError) {
-        console.error(`[Matrix Exception] Failed to inject layout chunk from ${targetUrl}:`, systemError);
+        console.error(`[Layout Exception] Failed to inject container from ${targetUrl}:`, systemError);
     }
 }
 
 /**
- * Validates window context routing parameters to apply active state visual markers
+ * Validates window routing parameters to apply active navigation menu styling rules
  */
 function initializeNavInteractions() {
-    const structuralPathname = window.location.pathname;
+    const currentPathname = window.location.pathname;
     const interfaceLinks = document.querySelectorAll(".nav-link");
 
     interfaceLinks.forEach(linkElement => {
-        const structuralRoute = linkElement.getAttribute("href");
+        const matchingRoute = linkElement.getAttribute("href");
         
-        // Match base domain routes and nested system pathways accurately
-        if (structuralPathname === structuralRoute || (structuralRoute !== "/" && structuralPathname.startsWith(structuralRoute))) {
+        // Handle root configurations and nested folders perfectly
+        if (currentPathname === matchingRoute || (matchingRoute !== "/" && currentPathname.startsWith(matchingRoute))) {
             linkElement.classList.add("active-route-token");
         }
     });
 }
 
 /**
- * Enforces brand alignment by programmatically writing the favicon link element
- * into the head, utilizing your specified root-relative asset directory.
+ * Programmatically configures and mounts the site favicon link element using
+ * your locked root-relative asset pathing rule.
  */
 function mountDynamicFavicon() {
-    // Mandate: Dynamic identity assets must resolve from root-relative paths
-    const productionFaviconPath = "/images/logos/favicon.ico";
-    
+    const coreFaviconPath = "/images/logos/favicon.ico";
     let targetFaviconNode = document.querySelector("link[rel~='icon']");
     
     if (!targetFaviconNode) {
@@ -66,6 +64,6 @@ function mountDynamicFavicon() {
         document.head.appendChild(targetFaviconNode);
     }
     
-    targetFaviconNode.href = productionFaviconPath;
+    targetFaviconNode.href = coreFaviconPath;
     targetFaviconNode.type = "image/x-icon";
 }
