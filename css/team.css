@@ -1,6 +1,5 @@
 /* ==========================================================================
    THE SLATE ENGINE - WCS TEAM STYLES
-   Its Called Inside Voice ___ Same Person Who Owns solargames-cosmosis
    ========================================================================== */
 
 :root {
@@ -24,11 +23,11 @@
 }
 
 /* ==========================================================================
-   STACKING CONTEXT: LAYERED BACKGROUND SYSTEM
+   LAYERED BACKGROUND SYSTEM
    ========================================================================== */
 
 body.slate-theme {
-    background-color: var(--slate-bg-main); /* Layer 0: Solid Slate Background */
+    background-color: var(--slate-bg-main); /* Base Layer: Slate Gray */
     color: var(--text-pure-white);
     font-family: var(--font-system);
     overflow-x: hidden;
@@ -36,21 +35,56 @@ body.slate-theme {
     position: relative;
 }
 
-/* Layer 1: Background Grid & Glows */
-.bg-grid, .bg-glow {
+/* Layer 1: Glows (Behind the grid) */
+.bg-glow {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 1; /* Sits on top of the solid body color */
+    z-index: 1;
+    filter: blur(120px);
+    opacity: 0.2;
+    border-radius: 50%;
 }
 
-/* Layer 2: Main Content */
+.glow-1 {
+    background: var(--mint-green);
+    width: 600px;
+    height: 600px;
+    top: -100px;
+    left: -100px;
+}
+
+.glow-2 {
+    background: var(--deep-purple);
+    width: 800px;
+    height: 800px;
+    bottom: -200px;
+    right: -200px;
+}
+
+/* Layer 2: Grid Pattern (Above the glows) */
+.bg-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.15;
+    background-image: 
+        linear-gradient(to right, var(--slate-border) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--slate-border) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+/* Layer 3: Main Content (Highest Layer) */
 .wcs-team-wrapper {
     position: relative;
-    z-index: 2; /* Sits on top of the Grid and Glows */
+    z-index: 3;
 }
 
 /* ==========================================================================
