@@ -4,51 +4,66 @@
  * Web Creation Studios
  */
 
-/**
- * he-fo.js
- * Global Header, Footer, and Brand Asset Initialization
- */
-
 document.addEventListener("DOMContentLoaded", () => {
-    initializeBrandAssets();
-    injectLayoutComponents();
+    // Execute dynamic injection layout sequences
+    injectComponent("#global-header", "/header.html", initializeNavInteractions);
+    injectComponent("#global-footer", "/footer.html");
+    
+    // Mount identity assets dynamically to document head
+    mountDynamicFavicon();
 });
 
-function initializeBrandAssets() {
-    // Dynamic Favicon Loader
-    const currentFavicon = document.querySelector("link[rel~='icon']");
-    if (!currentFavicon) {
-        const link = document.createElement('link');
-        link.rel = 'icon';
-        link.type = 'image/jpeg';
-        // Enforcing absolute root-relative directory per strict project specs
-        link.href = '/images/logos/wcs-favicon.jpg'; 
-        document.head.appendChild(link);
+/**
+ * Asynchronously fetches semantic markup partials and injects them into layout nodes
+ */
+async function injectComponent(selector, targetUrl, callback = null) {
+    const targetNode = document.querySelector(selector);
+    if (!targetNode) return;
+
+    try {
+        const response = await fetch(targetUrl);
+        if (!response.ok) throw new Error(`HTTP status verification failed: ${response.status}`);
+        
+        const plainTextMarkup = await response.text();
+        targetNode.innerHTML = plainTextMarkup;
+        
+        if (callback) callback();
+    } catch (systemError) {
+        console.error(`[Layout Exception] Failed to inject container from ${targetUrl}:`, systemError);
     }
 }
 
-function injectLayoutComponents() {
-    const headerElement = document.getElementById('global-header');
-    const footerElement = document.getElementById('global-footer');
+/**
+ * Validates window routing parameters to apply active navigation menu styling rules
+ */
+function initializeNavInteractions() {
+    const currentPathname = window.location.pathname;
+    const interfaceLinks = document.querySelectorAll(".nav-link");
 
-    if (headerElement) {
-        headerElement.innerHTML = `
-            <header class="wcs-global-nav">
-                <div class="nav-brand">WCS // TEAM</div>
-                <nav class="nav-links">
-                    <a href="/index.html">Home</a>
-                    <a href="/portfolio.html">Portfolio</a>
-                    <a href="/contact.html">Contact</a>
-                </nav>
-            </header>
-        `;
-    }
+    interfaceLinks.forEach(linkElement => {
+        const matchingRoute = linkElement.getAttribute("href");
+        
+        // Handle root configurations and nested folders perfectly
+        if (currentPathname === matchingRoute || (matchingRoute !== "/" && currentPathname.startsWith(matchingRoute))) {
+            linkElement.classList.add("active-route-token");
+        }
+    });
+}
 
-    if (footerElement) {
-        footerElement.innerHTML = `
-            <footer class="wcs-global-footer text-center mt-10 p-5 border-t border-slate-800 text-slate-400">
-                <p>&copy; ${new Date().getFullYear()} Web Creation Studios. All Systems Operational.</p>
-            </footer>
-        `;
+/**
+ * Programmatically configures and mounts the site favicon link element using
+ * your locked root-relative asset pathing rule.
+ */
+function mountDynamicFavicon() {
+    const coreFaviconPath = "/images/logos/favicon.ico";
+    let targetFaviconNode = document.querySelector("link[rel~='icon']");
+    
+    if (!targetFaviconNode) {
+        targetFaviconNode = document.createElement("link");
+        targetFaviconNode.rel = "icon";
+        document.head.appendChild(targetFaviconNode);
     }
+    
+    targetFaviconNode.href = coreFaviconPath;
+    targetFaviconNode.type = "image/x-icon";
 }
