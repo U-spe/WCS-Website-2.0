@@ -1,39 +1,47 @@
+/**
+ * team.js
+ * Drives the accordion interactions and parallax engine
+ */
+
 document.addEventListener("DOMContentLoaded", () => {
-    initScrollReveal();
-    initTeamDrawers();
+    initDrawers();
+    initMouseParallax();
 });
 
-function initScrollReveal() {
-    const reveals = document.querySelectorAll(".reveal");
-    const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("active");
-                obs.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1, rootMargin: "0px 0px -20px 0px" });
-
-    reveals.forEach(el => observer.observe(el));
-}
-
-function initTeamDrawers() {
+function initDrawers() {
     const cards = document.querySelectorAll(".team-expand-card");
 
     cards.forEach(card => {
         card.addEventListener("click", (e) => {
-            // Stop click if the user is highlighting text inside the drawer
+            // Prevent drawer text highlight clicks from misfiring
             if (e.target.closest(".card-hidden-drawer")) return;
 
             const isExpanded = card.classList.contains("is-expanded");
 
-            // Close all cards first for a clean accordion effect
+            // Shut all other cards
             cards.forEach(c => c.classList.remove("is-expanded"));
 
-            // Open the clicked card if it wasn't already open
+            // Toggle target
             if (!isExpanded) {
                 card.classList.add("is-expanded");
             }
         });
+    });
+}
+
+function initMouseParallax() {
+    const target = document.querySelector('.parallax-target');
+    if (!target) return;
+
+    window.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        
+        // Calculate offset from center screen
+        const xOffset = (mouseX - window.innerWidth / 2) * 0.05;
+        const yOffset = (mouseY - window.innerHeight / 2) * 0.05;
+
+        // Apply kinetic drift to the front image
+        target.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
     });
 }
