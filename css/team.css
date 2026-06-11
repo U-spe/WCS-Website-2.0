@@ -1,0 +1,315 @@
+/* ==========================================================================
+   OUR TEAM STYLESHEET - WEB CREATION STUDIOS
+   ========================================================================== */
+
+.team-page-wrapper {
+    position: relative;
+    padding-top: 100px;
+    z-index: 5;
+}
+
+/* --- AMBIENT ATMOSPHERE ASSETS --- */
+.bg-grid-mesh {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(rgba(100, 255, 218, 0.02) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+    z-index: 1;
+}
+.bg-radial-glow {
+    position: fixed;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(160px);
+    opacity: 0.05;
+    z-index: 2;
+}
+.position-alpha { top: -20%; right: -10%; background: var(--deep-purple, #6B21A8); }
+.position-beta { bottom: -10%; left: -10%; background: var(--mint-green, #64ffda); }
+
+/* --- HERO HEADER SECTION --- */
+.team-hero-header {
+    padding: 8rem 0 4rem 0;
+    text-align: center;
+}
+.container-narrow {
+    max-width: 750px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.studio-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.25em;
+    color: var(--mint-green, #64ffda);
+    text-transform: uppercase;
+    background: rgba(100, 255, 218, 0.05);
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    border: 1px solid rgba(100, 255, 218, 0.15);
+    margin-bottom: 2rem;
+}
+.team-hero-header h1 {
+    font-size: 3.4rem;
+    color: var(--text-pure-white, #ffffff);
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+}
+.team-hero-header h1 span {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-pure-white, #ffffff);
+}
+.team-hero-header p {
+    font-size: 1.2rem;
+    color: var(--text-muted-slate, #94a3b8);
+    line-height: 1.7;
+}
+
+/* --- DYNAMIC ASYMMETRIC GRID LAYER --- */
+.team-interactive-layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    padding: 4rem 2rem 8rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- THE CARD MECHANICS --- */
+.team-expand-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+    border: 1px solid var(--slate-border, rgba(255,255,255,0.08));
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.card-accent-strip {
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, var(--deep-purple, #6B21A8), var(--mint-green, #64ffda));
+    opacity: 0.4;
+    transition: opacity 0.4s ease;
+}
+.card-visible-layer {
+    padding: 3rem 2.5rem 2rem 2.5rem;
+}
+.team-avatar-frame {
+    position: relative;
+    width: 110px; height: 110px;
+    margin: 0 auto 2rem auto;
+}
+.team-avatar-frame img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--slate-border, rgba(255,255,255,0.08));
+    padding: 0.35rem;
+    background: var(--slate-bg-darker, #0f172a);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+.profile-status-dot {
+    position: absolute;
+    bottom: 5px; right: 5px;
+    width: 14px; height: 14px;
+    background: var(--mint-green, #64ffda);
+    border: 3px solid #1e293b;
+    border-radius: 50%;
+}
+.active-pulse {
+    box-shadow: 0 0 0 0 rgba(100, 255, 218, 0.5);
+    animation: statusPulse 2s infinite;
+}
+@keyframes statusPulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(100, 255, 218, 0.5); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(100, 255, 218, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(100, 255, 218, 0); }
+}
+
+.team-meta-data {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+.team-meta-data h3 {
+    font-size: 1.5rem;
+    color: var(--text-pure-white, #ffffff);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+.role-micro-badge {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted-slate, #94a3b8);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.35rem 0.85rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pro-action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 1.5rem;
+}
+.systems-status-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.4);
+    transition: color 0.3s ease;
+}
+.expand-indicator {
+    position: relative;
+    width: 16px; height: 16px;
+}
+.expand-indicator::before, .expand-indicator::after {
+    content: '';
+    position: absolute;
+    background: rgba(255,255,255,0.4);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+/* Horizontal line */
+.expand-indicator::before { top: 7px; left: 0; width: 16px; height: 2px; }
+/* Vertical line */
+.expand-indicator::after { top: 0; left: 7px; width: 2px; height: 16px; }
+
+/* --- THE EXPANSION MECHANICS CSS TRICK --- */
+.card-hidden-drawer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.drawer-inner-content {
+    overflow: hidden;
+    padding: 0 2.5rem 2.5rem 2.5rem;
+}
+.design-decorator-line {
+    width: 30px; height: 2px;
+    background: var(--mint-green, #64ffda);
+    margin-bottom: 1.25rem;
+    border-radius: 2px;
+}
+.drawer-inner-content p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text-muted-slate, #94a3b8);
+}
+
+/* --- ACTIVE & HOVER CARD STATES --- */
+.team-expand-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(100, 255, 218, 0.25);
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.7);
+}
+.team-expand-card:hover .card-accent-strip { opacity: 1; }
+.team-expand-card:hover .team-avatar-frame img { border-color: var(--mint-green, #64ffda); transform: scale(1.02); }
+.team-expand-card:hover .systems-status-label { color: var(--text-pure-white, #ffffff); }
+.team-expand-card:hover .expand-indicator::before, 
+.team-expand-card:hover .expand-indicator::after { background-color: var(--mint-green, #64ffda); }
+
+/* Expanded State Class (Toggled via JS) */
+.team-expand-card.is-expanded {
+    border-color: rgba(100, 255, 218, 0.4);
+    background: linear-gradient(180deg, rgba(23, 37, 84, 0.5) 0%, rgba(15, 23, 42, 0.95) 100%);
+}
+.team-expand-card.is-expanded .card-hidden-drawer {
+    grid-template-rows: 1fr;
+}
+.team-expand-card.is-expanded .expand-indicator::after {
+    transform: rotate(90deg) scaleX(0); /* Drops vertical line cleanly to form an elegant minus symbol */
+}
+
+/* --- GENERAL UTILITY PHILOSOPHY ROW --- */
+.team-philosophy-strip {
+    padding: 8rem 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.5), transparent);
+}
+.text-center-alignment {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 2rem;
+}
+.text-center-alignment h2 {
+    font-size: 2.2rem;
+    color: var(--text-pure-white, #ffffff);
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+.text-center-alignment p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-muted-slate, #94a3b8);
+}
+
+/* --- THE CTA GLASS BLOCK --- */
+.team-cta-section {
+    padding: 4rem 2rem 12rem 2rem;
+}
+.cta-glass-panel {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%);
+    border: 1px solid var(--slate-border, rgba(255,255,255,0.08));
+    padding: 5.5rem 3rem;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 40px 80px -30px rgba(0,0,0,0.6);
+}
+.cta-glass-panel h2 {
+    font-size: 2.6rem;
+    color: var(--text-pure-white, #ffffff);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+.cta-glass-panel p {
+    font-size: 1.1rem;
+    color: var(--text-muted-slate, #94a3b8);
+    margin-bottom: 3rem;
+}
+.btn-primary-pink {
+    display: inline-flex;
+    background: #F472B6; /* Premium pink tone accent */
+    color: #0f172a;
+    text-decoration: none;
+    font-weight: 700;
+    padding: 1.1rem 2.6rem;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(244, 114, 182, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+.btn-primary-pink:hover {
+    background: var(--text-pure-white, #ffffff);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(244, 114, 182, 0.4);
+}
+
+/* ==========================================================================
+   CROSS-DEVICE VIEWPORT MEDIA QUERIES
+   ========================================================================== */
+@media (max-width: 992px) {
+    .team-interactive-layout { grid-template-columns: 1fr; max-width: 550px; gap: 3rem; }
+    .team-hero-header h1 { font-size: 2.6rem; }
+    .cta-glass-panel { padding: 4rem 2rem; }
+    .cta-glass-panel h2 { font-size: 2rem; }
+}
+
+@media (max-width: 480px) {
+    .team-hero-header h1 { font-size: 2rem; }
+    .card-visible-layer { padding: 2.5rem 1.5rem 1.5rem 1.5rem; }
+    .drawer-inner-content { padding: 0 1.5rem 2.5rem 1.5rem; }
+    .btn-primary-pink { width: 100%; text-align: center; justify-content: center; }
+}
