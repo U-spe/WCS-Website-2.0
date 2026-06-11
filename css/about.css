@@ -1,0 +1,394 @@
+/* ==========================================================================
+   ABOUT PAGE CONTENT ARCHITECTURE
+   ========================================================================== */
+
+.about-page-wrapper {
+    position: relative;
+    padding-top: 80px; /* Accounts for fixed layout navigation header height */
+    z-index: 5;
+}
+
+/* --- DECORATIVE ATMOSPHERE ELEMENTS --- */
+.bg-grid {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: linear-gradient(rgba(100, 255, 218, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 255, 218, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 1;
+}
+.bg-glow {
+    position: fixed;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(140px);
+    opacity: 0.07;
+    z-index: 2;
+}
+.glow-1 { top: -10%; left: -10%; background: var(--mint-green); }
+.glow-2 { bottom: 10%; right: -5%; background: var(--light-pink); }
+
+/* --- SECTION 1: ABOUT HEADER --- */
+.about-header {
+    padding: 10rem 0 6rem 0;
+    text-align: center;
+}
+.header-content-alignment {
+    max-width: 850px;
+}
+.page-tag {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: var(--mint-green);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+.about-header h1 {
+    font-size: 3.8rem;
+    color: var(--text-pure-white);
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+}
+.about-header h1 span {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-pure-white);
+}
+.about-header p {
+    font-size: 1.25rem;
+    color: var(--text-muted-slate);
+    line-height: 1.7;
+}
+
+/* --- SECTIONS 2, 4, 5: SPLIT IMAGE & TEXT FEATURE BLOCKS --- */
+.wcs-feature-block {
+    padding: 6rem 0;
+}
+.split-feature-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+}
+.wcs-text h2 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--text-pure-white);
+    letter-spacing: -0.01em;
+    margin-bottom: 1.75rem;
+    position: relative;
+    padding-bottom: 0.75rem;
+}
+.wcs-text h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 60px; height: 3px;
+    background: var(--mint-green);
+    border-radius: 2px;
+}
+.wcs-text p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-muted-slate);
+    margin-bottom: 1.5rem;
+}
+.wcs-image-box {
+    position: relative;
+    border-radius: 12px;
+    padding: 0.75rem;
+    background: rgba(51, 65, 85, 0.4);
+    border: 1px solid var(--slate-border);
+    box-shadow: 0 30px 60px -25px rgba(15, 23, 42, 0.8);
+    transition: var(--transition-speed);
+}
+.wcs-image-box img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    filter: grayscale(20%) contrast(105%);
+    transition: var(--transition-speed);
+}
+.wcs-feature-block:hover .wcs-image-box {
+    border-color: var(--mint-green);
+    transform: translateY(-4px);
+}
+.wcs-feature-block:hover .wcs-image-box img {
+    filter: grayscale(0%) contrast(100%);
+}
+.wcs-feature-block.reverse .split-feature-layout {
+    direction: rtl;
+}
+.wcs-feature-block.reverse .wcs-text,
+.wcs-feature-block.reverse .wcs-image-box {
+    direction: ltr; /* Keeps textual and reading metrics formatting safe */
+}
+
+/* --- SECTION 5 ENHANCEMENT: STUDIO PHILOSOPHY BOX --- */
+.wcs-philosophy {
+    background: linear-gradient(180deg, transparent, var(--slate-bg-darker), transparent);
+    padding: 8rem 0;
+}
+
+/* --- SECTION 3: INTRO CARD BLOCK --- */
+.about-intro {
+    padding: 5rem 0;
+}
+.about-intro-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(51, 65, 85, 0.6) 0%, rgba(15, 23, 42, 0.7) 100%);
+    border: 1px solid var(--slate-border);
+    padding: 4.5rem;
+    border-radius: 12px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.card-corner-accent {
+    position: absolute;
+    top: -1px; left: 40px;
+    width: 80px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--mint-green), transparent);
+}
+.about-intro-card h2 {
+    color: var(--text-pure-white);
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+.about-intro-card p {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: rgba(248, 250, 252, 0.85);
+}
+
+/* --- SECTION 6: STORY SECTION --- */
+.story-section {
+    padding: 8rem 0;
+    background-color: var(--slate-bg-darker);
+    border-top: 1px solid var(--slate-border);
+    border-bottom: 1px solid var(--slate-border);
+}
+.story-content-split {
+    display: grid;
+    grid-template-columns: 1.10fr 0.9fr;
+    gap: 6rem;
+    align-items: center;
+}
+.story-text h2 {
+    font-size: 2.4rem;
+    color: var(--text-pure-white);
+    font-weight: 800;
+    margin-bottom: 2rem;
+}
+.story-text p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-muted-slate);
+    margin-bottom: 1.5rem;
+}
+.story-card {
+    position: relative;
+    background: var(--slate-bg-card);
+    border: 1px solid var(--slate-border);
+    border-radius: 12px;
+    padding: 3rem;
+    overflow: hidden;
+}
+.story-card-glow {
+    position: absolute;
+    bottom: -50px; right: -50px;
+    width: 150px; height: 150px;
+    background: var(--mint-green);
+    filter: blur(60px);
+    opacity: 0.1;
+}
+.story-card h2 {
+    font-size: 1.5rem;
+    color: var(--text-pure-white);
+    font-weight: 800;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.focus-creative-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+.focus-creative-list li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.focus-bullet-icon {
+    color: var(--mint-green);
+    font-size: 1.1rem;
+}
+.focus-list-text {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: rgba(248, 250, 252, 0.9);
+}
+
+/* --- SECTION 7: CORE MISSION --- */
+.mission-section {
+    padding: 9rem 0;
+    background: radial-gradient(circle at 50% 50%, rgba(51, 65, 85, 0.3) 0%, transparent 70%);
+}
+.mission-card {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+.mission-accent-line {
+    width: 40px; height: 2px;
+    background: var(--slate-border);
+    margin: 0 auto 2.5rem auto;
+}
+.mission-meta-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #F472B6; /* Accent light pink tone */
+    margin-bottom: 1.5rem;
+}
+.mission-card h2 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--text-pure-white);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+}
+
+/* --- SECTION 8: STUDIO VALUES GRID --- */
+.values-section {
+    padding: 6rem 0 10rem 0;
+}
+.values-header-centered {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+.values-micro-tag {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--mint-green);
+}
+.values-header-centered h2 {
+    font-size: 2.6rem;
+    color: var(--text-pure-white);
+    font-weight: 800;
+    margin-top: 0.5rem;
+}
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+.value-box {
+    background: var(--slate-bg-card);
+    border: 1px solid var(--slate-border);
+    padding: 3rem 2rem;
+    border-radius: 8px;
+    transition: var(--transition-speed);
+}
+.value-icon {
+    font-size: 1.5rem;
+    color: var(--mint-green);
+    margin-bottom: 1.5rem;
+}
+.value-box h3 {
+    color: var(--text-pure-white);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+.value-box p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+.value-box:hover {
+    border-color: var(--mint-green);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px -15px rgba(0, 0, 0, 0.4);
+}
+
+/* --- SECTION 9: CALL TO ACTION --- */
+.about-cta {
+    padding: 4rem 0 12rem 0;
+    text-align: center;
+}
+.cta-layout-box {
+    background: linear-gradient(135deg, var(--light-blue) 0%, rgba(15, 23, 42, 0.9) 100%);
+    border: 1px solid var(--slate-border);
+    padding: 6rem 3rem;
+    border-radius: 12px;
+    max-width: 1000px;
+    margin: 0 auto;
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.5);
+}
+.about-cta h2 {
+    font-size: 2.8rem;
+    color: var(--text-pure-white);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+}
+.about-cta p {
+    font-size: 1.15rem;
+    max-width: 600px;
+    margin: 0 auto 3rem auto;
+}
+.primary-btn-mint {
+    display: inline-flex;
+    background: var(--mint-green);
+    color: var(--dark-blue);
+    text-decoration: none;
+    padding: 1.1rem 2.8rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(100, 255, 218, 0.2);
+    transition: var(--transition-speed);
+}
+.primary-btn-mint:hover {
+    background: var(--text-pure-white);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(100, 255, 218, 0.4);
+}
+
+/* ==========================================================================
+   5. RESPONSIVE BREAKPOINTS (CROSS-DEVICE MEDIA ADAPTATIONS)
+   ========================================================================== */
+@media (max-width: 1200px) {
+    .values-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+}
+
+@media (max-width: 992px) {
+    .split-feature-layout, .story-content-split { grid-template-columns: 1fr; gap: 3.5rem; }
+    .wcs-feature-block.reverse .split-feature-layout { direction: ltr; }
+    .about-header h1 { font-size: 2.8rem; }
+    .mission-card h2 { font-size: 2rem; }
+    .wcs-image-box img { height: 350px; }
+    .about-intro-card { padding: 3rem 2rem; }
+    .cta-layout-box { padding: 4rem 2rem; }
+}
+
+@media (max-width: 640px) {
+    .values-grid { grid-template-columns: 1fr; }
+    .about-header h1 { font-size: 2.2rem; }
+    .about-cta h2 { font-size: 2rem; }
+    .primary-btn-mint { width: 100%; text-align: center; justify-content: center; }
+}
