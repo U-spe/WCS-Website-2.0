@@ -1,0 +1,32 @@
+{
+  "assistantName": "WCS AI Assistant",
+  "companyName": "Web Creation Studios",
+  "founder": "CJ",
+  "contact": {
+    "email": "solutionsforyourweb@gmail.com",
+    "phone": "(302) 526-0930"
+  },
+  "style": {
+    "background": "#1c1c1c",
+    "panel": "#16191e",
+    "surface": "#252a31",
+    "text": "#f2f4f7",
+    "muted": "#9ba3af",
+    "accent": "#3b82f6",
+    "border": "rgba(255,255,255,0.08)"
+  },
+  "services": [
+    "Web design",
+    "Website development",
+    "Ecommerce setup",
+    "Branding and logo design",
+    "Hosting support",
+    "Domain setup",
+    "Analytics setup",
+    "Email setup",
+    "Site security",
+    "Custom website features"
+  ],
+  "welcomeMessage": "Hello. How can I help with Web Creation Studios today?",
+  "subtitle": "Business support and site guidance"
+}
