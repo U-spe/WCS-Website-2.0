@@ -14,9 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Mount identity assets
     mountDynamicFavicon();
-
-    // Mount WCS AI Widget assets
-    mountWCSAIWidgetAssets();
 });
 
 /**
@@ -86,27 +83,6 @@ function mountDynamicFavicon() {
 
     targetFaviconNode.href = coreFaviconPath;
     targetFaviconNode.type = "image/x-icon";
-}
-
-/**
- * Injects WCS AI Widget CSS + JS into the document head safely
- */
-function mountWCSAIWidgetAssets() {
-    // prevent duplicate injection
-    if (document.getElementById("wcs-ai-widget-css")) return;
-
-    const css = document.createElement("link");
-    css.id = "wcs-ai-widget-css";
-    css.rel = "stylesheet";
-    css.href = "/wcs-ai-widget/widget.css";
-
-    const js = document.createElement("script");
-    js.id = "wcs-ai-widget-js";
-    js.src = "/wcs-ai-widget/widget.js";
-    js.defer = true;
-
-    document.head.appendChild(css);
-    document.head.appendChild(js);
 }
 
 /**
