@@ -1,4 +1,9 @@
 {
   "cleanUrls": true,
-  "version": 2
+  "version": 2,
+  "functions": {
+    "api/chat.js": {
+      "maxDuration": 10
+    }
+  }
 }
