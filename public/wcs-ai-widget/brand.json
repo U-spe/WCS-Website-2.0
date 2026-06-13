@@ -6,15 +6,6 @@
     "email": "solutionsforyourweb@gmail.com",
     "phone": "(302) 526-0930"
   },
-  "style": {
-    "background": "#1c1c1c",
-    "panel": "#16191e",
-    "surface": "#252a31",
-    "text": "#f2f4f7",
-    "muted": "#9ba3af",
-    "accent": "#3b82f6",
-    "border": "rgba(255,255,255,0.08)"
-  },
   "services": [
     "Web design",
     "Website development",
@@ -28,5 +19,11 @@
     "Custom website features"
   ],
   "welcomeMessage": "Hello. How can I help with Web Creation Studios today?",
-  "subtitle": "Business support and site guidance"
+  "subtitle": "Business support and site guidance",
+  "quickActions": [
+    { "label": "Services", "message": "What services does Web Creation Studios provide?" },
+    { "label": "Contact", "message": "How can I contact Web Creation Studios?" },
+    { "label": "Pricing", "message": "Do you have pricing information available?" },
+    { "label": "Projects", "message": "What kinds of projects does Web Creation Studios build?" }
+  ]
 }
