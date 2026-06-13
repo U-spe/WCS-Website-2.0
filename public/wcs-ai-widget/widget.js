@@ -20,16 +20,22 @@
       "Email setup",
       "Site security",
       "Custom website features"
+    ],
+    quickActions: [
+      { label: "Services", message: "What services does Web Creation Studios provide?" },
+      { label: "Contact", message: "How can I contact Web Creation Studios?" },
+      { label: "Pricing", message: "Do you have pricing information available?" },
+      { label: "Projects", message: "What kinds of projects does Web Creation Studios build?" }
     ]
   };
 
-  const API_ENDPOINT = "/wcs-ai-widget/api/chat";
+  const API_ENDPOINT = "/api/chat";
   const CONFIG_ENDPOINT = "/wcs-ai-widget/brand.json";
 
   let config = { ...DEFAULT_CONFIG };
   const history = [];
 
-  function escapeText(value) {
+  function safeText(value) {
     return typeof value === "string" ? value : "";
   }
 
@@ -40,7 +46,7 @@
   function addMessage(messages, role, text) {
     const el = document.createElement("div");
     el.className = `wcs-ai-message ${role}`;
-    el.textContent = escapeText(text);
+    el.textContent = safeText(text);
     messages.appendChild(el);
     scrollToBottom(messages);
   }
@@ -51,7 +57,7 @@
     typing.classList.toggle("show", isBusy);
   }
 
-  function localFallbackReply(raw) {
+  function buildFallbackReply(raw) {
     const text = raw.toLowerCase();
 
     if (text.includes("contact") || text.includes("email") || text.includes("phone")) {
@@ -60,6 +66,10 @@
 
     if (text.includes("service") || text.includes("services")) {
       return `WCS provides ${config.services.join(", ")}.`;
+    }
+
+    if (text.includes("pricing") || text.includes("price")) {
+      return "Pricing information is not confirmed here. Please contact WCS for current details.";
     }
 
     if (text.includes("who are you") || text.includes("what is wcs")) {
@@ -74,11 +84,16 @@
       const response = await fetch(CONFIG_ENDPOINT, { cache: "no-store" });
       if (!response.ok) return;
       const data = await response.json();
+
       config = {
         ...DEFAULT_CONFIG,
         ...data,
         contact: { ...DEFAULT_CONFIG.contact, ...(data.contact || {}) },
-        services: Array.isArray(data.services) && data.services.length ? data.services : DEFAULT_CONFIG.services
+        services: Array.isArray(data.services) && data.services.length ? data.services : DEFAULT_CONFIG.services,
+        quickActions:
+          Array.isArray(data.quickActions) && data.quickActions.length
+            ? data.quickActions
+            : DEFAULT_CONFIG.quickActions
       };
     } catch {
       config = { ...DEFAULT_CONFIG };
@@ -105,6 +120,8 @@
         <div id="wcs-ai-messages" aria-live="polite" aria-relevant="additions"></div>
         <div id="wcs-ai-typing">WCS AI is typing...</div>
 
+        <div id="wcs-ai-quick-actions" aria-label="Quick actions"></div>
+
         <form id="wcs-ai-input-wrap">
           <input
             id="wcs-ai-input"
@@ -114,6 +131,10 @@
           />
           <button id="wcs-ai-send" type="submit">Send</button>
         </form>
+
+        <div id="wcs-ai-footer-note">
+          Responses are limited to official WCS business and site guidance.
+        </div>
       </section>
     `;
 
@@ -129,9 +150,23 @@
     const typing = document.getElementById("wcs-ai-typing");
     const title = document.getElementById("wcs-ai-title");
     const subtitle = document.getElementById("wcs-ai-subtitle");
+    const quickActions = document.getElementById("wcs-ai-quick-actions");
 
     title.textContent = config.assistantName;
     subtitle.textContent = config.subtitle;
+
+    quickActions.innerHTML = "";
+    config.quickActions.forEach((action) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "wcs-ai-chip";
+      chip.textContent = action.label;
+      chip.addEventListener("click", () => {
+        input.value = action.message;
+        input.focus();
+      });
+      quickActions.appendChild(chip);
+    });
 
     function openPanel() {
       panel.classList.add("open");
@@ -151,16 +186,20 @@
       input.value = "";
       setBusy(input, sendBtn, typing, true);
 
+      const payload = {
+        message: trimmed,
+        history: history.slice(-8),
+        page: window.location.pathname,
+        title: document.title
+      };
+
       try {
         const response = await fetch(API_ENDPOINT, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({
-            message: trimmed,
-            history: history.slice(-8)
-          })
+          body: JSON.stringify(payload)
         });
 
         const data = await response.json().catch(() => ({}));
@@ -168,12 +207,12 @@
         const reply =
           typeof data.reply === "string" && data.reply.trim()
             ? data.reply.trim()
-            : localFallbackReply(trimmed);
+            : buildFallbackReply(trimmed);
 
         addMessage(messages, "assistant", reply);
         history.push({ role: "assistant", content: reply });
       } catch {
-        const reply = localFallbackReply(trimmed);
+        const reply = buildFallbackReply(trimmed);
         addMessage(messages, "assistant", reply);
         history.push({ role: "assistant", content: reply });
       } finally {
