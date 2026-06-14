@@ -17,16 +17,20 @@
       "url": "/about.html"
     },
     {
-      "label": "Services",
-      "url": "/services.html"
-    },
-    {
       "label": "Team",
       "url": "/team.html"
     },
     {
-      "label": "Projects",
-      "url": "/projects.html"
+      "label": "Services",
+      "url": "/services.html"
+    },
+    {
+      "label": "Pricing",
+      "url": "/pricing.html"
+    },
+    {
+      "label": "Portfolio",
+      "url": "/portfolio.html"
     }
   ],
   "starterQuestions": [
@@ -35,19 +39,19 @@
       "message": "What services does Web Creation Studios provide?"
     },
     {
-      "label": "Projects",
-      "message": "Show me what kinds of projects Web Creation Studios builds."
+      "label": "Pricing",
+      "message": "What pricing information is available?"
     },
     {
-      "label": "Contact",
-      "message": "How can I contact Web Creation Studios?"
+      "label": "Portfolio",
+      "message": "Show me the portfolio page."
     }
   ],
   "followUpQuestions": [
     {
-      "label": "Open Services",
-      "message": "Open the services page.",
-      "navigateTo": "/services.html"
+      "label": "Open Home",
+      "message": "Open the home page.",
+      "navigateTo": "/"
     },
     {
       "label": "Open About",
@@ -59,5 +63,6 @@
       "message": "Open the team page.",
       "navigateTo": "/team.html"
     }
-  ]
+  ],
+  "welcomeMessage": "Hello. How can I help with Web Creation Studios today?"
 }
