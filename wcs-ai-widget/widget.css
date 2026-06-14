@@ -1,14 +1,18 @@
 :root {
-  --wcs-bg: #101318;
-  --wcs-panel: #16191e;
-  --wcs-surface: #252a31;
-  --wcs-text: #f2f4f7;
-  --wcs-muted: #9ba3af;
+  --wcs-bg: #0f1115;
+  --wcs-panel: rgba(16, 19, 24, 0.98);
+  --wcs-surface: #171b21;
+  --wcs-surface-2: #20262e;
+  --wcs-text: #f3f6fb;
+  --wcs-muted: #9aa6b2;
   --wcs-accent: #2563eb;
   --wcs-accent-strong: #1d4ed8;
+  --wcs-accent-soft: rgba(37, 99, 235, 0.14);
   --wcs-border: rgba(255, 255, 255, 0.08);
-  --wcs-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-  --wcs-radius: 20px;
+  --wcs-border-strong: rgba(59, 130, 246, 0.25);
+  --wcs-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+  --wcs-radius: 22px;
+  --wcs-radius-sm: 14px;
   --wcs-font: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -22,27 +26,38 @@
 }
 
 #wcs-ai-launcher {
-  width: 60px;
-  height: 60px;
+  width: 62px;
+  height: 62px;
   border: 0;
   border-radius: 999px;
   background: linear-gradient(180deg, #3b82f6 0%, var(--wcs-accent-strong) 100%);
-  color: #ffffff;
+  color: #fff;
   box-shadow: var(--wcs-shadow);
   cursor: pointer;
   display: grid;
   place-items: center;
   transition:
     transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
     filter 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+}
+
+#wcs-ai-launcher::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.34), transparent 65%);
+  opacity: 0.55;
+  z-index: -1;
+  pointer-events: none;
 }
 
 #wcs-ai-launcher:hover {
   transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
-  filter: brightness(1.03);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58);
+  filter: brightness(1.04);
 }
 
 #wcs-ai-launcher:focus-visible,
@@ -51,35 +66,36 @@
 .wcs-ai-chip:focus-visible,
 .wcs-ai-action-btn:focus-visible,
 .wcs-ai-mini-btn:focus-visible,
-.wcs-ai-icon-btn:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.9);
-  outline-offset: 2px;
+.wcs-ai-icon-btn:focus-visible,
+#wcs-ai-booking-close:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.92);
+  outline-offset: 3px;
 }
 
 #wcs-ai-launcher i {
   font-size: 30px;
-  color: #ffffff;
+  color: #fff;
   line-height: 1;
 }
 
 #wcs-ai-panel {
   position: absolute;
   right: 0;
-  bottom: 76px;
-  width: min(380px, calc(100vw - 32px));
-  height: 700px;
-  background: rgba(16, 18, 22, 0.98);
+  bottom: 78px;
+  width: min(420px, calc(100vw - 28px));
+  height: min(760px, calc(100vh - 110px));
+  background: var(--wcs-panel);
   border: 1px solid var(--wcs-border);
   border-radius: var(--wcs-radius);
   box-shadow: var(--wcs-shadow);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateY(12px) scale(0.985);
+  transform: translateY(14px) scale(0.985);
   transition:
     opacity 240ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -99,57 +115,60 @@
 }
 
 #wcs-ai-header {
-  background: linear-gradient(180deg, #252a31 0%, #1c2026 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 14px 14px 12px;
+  position: relative;
+  padding: 15px 15px 13px;
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.22), transparent 42%),
+    linear-gradient(180deg, #232831 0%, #181d24 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 #wcs-ai-title-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
   min-width: 0;
   flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 #wcs-ai-title {
   color: var(--wcs-text);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 800;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
 }
 
 #wcs-ai-subtitle {
-  color: var(--wcs-muted);
+  color: #afbcc8;
   font-size: 12px;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 #wcs-ai-status {
   color: #bfdbfe;
   font-size: 11px;
-  line-height: 1.3;
-  margin-top: 2px;
+  line-height: 1.35;
   min-height: 14px;
 }
 
 .wcs-ai-header-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   margin-left: auto;
 }
 
 .wcs-ai-icon-btn {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 11px;
-  background: rgba(255, 255, 255, 0.04);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -161,38 +180,38 @@
 
 .wcs-ai-icon-btn:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.09);
   border-color: rgba(255, 255, 255, 0.16);
 }
 
 .wcs-ai-icon-btn i {
   font-size: 16px;
   line-height: 1;
-  color: #ffffff;
 }
 
 #wcs-ai-close {
   border: 0;
   background: transparent;
   color: #cbd5e1;
-  font-size: 24px;
+  font-size: 25px;
   line-height: 1;
   cursor: pointer;
   padding: 0;
   flex: 0 0 auto;
-  margin-left: 4px;
+  margin-left: 2px;
+  transform: translateY(-1px);
 }
 
 #wcs-ai-toast {
+  display: none;
   margin: 12px 12px 0;
-  border: 1px solid rgba(59, 130, 246, 0.22);
+  border: 1px solid rgba(59, 130, 246, 0.2);
   background: rgba(37, 99, 235, 0.12);
   color: #dbeafe;
   border-radius: 14px;
   padding: 10px 12px;
   font-size: 12px;
   line-height: 1.5;
-  display: none;
 }
 
 #wcs-ai-toast.show {
@@ -213,13 +232,14 @@
 
 #wcs-ai-companion {
   margin: 12px 12px 0;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  background: rgba(15, 18, 22, 0.75);
-  color: #e2e8f0;
-  border-radius: 14px;
-  padding: 10px 12px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  background:
+    linear-gradient(180deg, rgba(15, 18, 22, 0.95), rgba(15, 18, 22, 0.82));
+  color: #dbe4ee;
+  border-radius: 16px;
+  padding: 11px 12px;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 #wcs-ai-companion strong {
@@ -228,11 +248,13 @@
 }
 
 #wcs-ai-intro {
-  padding: 14px 14px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 14px;
+  margin: 12px 12px 0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
   background:
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 40%),
-    linear-gradient(180deg, rgba(22, 25, 30, 1), rgba(18, 20, 24, 1));
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.14), transparent 44%),
+    linear-gradient(180deg, rgba(22, 25, 30, 0.98), rgba(18, 20, 24, 0.98));
 }
 
 #wcs-ai-intro.hidden {
@@ -249,7 +271,7 @@
 #wcs-ai-intro-copy {
   color: #cbd5e1;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.55;
   margin-bottom: 12px;
 }
 
@@ -260,8 +282,8 @@
 
 .wcs-ai-chip {
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: #111418;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 20, 24, 0.95);
   color: #dbe3ee;
   border-radius: 14px;
   padding: 10px 12px;
@@ -277,17 +299,17 @@
 .wcs-ai-chip:hover {
   transform: translateY(-1px);
   border-color: rgba(59, 130, 246, 0.45);
-  background: #161b22;
+  background: rgba(22, 27, 34, 0.98);
 }
 
 #wcs-ai-booking {
-  margin: 12px 12px 0;
-  border: 1px solid rgba(59, 130, 246, 0.18);
-  background: rgba(17, 20, 24, 0.95);
-  border-radius: 16px;
-  padding: 12px;
   display: none;
-  max-height: 270px;
+  margin: 12px 12px 0;
+  padding: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  background: rgba(15, 18, 22, 0.95);
+  border-radius: 18px;
+  max-height: 300px;
   overflow: auto;
 }
 
@@ -304,7 +326,7 @@
 }
 
 .wcs-ai-booking-title {
-  color: #ffffff;
+  color: #fff;
   font-size: 14px;
   font-weight: 800;
 }
@@ -312,7 +334,7 @@
 .wcs-ai-booking-subtitle {
   color: #cbd5e1;
   font-size: 12px;
-  line-height: 1.45;
+  line-height: 1.55;
   margin-top: 4px;
 }
 
@@ -356,7 +378,7 @@
 }
 
 .wcs-ai-booking-grid textarea {
-  min-height: 74px;
+  min-height: 78px;
   resize: vertical;
 }
 
@@ -384,7 +406,7 @@
 
 .wcs-ai-booking-actions button.secondary {
   background: #111418;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 #wcs-ai-booking-result {
@@ -395,7 +417,7 @@
   background: #0f1216;
   color: #e5e7eb;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.55;
   white-space: pre-wrap;
 }
 
@@ -405,14 +427,35 @@
 
 #wcs-ai-messages {
   flex: 1;
+  margin: 12px 12px 0;
   padding: 14px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
   background:
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 36%),
-    linear-gradient(180deg, rgba(20, 23, 28, 0.95), rgba(14, 16, 19, 0.98));
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 35%),
+    linear-gradient(180deg, rgba(18, 21, 27, 0.96), rgba(14, 16, 19, 0.98));
+}
+
+#wcs-ai-messages::-webkit-scrollbar,
+#wcs-ai-booking::-webkit-scrollbar {
+  width: 10px;
+}
+
+#wcs-ai-messages::-webkit-scrollbar-thumb,
+#wcs-ai-booking::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.22);
+  border: 3px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  border-radius: 999px;
+}
+
+#wcs-ai-messages::-webkit-scrollbar-track,
+#wcs-ai-booking::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .wcs-ai-message {
@@ -420,7 +463,7 @@
   padding: 10px 12px;
   border-radius: 14px;
   font-size: 13px;
-  line-height: 1.55;
+  line-height: 1.58;
   white-space: pre-wrap;
   word-wrap: break-word;
   box-sizing: border-box;
@@ -429,7 +472,7 @@
 .wcs-ai-message.user {
   align-self: flex-end;
   background: linear-gradient(180deg, #2f343b 0%, #262b31 100%);
-  color: #ffffff;
+  color: #fff;
   border-top-right-radius: 6px;
 }
 
@@ -470,10 +513,10 @@
 #wcs-ai-typing {
   color: var(--wcs-muted);
   font-size: 12px;
-  padding: 0 14px 10px;
+  padding: 10px 14px 8px;
   display: none;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 #wcs-ai-typing.show {
@@ -515,8 +558,8 @@
 }
 
 #wcs-ai-followups {
-  padding: 0 14px 12px;
   display: none;
+  padding: 0 12px 12px;
 }
 
 #wcs-ai-followups.show {
@@ -526,7 +569,7 @@
 #wcs-ai-followups-title {
   color: #cbd5e1;
   font-size: 11px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   margin-bottom: 8px;
 }
@@ -537,19 +580,31 @@
 }
 
 .wcs-ai-mini-btn {
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: #111418;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 20, 24, 0.95);
   color: #dbe3ee;
   border-radius: 12px;
   padding: 10px 12px;
   font-size: 12px;
   cursor: pointer;
   text-align: left;
+  transition:
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wcs-ai-mini-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(59, 130, 246, 0.45);
+  background: rgba(22, 27, 34, 0.98);
 }
 
 #wcs-ai-input-wrap {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  background: var(--wcs-panel);
+  margin: 0 12px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(16, 19, 24, 0.98);
+  border-radius: 16px;
   padding: 12px;
   display: flex;
   gap: 10px;
@@ -612,7 +667,7 @@
 
   #wcs-ai-panel {
     width: min(100vw - 24px, 380px);
-    height: 760px;
+    height: min(82vh, 760px);
     bottom: 74px;
   }
 
