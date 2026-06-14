@@ -2,28 +2,62 @@
   "assistantName": "WCS AI Assistant",
   "companyName": "Web Creation Studios",
   "founder": "CJ",
+  "subtitle": "Business support and site guidance",
   "contact": {
     "email": "solutionsforyourweb@gmail.com",
     "phone": "(302) 526-0930"
   },
-  "services": [
-    "Web design",
-    "Website development",
-    "Ecommerce setup",
-    "Branding and logo design",
-    "Hosting support",
-    "Domain setup",
-    "Analytics setup",
-    "Email setup",
-    "Site security",
-    "Custom website features"
+  "pages": [
+    {
+      "label": "Home",
+      "url": "/"
+    },
+    {
+      "label": "About",
+      "url": "/about.html"
+    },
+    {
+      "label": "Services",
+      "url": "/services.html"
+    },
+    {
+      "label": "Team",
+      "url": "/team.html"
+    },
+    {
+      "label": "Projects",
+      "url": "/projects.html"
+    }
   ],
-  "welcomeMessage": "Hello. How can I help with Web Creation Studios today?",
-  "subtitle": "Business support and site guidance",
-  "quickActions": [
-    { "label": "Services", "message": "What services does Web Creation Studios provide?" },
-    { "label": "Contact", "message": "How can I contact Web Creation Studios?" },
-    { "label": "Pricing", "message": "Do you have pricing information available?" },
-    { "label": "Projects", "message": "What kinds of projects does Web Creation Studios build?" }
+  "starterQuestions": [
+    {
+      "label": "Services",
+      "message": "What services does Web Creation Studios provide?"
+    },
+    {
+      "label": "Projects",
+      "message": "Show me what kinds of projects Web Creation Studios builds."
+    },
+    {
+      "label": "Contact",
+      "message": "How can I contact Web Creation Studios?"
+    }
+  ],
+  "followUpQuestions": [
+    {
+      "label": "Open Services",
+      "message": "Open the services page.",
+      "navigateTo": "/services.html"
+    },
+    {
+      "label": "Open About",
+      "message": "Open the about page.",
+      "navigateTo": "/about.html"
+    },
+    {
+      "label": "Open Team",
+      "message": "Open the team page.",
+      "navigateTo": "/team.html"
+    }
   ]
 }
