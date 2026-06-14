@@ -1,626 +1,1571 @@
-:root {
-  --wcs-bg: #101318;
-  --wcs-panel: #16191e;
-  --wcs-surface: #252a31;
-  --wcs-text: #f2f4f7;
-  --wcs-muted: #9ba3af;
-  --wcs-accent: #2563eb;
-  --wcs-accent-strong: #1d4ed8;
-  --wcs-border: rgba(255, 255, 255, 0.08);
-  --wcs-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-  --wcs-radius: 20px;
-  --wcs-font: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-#wcs-ai-widget {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  z-index: 2147483647;
-  font-family: var(--wcs-font);
-  pointer-events: auto;
-}
-
-#wcs-ai-launcher {
-  width: 60px;
-  height: 60px;
-  border: 0;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #3b82f6 0%, var(--wcs-accent-strong) 100%);
-  color: #ffffff;
-  box-shadow: var(--wcs-shadow);
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  transition:
-    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 220ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-#wcs-ai-launcher:hover {
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
-  filter: brightness(1.03);
-}
-
-#wcs-ai-launcher:focus-visible,
-#wcs-ai-close:focus-visible,
-#wcs-ai-send:focus-visible,
-.wcs-ai-chip:focus-visible,
-.wcs-ai-action-btn:focus-visible,
-.wcs-ai-mini-btn:focus-visible,
-.wcs-ai-icon-btn:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.9);
-  outline-offset: 2px;
-}
-
-#wcs-ai-launcher i {
-  font-size: 30px;
-  color: #ffffff;
-  line-height: 1;
-}
-
-#wcs-ai-panel {
-  position: absolute;
-  right: 0;
-  bottom: 76px;
-  width: min(380px, calc(100vw - 32px));
-  height: 700px;
-  background: rgba(16, 18, 22, 0.98);
-  border: 1px solid var(--wcs-border);
-  border-radius: var(--wcs-radius);
-  box-shadow: var(--wcs-shadow);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  backdrop-filter: blur(12px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(12px) scale(0.985);
-  transition:
-    opacity 240ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0s linear 240ms;
-  will-change: opacity, transform;
-}
-
-#wcs-ai-panel.open {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(0) scale(1);
-  transition:
-    opacity 240ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0s;
-}
-
-#wcs-ai-header {
-  background: linear-gradient(180deg, #252a31 0%, #1c2026 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 14px 14px 12px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-#wcs-ai-title-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-  flex: 1 1 auto;
-}
-
-#wcs-ai-title {
-  color: var(--wcs-text);
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
-
-#wcs-ai-subtitle {
-  color: var(--wcs-muted);
-  font-size: 12px;
-  line-height: 1.3;
-}
-
-#wcs-ai-status {
-  color: #bfdbfe;
-  font-size: 11px;
-  line-height: 1.3;
-  margin-top: 2px;
-  min-height: 14px;
-}
-
-.wcs-ai-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: auto;
-}
-
-.wcs-ai-icon-btn {
-  width: 32px;
-  height: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 11px;
-  background: rgba(255, 255, 255, 0.04);
-  color: #ffffff;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition:
-    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    background 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.wcs-ai-icon-btn:hover {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.16);
-}
-
-.wcs-ai-icon-btn i {
-  font-size: 16px;
-  line-height: 1;
-  color: #ffffff;
-}
-
-#wcs-ai-close {
-  border: 0;
-  background: transparent;
-  color: #cbd5e1;
-  font-size: 24px;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0;
-  flex: 0 0 auto;
-  margin-left: 4px;
-}
-
-#wcs-ai-toast {
-  margin: 12px 12px 0;
-  border: 1px solid rgba(59, 130, 246, 0.22);
-  background: rgba(37, 99, 235, 0.12);
-  color: #dbeafe;
-  border-radius: 14px;
-  padding: 10px 12px;
-  font-size: 12px;
-  line-height: 1.5;
-  display: none;
-}
-
-#wcs-ai-toast.show {
-  display: block;
-  animation: wcsToastIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes wcsToastIn {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-#wcs-ai-companion {
-  margin: 12px 12px 0;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  background: rgba(15, 18, 22, 0.75);
-  color: #e2e8f0;
-  border-radius: 14px;
-  padding: 10px 12px;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-#wcs-ai-companion strong {
-  color: #ffffff;
-  font-weight: 800;
-}
-
-#wcs-ai-intro {
-  padding: 14px 14px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background:
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 40%),
-    linear-gradient(180deg, rgba(22, 25, 30, 1), rgba(18, 20, 24, 1));
-}
-
-#wcs-ai-intro.hidden {
-  display: none;
-}
-
-#wcs-ai-intro-title {
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-#wcs-ai-intro-copy {
-  color: #cbd5e1;
-  font-size: 12px;
-  line-height: 1.5;
-  margin-bottom: 12px;
-}
-
-#wcs-ai-questions {
-  display: grid;
-  gap: 8px;
-}
-
-.wcs-ai-chip {
-  width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: #111418;
-  color: #dbe3ee;
-  border-radius: 14px;
-  padding: 10px 12px;
-  font-size: 12px;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    background 180ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.wcs-ai-chip:hover {
-  transform: translateY(-1px);
-  border-color: rgba(59, 130, 246, 0.45);
-  background: #161b22;
-}
-
-#wcs-ai-booking {
-  margin: 12px 12px 0;
-  border: 1px solid rgba(59, 130, 246, 0.18);
-  background: rgba(17, 20, 24, 0.95);
-  border-radius: 16px;
-  padding: 12px;
-  display: none;
-  max-height: 270px;
-  overflow: auto;
-}
-
-#wcs-ai-booking.show {
-  display: block;
-}
-
-.wcs-ai-booking-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.wcs-ai-booking-title {
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.wcs-ai-booking-subtitle {
-  color: #cbd5e1;
-  font-size: 12px;
-  line-height: 1.45;
-  margin-top: 4px;
-}
-
-#wcs-ai-booking-close {
-  border: 0;
-  background: transparent;
-  color: #cbd5e1;
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0;
-}
-
-#wcs-ai-booking-form {
-  display: grid;
-  gap: 10px;
-}
-
-.wcs-ai-booking-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.wcs-ai-booking-grid .full {
-  grid-column: 1 / -1;
-}
-
-.wcs-ai-booking-grid input,
-.wcs-ai-booking-grid textarea {
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: #0f1216;
-  color: #f8fafc;
-  border-radius: 12px;
-  padding: 10px 12px;
-  outline: none;
-  font-size: 12px;
-  font-family: var(--wcs-font);
-}
-
-.wcs-ai-booking-grid textarea {
-  min-height: 74px;
-  resize: vertical;
-}
-
-.wcs-ai-booking-grid input::placeholder,
-.wcs-ai-booking-grid textarea::placeholder {
-  color: #6b7280;
-}
-
-.wcs-ai-booking-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.wcs-ai-booking-actions button {
-  border: 0;
-  background: linear-gradient(180deg, var(--wcs-accent) 0%, var(--wcs-accent-strong) 100%);
-  color: #ffffff;
-  border-radius: 12px;
-  padding: 9px 12px;
-  font-size: 12px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.wcs-ai-booking-actions button.secondary {
-  background: #111418;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-}
-
-#wcs-ai-booking-result {
-  display: none;
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: #0f1216;
-  color: #e5e7eb;
-  font-size: 12px;
-  line-height: 1.5;
-  white-space: pre-wrap;
-}
-
-#wcs-ai-booking-result.show {
-  display: block;
-}
-
-#wcs-ai-messages {
-  flex: 1;
-  padding: 14px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background:
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 36%),
-    linear-gradient(180deg, rgba(20, 23, 28, 0.95), rgba(14, 16, 19, 0.98));
-}
-
-.wcs-ai-message {
-  max-width: 88%;
-  padding: 10px 12px;
-  border-radius: 14px;
-  font-size: 13px;
-  line-height: 1.55;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  box-sizing: border-box;
-}
-
-.wcs-ai-message.user {
-  align-self: flex-end;
-  background: linear-gradient(180deg, #2f343b 0%, #262b31 100%);
-  color: #ffffff;
-  border-top-right-radius: 6px;
-}
-
-.wcs-ai-message.assistant {
-  align-self: flex-start;
-  background: #171a1f;
-  color: #e5e7eb;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-top-left-radius: 6px;
-}
-
-.wcs-ai-message.system {
-  align-self: center;
-  background: transparent;
-  color: #94a3b8;
-  font-size: 11px;
-  padding: 0;
-}
-
-.wcs-ai-message .wcs-ai-action-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.wcs-ai-action-btn {
-  border: 0;
-  background: linear-gradient(180deg, var(--wcs-accent) 0%, var(--wcs-accent-strong) 100%);
-  color: #ffffff;
-  border-radius: 12px;
-  padding: 9px 12px;
-  font-size: 12px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-#wcs-ai-typing {
-  color: var(--wcs-muted);
-  font-size: 12px;
-  padding: 0 14px 10px;
-  display: none;
-  align-items: center;
-  gap: 6px;
-}
-
-#wcs-ai-typing.show {
-  display: flex;
-}
-
-.wcs-ai-dots {
-  display: inline-flex;
-  gap: 4px;
-  align-items: center;
-}
-
-.wcs-ai-dots span {
-  width: 5px;
-  height: 5px;
-  border-radius: 999px;
-  background: #bfdbfe;
-  display: inline-block;
-  animation: wcsDotPulse 900ms infinite ease-in-out;
-}
-
-.wcs-ai-dots span:nth-child(2) {
-  animation-delay: 150ms;
-}
-
-.wcs-ai-dots span:nth-child(3) {
-  animation-delay: 300ms;
-}
-
-@keyframes wcsDotPulse {
-  0%, 80%, 100% {
-    transform: translateY(0);
-    opacity: 0.45;
-  }
-  40% {
-    transform: translateY(-2px);
-    opacity: 1;
-  }
-}
-
-#wcs-ai-followups {
-  padding: 0 14px 12px;
-  display: none;
-}
-
-#wcs-ai-followups.show {
-  display: block;
-}
-
-#wcs-ai-followups-title {
-  color: #cbd5e1;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-#wcs-ai-followup-grid {
-  display: grid;
-  gap: 8px;
-}
-
-.wcs-ai-mini-btn {
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: #111418;
-  color: #dbe3ee;
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-size: 12px;
-  cursor: pointer;
-  text-align: left;
-}
-
-#wcs-ai-input-wrap {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  background: var(--wcs-panel);
-  padding: 12px;
-  display: flex;
-  gap: 10px;
-}
-
-#wcs-ai-input {
-  flex: 1;
-  min-width: 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: #0f1216;
-  color: #f8fafc;
-  border-radius: 12px;
-  padding: 11px 12px;
-  outline: none;
-  font-size: 13px;
-}
-
-#wcs-ai-input::placeholder {
-  color: #6b7280;
-}
-
-#wcs-ai-send {
-  border: 0;
-  background: linear-gradient(180deg, var(--wcs-accent) 0%, var(--wcs-accent-strong) 100%);
-  color: #ffffff;
-  border-radius: 12px;
-  padding: 0 14px;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  min-width: 78px;
-  transition:
-    opacity 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-#wcs-ai-send:hover {
-  opacity: 0.95;
-  transform: translateY(-1px);
-}
-
-#wcs-ai-send:disabled,
-#wcs-ai-input:disabled {
-  opacity: 0.62;
-  cursor: not-allowed;
-}
-
-#wcs-ai-footer-note {
-  padding: 0 14px 14px;
-  font-size: 11px;
-  color: var(--wcs-muted);
-  line-height: 1.45;
-}
-
-@media (max-width: 480px) {
-  #wcs-ai-widget {
-    right: 12px;
-    bottom: 12px;
+(() => {
+  if (window.__WCS_CODEO_WIDGET_LOADED__) return;
+  window.__WCS_CODEO_WIDGET_LOADED__ = true;
+
+  const REMIX_ICON_URL = "https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css";
+  const CONFIG_URL = "/wcs-ai-widget/brand.json";
+  const API_URL = "/api/chat";
+
+  const STATE_KEY = "codeo-widget-state-v1";
+  const MEMORY_KEY = "codeo-widget-memory-v1";
+  const RESEARCH_KEY = "codeo-widget-research-v1";
+
+  const MIN_REPLY_DELAY_MS = 1450;
+  const REPLY_JITTER_MS = 350;
+  const RESEARCH_TICK_MS = 620;
+  const RESEARCH_CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 7;
+  const PREFETCH_COOLDOWN_MS = 1000 * 60 * 10;
+  const SESSION_LIMIT = 8;
+
+  const DEFAULT_CONFIG = {
+    assistantName: "Codeo",
+    companyName: "Web Creation Studios",
+    subtitle: "WCS research assistant",
+    contact: {
+      email: "solutionsforyourweb@gmail.com",
+      phone: "(302) 526-0930"
+    },
+    pageDirectory: [
+      { key: "home", label: "Home", url: "/", aliases: ["home", "homepage", "main"] },
+      { key: "about", label: "About", url: "/about.html", aliases: ["about"] },
+      { key: "team", label: "Team", url: "/team.html", aliases: ["team", "staff"] },
+      { key: "services", label: "Services", url: "/services.html", aliases: ["services", "service"] },
+      { key: "pricing", label: "Pricing", url: "/pricing.html", aliases: ["pricing", "price", "rates", "cost"] },
+      { key: "portfolio", label: "Portfolio", url: "/portfolio.html", aliases: ["portfolio", "projects", "work", "gallery"] }
+    ],
+    starterQuestions: [
+      {
+        label: "Services",
+        message: "What services does Web Creation Studios provide?"
+      },
+      {
+        label: "Pricing",
+        message: "What pricing information is available?"
+      },
+      {
+        label: "Portfolio",
+        message: "Show me the portfolio page."
+      }
+    ],
+    followUpQuestionsByPage: {
+      home: [
+        {
+          label: "What does WCS build?",
+          message: "What kinds of websites and projects does Web Creation Studios build?"
+        },
+        {
+          label: "Open Services",
+          message: "Open the services page.",
+          navigateTo: "/services.html"
+        },
+        {
+          label: "Start Intake",
+          action: "booking"
+        }
+      ],
+      about: [
+        {
+          label: "Open Team",
+          message: "Open the team page.",
+          navigateTo: "/team.html"
+        },
+        {
+          label: "Open Services",
+          message: "Open the services page.",
+          navigateTo: "/services.html"
+        },
+        {
+          label: "Start Intake",
+          action: "booking"
+        }
+      ],
+      team: [
+        {
+          label: "About WCS",
+          message: "Tell me more about Web Creation Studios."
+        },
+        {
+          label: "Open Services",
+          message: "Open the services page.",
+          navigateTo: "/services.html"
+        },
+        {
+          label: "Start Intake",
+          action: "booking"
+        }
+      ],
+      services: [
+        {
+          label: "Help me choose",
+          message: "Help me choose the right Web Creation Studios service for my business."
+        },
+        {
+          label: "Open Pricing",
+          message: "Open the pricing page.",
+          navigateTo: "/pricing.html"
+        },
+        {
+          label: "Start Intake",
+          action: "booking"
+        }
+      ],
+      pricing: [
+        {
+          label: "Open Services",
+          message: "Open the services page.",
+          navigateTo: "/services.html"
+        },
+        {
+          label: "Open Portfolio",
+          message: "Open the portfolio page.",
+          navigateTo: "/portfolio.html"
+        },
+        {
+          label: "Start Intake",
+          action: "booking"
+        }
+      ],
+      portfolio: [
+        {
+          label: "Open Services",
+          message: "Open the services page.",
+          navigateTo: "/services.html"
+        },
+        {
+          label: "Open Pricing",
+          message: "Open the pricing page.",
+          navigateTo: "/pricing.html"
+        },
+        {
+          label: "Start Intake",
+          action: "booking"
+        }
+      ]
+    },
+    welcomeMessage: "Hello. I am Codeo. How can I help with Web Creation Studios today?"
+  };
+
+  let config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+  let currentPageKey = "home";
+
+  let appState = loadState();
+  let memory = loadMemory();
+  let researchCache = loadResearchCache();
+
+  let activeSessionId = appState.activeSessionId || null;
+  let closeTimer = null;
+  let touchOpen = false;
+  let researchTimer = null;
+  let researchStepIndex = 0;
+  let statusAutoClearTimer = null;
+  let toastTimer = null;
+  let notificationReady = false;
+  let currentBookingSummary = "";
+
+  const ui = {};
+
+  function safeText(value) {
+    return typeof value === "string" ? value : "";
   }
 
-  #wcs-ai-panel {
-    width: min(100vw - 24px, 380px);
-    height: 760px;
-    bottom: 74px;
+  function safeJsonParse(raw, fallback) {
+    try {
+      return raw ? JSON.parse(raw) : fallback;
+    } catch {
+      return fallback;
+    }
   }
 
-  .wcs-ai-message {
-    max-width: 92%;
+  function storageGet(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return fallback;
+      return JSON.parse(raw);
+    } catch {
+      return fallback;
+    }
   }
 
-  .wcs-ai-booking-grid {
-    grid-template-columns: 1fr;
+  function storageSet(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch {}
   }
-}
+
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  function trimText(value, max = 2200) {
+    const text = safeText(value).replace(/\s+/g, " ").trim();
+    if (text.length <= max) return text;
+    return `${text.slice(0, Math.max(0, max - 1)).trim()}…`;
+  }
+
+  function ensureRemixIcons() {
+    if (document.querySelector('link[data-wcs-remixicons="true"]')) return;
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = REMIX_ICON_URL;
+    link.setAttribute("data-wcs-remixicons", "true");
+    document.head.appendChild(link);
+  }
+
+  function canHoverFinePointer() {
+    return window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  }
+
+  function getPageByKey(key) {
+    return config.pageDirectory.find((item) => item.key === key) || config.pageDirectory[0];
+  }
+
+  function sanitizePageKey(value) {
+    const lowered = safeText(value).trim().toLowerCase();
+    const page = config.pageDirectory.find(
+      (item) => item.key === lowered || (Array.isArray(item.aliases) && item.aliases.includes(lowered))
+    );
+    return page ? page.key : null;
+  }
+
+  function getPageKeyFromPath(pathname) {
+    const path = safeText(pathname).split("?")[0].split("#")[0];
+
+    if (!path || path === "/" || path === "/index.html") return "home";
+    if (path === "/about.html" || path === "/about") return "about";
+    if (path === "/team.html" || path === "/team") return "team";
+    if (path === "/services.html" || path === "/services") return "services";
+    if (path === "/pricing.html" || path === "/pricing") return "pricing";
+    if (path === "/portfolio.html" || path === "/portfolio" || path === "/projects.html") return "portfolio";
+
+    const page = config.pageDirectory.find((item) => item.url === path);
+    return page ? page.key : "home";
+  }
+
+  function inferTargetPageKey(message, fallbackPageKey) {
+    const text = safeText(message).toLowerCase();
+    const patterns = [
+      { re: /(take me to|open|go to|show me).*(services?|service)/, key: "services" },
+      { re: /(take me to|open|go to|show me).*(pricing|price|rates|cost)/, key: "pricing" },
+      { re: /(take me to|open|go to|show me).*(portfolio|projects?|work|gallery)/, key: "portfolio" },
+      { re: /(take me to|open|go to|show me).*(team|staff)/, key: "team" },
+      { re: /(take me to|open|go to|show me).*(about)/, key: "about" },
+      { re: /(take me to|open|go to|show me).*(home|homepage|main page)/, key: "home" },
+      { re: /(services?|service|what do you build|what can you do)/, key: "services" },
+      { re: /(pricing|price|rates|cost|budget|quote)/, key: "pricing" },
+      { re: /(portfolio|projects?|work|examples|gallery)/, key: "portfolio" },
+      { re: /(team|staff|who works|about the team)/, key: "team" },
+      { re: /(about|story|background|who is wcs)/, key: "about" },
+      { re: /(home|homepage|main page|start page)/, key: "home" }
+    ];
+
+    for (const item of patterns) {
+      if (item.re.test(text)) return item.key;
+    }
+
+    return fallbackPageKey || "home";
+  }
+
+  function loadState() {
+    const saved = storageGet(STATE_KEY, null);
+    if (!saved || typeof saved !== "object") {
+      return { activeSessionId: null, sessions: {} };
+    }
+
+    return {
+      activeSessionId: typeof saved.activeSessionId === "string" ? saved.activeSessionId : null,
+      sessions: saved.sessions && typeof saved.sessions === "object" ? saved.sessions : {}
+    };
+  }
+
+  function saveState() {
+    const sessions = Object.values(appState.sessions || {})
+      .filter(Boolean)
+      .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+
+    const kept = {};
+    for (const session of sessions.slice(0, SESSION_LIMIT)) {
+      kept[session.id] = session;
+    }
+
+    appState.sessions = kept;
+
+    if (!kept[appState.activeSessionId]) {
+      appState.activeSessionId = sessions[0]?.id || null;
+    }
+
+    storageSet(STATE_KEY, appState);
+  }
+
+  function loadMemory() {
+    const saved = storageGet(MEMORY_KEY, null);
+    if (!saved || typeof saved !== "object") {
+      return {
+        lastPageKey: null,
+        lastSeenAt: 0,
+        businessType: "",
+        budget: "",
+        timeline: "",
+        recentTopics: [],
+        intake: {
+          fullName: "",
+          email: "",
+          businessName: "",
+          budget: "",
+          timeline: "",
+          needs: "",
+          notes: ""
+        }
+      };
+    }
+
+    return {
+      lastPageKey: safeText(saved.lastPageKey) || null,
+      lastSeenAt: typeof saved.lastSeenAt === "number" ? saved.lastSeenAt : 0,
+      businessType: safeText(saved.businessType),
+      budget: safeText(saved.budget),
+      timeline: safeText(saved.timeline),
+      recentTopics: Array.isArray(saved.recentTopics) ? saved.recentTopics.filter(Boolean).slice(-8) : [],
+      intake: {
+        fullName: safeText(saved.intake?.fullName),
+        email: safeText(saved.intake?.email),
+        businessName: safeText(saved.intake?.businessName),
+        budget: safeText(saved.intake?.budget),
+        timeline: safeText(saved.intake?.timeline),
+        needs: safeText(saved.intake?.needs),
+        notes: safeText(saved.intake?.notes)
+      }
+    };
+  }
+
+  function saveMemory() {
+    storageSet(MEMORY_KEY, memory);
+  }
+
+  function loadResearchCache() {
+    const saved = storageGet(RESEARCH_KEY, null);
+    if (!saved || typeof saved !== "object") return { pages: {}, lastPrefetchAt: 0 };
+
+    return {
+      pages: saved.pages && typeof saved.pages === "object" ? saved.pages : {},
+      lastPrefetchAt: typeof saved.lastPrefetchAt === "number" ? saved.lastPrefetchAt : 0
+    };
+  }
+
+  function saveResearchCache() {
+    storageSet(RESEARCH_KEY, researchCache);
+  }
+
+  function currentSession() {
+    return activeSessionId ? appState.sessions[activeSessionId] || null : null;
+  }
+
+  function hasUserMessages(session) {
+    return Boolean(session && Array.isArray(session.messages) && session.messages.some((m) => m.role === "user"));
+  }
+
+  function createSession() {
+    const id = `codeo_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const now = Date.now();
+
+    const session = {
+      id,
+      title: "New chat",
+      focusPageKey: currentPageKey,
+      createdAt: now,
+      updatedAt: now,
+      messages: [
+        {
+          role: "assistant",
+          content: config.welcomeMessage,
+          time: now
+        }
+      ]
+    };
+
+    appState.sessions[id] = session;
+    activeSessionId = id;
+    appState.activeSessionId = id;
+    saveState();
+    return session;
+  }
+
+  function ensureSession() {
+    let session = currentSession();
+    if (!session) session = createSession();
+    return session;
+  }
+
+  function pruneAndSaveSession(session) {
+    session.updatedAt = Date.now();
+    appState.sessions[session.id] = session;
+
+    if (Array.isArray(session.messages) && session.messages.length > 50) {
+      session.messages = session.messages.slice(-50);
+    }
+
+    saveState();
+  }
+
+  function getFollowupItems(pageKey) {
+    const key = sanitizePageKey(pageKey) || "home";
+    const items = config.followUpQuestionsByPage?.[key] || config.followUpQuestionsByPage?.home || [];
+    const copy = items.slice(0, 3);
+
+    if (!copy.some((item) => item.action === "booking")) {
+      copy.push({ label: "Start Intake", action: "booking" });
+    }
+
+    return copy.slice(0, 3);
+  }
+
+  function extractBusinessType(text) {
+    const lowered = safeText(text).toLowerCase();
+    const map = [
+      "bakery", "church", "nonprofit", "school", "restaurant", "real estate", "coaching", "consulting",
+      "photography", "music", "beauty", "salon", "barber", "construction", "legal", "medical", "sports",
+      "gaming", "ecommerce", "store", "events", "portfolio", "fitness", "travel", "hospitality"
+    ];
+
+    for (const item of map) {
+      if (lowered.includes(item)) return item;
+    }
+
+    return "";
+  }
+
+  function extractBudget(text) {
+    const lowered = safeText(text);
+    const match = lowered.match(/(?:budget|price|cost|quote)\s*(?:is|=|around|about)?\s*([$£€]\s?\d[\d,]*(?:\.\d{1,2})?|(?:\d[\d,]*(?:\.\d{1,2})?\s*(?:k|thousand)))/i);
+    if (match) return match[1].replace(/\s+/g, " ").trim();
+
+    const money = lowered.match(/([$£€]\s?\d[\d,]*(?:\.\d{1,2})?)/);
+    if (money) return money[1].replace(/\s+/g, " ").trim();
+
+    return "";
+  }
+
+  function extractTimeline(text) {
+    const lowered = safeText(text).toLowerCase();
+    const patterns = [
+      /(asap|immediately|right away|urgent)/,
+      /(this week|next week|this month|next month)/,
+      /(soon|later|by [a-z]+|in \d+ days?|in \d+ weeks?)/,
+      /(deadline|due date|launch date)/
+    ];
+
+    for (const re of patterns) {
+      const match = lowered.match(re);
+      if (match) return match[0];
+    }
+
+    return "";
+  }
+
+  function updateMemoryFromText(text, targetPageKey) {
+    const businessType = extractBusinessType(text);
+    const budget = extractBudget(text);
+    const timeline = extractTimeline(text);
+
+    if (businessType) memory.businessType = businessType;
+    if (budget) memory.budget = budget;
+    if (timeline) memory.timeline = timeline;
+
+    const topicKey = sanitizePageKey(targetPageKey);
+    if (topicKey) {
+      const recent = Array.isArray(memory.recentTopics) ? memory.recentTopics.slice() : [];
+      recent.push(topicKey);
+      memory.recentTopics = Array.from(new Set(recent)).slice(-8);
+    }
+
+    saveMemory();
+  }
+
+  function buildMemorySummary() {
+    return {
+      lastPageKey: memory.lastPageKey,
+      businessType: memory.businessType,
+      budget: memory.budget,
+      timeline: memory.timeline,
+      recentTopics: Array.isArray(memory.recentTopics) ? memory.recentTopics.slice(-8) : [],
+      intake: memory.intake
+    };
+  }
+
+  function setStatus(text) {
+    ui.status.textContent = safeText(text);
+  }
+
+  function showToast(text, autoClear = true) {
+    ui.toast.textContent = safeText(text);
+    ui.toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+    if (autoClear) {
+      toastTimer = window.setTimeout(() => {
+        ui.toast.classList.remove("show");
+      }, 2200);
+    }
+  }
+
+  function openBookingPanel() {
+    ui.booking.classList.add("show");
+    ui.bookingResult.classList.remove("show");
+    ui.bookingForm.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    populateBookingForm();
+    showToast("Project intake opened.");
+  }
+
+  function closeBookingPanel() {
+    ui.booking.classList.remove("show");
+  }
+
+  function toggleBookingPanel() {
+    if (ui.booking.classList.contains("show")) closeBookingPanel();
+    else openBookingPanel();
+  }
+
+  function populateBookingForm() {
+    ui.bookingName.value = memory.intake.fullName || "";
+    ui.bookingEmail.value = memory.intake.email || "";
+    ui.bookingBusiness.value = memory.intake.businessName || memory.businessType || "";
+    ui.bookingBudget.value = memory.intake.budget || memory.budget || "";
+    ui.bookingTimeline.value = memory.intake.timeline || memory.timeline || "";
+    ui.bookingNeeds.value = memory.intake.needs || "";
+    ui.bookingNotes.value = memory.intake.notes || "";
+  }
+
+  function buildBookingSummary() {
+    const data = {
+      fullName: safeText(ui.bookingName.value).trim(),
+      email: safeText(ui.bookingEmail.value).trim(),
+      businessName: safeText(ui.bookingBusiness.value).trim(),
+      budget: safeText(ui.bookingBudget.value).trim(),
+      timeline: safeText(ui.bookingTimeline.value).trim(),
+      needs: safeText(ui.bookingNeeds.value).trim(),
+      notes: safeText(ui.bookingNotes.value).trim()
+    };
+
+    memory.intake = { ...data };
+    if (data.businessName && !memory.businessType) memory.businessType = data.businessName;
+    if (data.budget) memory.budget = data.budget;
+    if (data.timeline) memory.timeline = data.timeline;
+    saveMemory();
+
+    const summary = [
+      "WCS Project Intake",
+      `Name: ${data.fullName || "Not provided"}`,
+      `Email: ${data.email || "Not provided"}`,
+      `Business: ${data.businessName || "Not provided"}`,
+      `Budget: ${data.budget || "Not provided"}`,
+      `Timeline: ${data.timeline || "Not provided"}`,
+      `Needs: ${data.needs || "Not provided"}`,
+      `Notes: ${data.notes || "Not provided"}`,
+      `Current page: ${getPageByKey(currentPageKey).label}`,
+      `Prepared by: Codeo`
+    ].join("\n");
+
+    currentBookingSummary = summary;
+    return summary;
+  }
+
+  async function copyBookingSummary() {
+    if (!currentBookingSummary) {
+      showToast("Generate an intake summary first.");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(currentBookingSummary);
+      showToast("Intake summary copied.");
+    } catch {
+      showToast("Could not copy the intake summary.");
+    }
+  }
+
+  function openBookingEmailDraft() {
+    if (!currentBookingSummary) {
+      showToast("Generate an intake summary first.");
+      return;
+    }
+
+    const subject = encodeURIComponent(`WCS Project Intake - ${memory.intake.businessName || memory.businessType || "New Lead"}`);
+    const body = encodeURIComponent(currentBookingSummary);
+    window.location.href = `mailto:${config.contact.email}?subject=${subject}&body=${body}`;
+  }
+
+  function renderCompanionBanner(previousPageKey) {
+    const current = getPageByKey(currentPageKey);
+    const previous = previousPageKey && previousPageKey !== currentPageKey ? getPageByKey(previousPageKey) : null;
+
+    if (previous) {
+      ui.companion.innerHTML = `<strong>Site companion:</strong> You are on ${current.label}. Last time you were on ${previous.label}. I can read this page, scan related pages, and help you move through the site.`;
+    } else if (currentPageKey !== "home") {
+      ui.companion.innerHTML = `<strong>Site companion:</strong> You are on ${current.label}. I can read this page, scan related pages, and help you book an intake.`;
+    } else {
+      ui.companion.innerHTML = `<strong>Site companion:</strong> Browse WCS or ask Codeo to research any page on the site.`;
+    }
+  }
+
+  function clearMessages() {
+    ui.messages.innerHTML = "";
+  }
+
+  function addMessage(role, content) {
+    const bubble = document.createElement("div");
+    bubble.className = `wcs-ai-message ${role}`;
+    bubble.textContent = safeText(content);
+    ui.messages.appendChild(bubble);
+    ui.messages.scrollTop = ui.messages.scrollHeight;
+    return bubble;
+  }
+
+  function addActionBubble(label, url, auto = false) {
+    const bubble = document.createElement("div");
+    bubble.className = "wcs-ai-message assistant";
+
+    const text = document.createElement("div");
+    text.textContent = `Opening ${label || "page"}...`;
+    bubble.appendChild(text);
+
+    const row = document.createElement("div");
+    row.className = "wcs-ai-action-row";
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "wcs-ai-action-btn";
+    button.textContent = label || "Open page";
+    button.addEventListener("click", () => {
+      window.location.href = url;
+    });
+
+    row.appendChild(button);
+    bubble.appendChild(row);
+    ui.messages.appendChild(bubble);
+    ui.messages.scrollTop = ui.messages.scrollHeight;
+
+    if (auto) {
+      window.setTimeout(() => {
+        window.location.href = url;
+      }, 650);
+    }
+  }
+
+  function setBusy(isBusy) {
+    ui.sendBtn.disabled = isBusy;
+    ui.input.disabled = isBusy;
+    ui.typing.classList.toggle("show", isBusy);
+  }
+
+  function startResearchStatus(targetLabel) {
+    clearInterval(researchTimer);
+    researchStepIndex = 0;
+
+    const steps = [
+      `Scanning ${getPageByKey(currentPageKey).label}...`,
+      `Checking ${targetLabel || "the target page"}...`,
+      "Reading the site context...",
+      "Building the answer..."
+    ];
+
+    setStatus(steps[0]);
+    showToast(steps[0], false);
+
+    researchTimer = window.setInterval(() => {
+      researchStepIndex = (researchStepIndex + 1) % steps.length;
+      setStatus(steps[researchStepIndex]);
+      ui.toast.textContent = steps[researchStepIndex];
+      ui.toast.classList.add("show");
+    }, RESEARCH_TICK_MS);
+  }
+
+  function stopResearchStatus(doneText = "Codeo is done.") {
+    clearInterval(researchTimer);
+    researchTimer = null;
+
+    setStatus("Ready.");
+    showToast(doneText);
+
+    clearTimeout(statusAutoClearTimer);
+    statusAutoClearTimer = window.setTimeout(() => {
+      if (!ui.panel.classList.contains("open")) {
+        ui.toast.classList.remove("show");
+      }
+    }, 1200);
+  }
+
+  async function requestNotifications() {
+    if (!("Notification" in window)) {
+      showToast("Notifications are not supported in this browser.");
+      return;
+    }
+
+    try {
+      if (Notification.permission === "granted") {
+        notificationReady = true;
+        showToast("Notifications are already enabled.");
+        return;
+      }
+
+      if (Notification.permission === "denied") {
+        showToast("Notifications are blocked in browser settings.");
+        return;
+      }
+
+      const permission = await Notification.requestPermission();
+      notificationReady = permission === "granted";
+
+      if (notificationReady) {
+        showToast("Notifications are enabled.");
+      } else {
+        showToast("Notifications are off.");
+      }
+    } catch {
+      showToast("Notifications could not be enabled.");
+    }
+  }
+
+  function notifyDone(replyText) {
+    const preview = trimText(replyText, 96) || "Codeo finished responding.";
+
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        new Notification("Codeo", {
+          body: preview
+        });
+      } catch {}
+    }
+
+    if (navigator.vibrate) {
+      navigator.vibrate(15);
+    }
+  }
+
+  function openPanel() {
+    ui.panel.classList.add("open");
+    ui.input.focus();
+  }
+
+  function closePanel() {
+    ui.panel.classList.remove("open");
+  }
+
+  function scheduleClose() {
+    clearTimeout(closeTimer);
+    closeTimer = window.setTimeout(() => {
+      if (canHoverFinePointer() && !ui.widget.matches(":hover")) {
+        closePanel();
+      }
+    }, 220);
+  }
+
+  function renderQuestions(container, questions) {
+    container.innerHTML = "";
+
+    questions.forEach((question) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "wcs-ai-chip";
+      button.textContent = question.label;
+
+      button.addEventListener("click", () => {
+        if (question.action === "booking") {
+          openBookingPanel();
+          return;
+        }
+
+        if (question.navigateTo) {
+          addMessage("user", question.message);
+          window.location.href = question.navigateTo;
+          return;
+        }
+
+        sendMessage(question.message, { source: "starter" });
+      });
+
+      container.appendChild(button);
+    });
+  }
+
+  function renderFollowups(pageKey) {
+    const items = getFollowupItems(pageKey);
+    ui.followupGrid.innerHTML = "";
+    items.forEach((item) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "wcs-ai-mini-btn";
+      button.textContent = item.label;
+
+      button.addEventListener("click", () => {
+        if (item.action === "booking") {
+          openBookingPanel();
+          return;
+        }
+
+        if (item.navigateTo) {
+          addMessage("user", item.message);
+          window.location.href = item.navigateTo;
+          return;
+        }
+
+        sendMessage(item.message, { source: "followup" });
+      });
+
+      ui.followupGrid.appendChild(button);
+    });
+
+    ui.followups.classList.add("show");
+  }
+
+  function showIntroArea() {
+    const session = ensureSession();
+
+    if (hasUserMessages(session)) {
+      ui.intro.classList.add("hidden");
+      renderFollowups(session.focusPageKey || currentPageKey);
+    } else {
+      ui.intro.classList.remove("hidden");
+      renderQuestions(ui.questions, config.starterQuestions.slice(0, 3));
+      ui.followups.classList.remove("show");
+      ui.followupGrid.innerHTML = "";
+    }
+  }
+
+  function renderSession(sessionId) {
+    const session = appState.sessions[sessionId];
+    if (!session) return;
+
+    clearMessages();
+    session.messages.forEach((message) => {
+      addMessage(message.role, message.content);
+    });
+
+    showIntroArea();
+    ui.messages.scrollTop = ui.messages.scrollHeight;
+  }
+
+  function getVisibleTextFromDocument(doc) {
+    const root = doc.body ? doc.body.cloneNode(true) : doc.documentElement.cloneNode(true);
+
+    if (root && typeof root.querySelectorAll === "function") {
+      root.querySelectorAll("script, style, noscript, template, svg, canvas, iframe").forEach((node) => node.remove());
+      const widget = root.querySelector("#wcs-ai-widget");
+      if (widget) widget.remove();
+    }
+
+    return trimText(root?.textContent || "", 1800);
+  }
+
+  function extractLinksFromDocument(doc) {
+    const links = Array.from(doc.querySelectorAll("a[href]"))
+      .slice(0, 6)
+      .map((node) => ({
+        text: trimText(node.textContent || "", 80),
+        href: safeText(node.getAttribute("href")).trim()
+      }))
+      .filter((item) => item.href);
+
+    return links;
+  }
+
+  function briefFromDocument(doc, page, sourceType) {
+    const headings = Array.from(doc.querySelectorAll("h1, h2, h3, h4"))
+      .slice(0, 8)
+      .map((node) => trimText(node.textContent || "", 120))
+      .filter(Boolean);
+
+    return {
+      key: page.key,
+      url: page.url,
+      label: page.label,
+      title: trimText(doc.title || page.label || page.key, 120),
+      sourceType,
+      sourceLength: (doc.documentElement?.outerHTML || "").length,
+      headings,
+      links: extractLinksFromDocument(doc),
+      summary: getVisibleTextFromDocument(doc),
+      fetchedAt: Date.now()
+    };
+  }
+
+  function cacheBrief(pageUrl, brief) {
+    researchCache.pages[pageUrl] = brief;
+    saveResearchCache();
+  }
+
+  function getCachedBrief(pageKey) {
+    const page = getPageByKey(pageKey);
+    const brief = researchCache.pages[page.url];
+    if (!brief) return null;
+
+    if (Date.now() - (brief.fetchedAt || 0) > RESEARCH_CACHE_TTL_MS) return null;
+    return brief;
+  }
+
+  async function scanLivePage(pageKey) {
+    if (pageKey !== currentPageKey) return null;
+
+    try {
+      const html = document.documentElement.outerHTML;
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      return briefFromDocument(doc, getPageByKey(pageKey), "live-dom");
+    } catch {
+      return null;
+    }
+  }
+
+  async function fetchRemotePage(pageKey) {
+    const page = getPageByKey(pageKey);
+
+    try {
+      const response = await fetch(page.url, { cache: "no-store" });
+      if (!response.ok) return null;
+
+      const html = await response.text();
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      return briefFromDocument(doc, page, "fetched-html");
+    } catch {
+      return null;
+    }
+  }
+
+  async function getPageBrief(pageKey) {
+    const normalized = sanitizePageKey(pageKey) || currentPageKey;
+    const page = getPageByKey(normalized);
+    const cached = getCachedBrief(normalized);
+    if (cached) return cached;
+
+    const live = await scanLivePage(normalized);
+    if (live) {
+      cacheBrief(page.url, live);
+      return live;
+    }
+
+    const remote = await fetchRemotePage(normalized);
+    if (remote) {
+      cacheBrief(page.url, remote);
+      return remote;
+    }
+
+    return cached || null;
+  }
+
+  async function gatherResearchContext(targetPageKey) {
+    const normalizedTarget = sanitizePageKey(targetPageKey) || currentPageKey;
+    const current = await getPageBrief(currentPageKey);
+    const target = await getPageBrief(normalizedTarget);
+
+    const related = [];
+    const preferredKeys = Array.from(
+      new Set([normalizedTarget, currentPageKey, "home", "services", "pricing", "portfolio", "about", "team"])
+    );
+
+    for (const key of preferredKeys) {
+      if (related.length >= 3) break;
+      const brief = await getPageBrief(key);
+      if (!brief) continue;
+
+      const exists = related.some((item) => item.url === brief.url);
+      if (!exists) related.push(brief);
+    }
+
+    return {
+      currentPage: current,
+      targetPage: target || current,
+      relatedPages: related
+    };
+  }
+
+  async function prefetchAllPagesInBackground() {
+    if (Date.now() - (researchCache.lastPrefetchAt || 0) < PREFETCH_COOLDOWN_MS) return;
+
+    researchCache.lastPrefetchAt = Date.now();
+    saveResearchCache();
+
+    const run = async () => {
+      for (const page of config.pageDirectory) {
+        await getPageBrief(page.key);
+        await sleep(120);
+      }
+    };
+
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(() => {
+        run().catch(() => {});
+      }, { timeout: 2000 });
+    } else {
+      window.setTimeout(() => {
+        run().catch(() => {});
+      }, 1200);
+    }
+  }
+
+  function updateMemoryFromText(text, targetPageKey) {
+    const businessType = extractBusinessType(text);
+    const budget = extractBudget(text);
+    const timeline = extractTimeline(text);
+
+    if (businessType) memory.businessType = businessType;
+    if (budget) memory.budget = budget;
+    if (timeline) memory.timeline = timeline;
+
+    const topicKey = sanitizePageKey(targetPageKey);
+    if (topicKey) {
+      const recent = Array.isArray(memory.recentTopics) ? memory.recentTopics.slice() : [];
+      recent.push(topicKey);
+      memory.recentTopics = Array.from(new Set(recent)).slice(-8);
+    }
+
+    saveMemory();
+  }
+
+  function extractBusinessType(text) {
+    const lowered = safeText(text).toLowerCase();
+    const keywords = [
+      "bakery",
+      "church",
+      "nonprofit",
+      "school",
+      "restaurant",
+      "real estate",
+      "coaching",
+      "consulting",
+      "photography",
+      "music",
+      "beauty",
+      "salon",
+      "barber",
+      "construction",
+      "legal",
+      "medical",
+      "sports",
+      "gaming",
+      "ecommerce",
+      "store",
+      "events",
+      "portfolio",
+      "fitness",
+      "travel",
+      "hospitality"
+    ];
+
+    for (const word of keywords) {
+      if (lowered.includes(word)) return word;
+    }
+
+    return "";
+  }
+
+  function extractBudget(text) {
+    const lowered = safeText(text);
+    const match = lowered.match(/(?:budget|price|cost|quote)\s*(?:is|=|around|about)?\s*([$£€]\s?\d[\d,]*(?:\.\d{1,2})?|(?:\d[\d,]*(?:\.\d{1,2})?\s*(?:k|thousand)))/i);
+    if (match) return match[1].replace(/\s+/g, " ").trim();
+
+    const money = lowered.match(/([$£€]\s?\d[\d,]*(?:\.\d{1,2})?)/);
+    if (money) return money[1].replace(/\s+/g, " ").trim();
+
+    return "";
+  }
+
+  function extractTimeline(text) {
+    const lowered = safeText(text).toLowerCase();
+    const patterns = [
+      /(asap|immediately|right away|urgent)/,
+      /(this week|next week|this month|next month)/,
+      /(soon|later|by [a-z]+|in \d+ days?|in \d+ weeks?)/,
+      /(deadline|due date|launch date)/
+    ];
+
+    for (const re of patterns) {
+      const match = lowered.match(re);
+      if (match) return match[0];
+    }
+
+    return "";
+  }
+
+  function buildMemorySummary() {
+    return {
+      lastPageKey: memory.lastPageKey,
+      businessType: memory.businessType,
+      budget: memory.budget,
+      timeline: memory.timeline,
+      recentTopics: Array.isArray(memory.recentTopics) ? memory.recentTopics.slice(-8) : [],
+      intake: memory.intake
+    };
+  }
+
+  function createBookingEmailLink(summary) {
+    const subject = encodeURIComponent(`WCS Project Intake - ${memory.intake.businessName || memory.businessType || "New Lead"}`);
+    const body = encodeURIComponent(summary);
+    return `mailto:${config.contact.email}?subject=${subject}&body=${body}`;
+  }
+
+  function showResearchDone(replyText) {
+    stopResearchStatus("Codeo is done.");
+    showToast("Codeo finished.");
+    notifyDone(replyText);
+  }
+
+  async function sendMessage(message, options = {}) {
+    const trimmed = safeText(message).trim();
+    if (!trimmed) return;
+
+    const session = ensureSession();
+    const targetPageKey = inferTargetPageKey(trimmed, session.focusPageKey || currentPageKey);
+
+    if (!hasUserMessages(session)) {
+      ui.intro.classList.add("hidden");
+      ui.followups.classList.remove("show");
+    }
+
+    addMessage("user", trimmed);
+
+    const userEntry = {
+      role: "user",
+      content: trimmed,
+      time: Date.now()
+    };
+
+    session.messages.push(userEntry);
+    if (session.title === "New chat") {
+      session.title = trimText(trimmed, 36) || "New chat";
+    }
+
+    session.focusPageKey = targetPageKey;
+    updateMemoryFromText(trimmed, targetPageKey);
+    pruneAndSaveSession(session);
+
+    const research = await gatherResearchContext(targetPageKey);
+    const targetPage = getPageByKey(targetPageKey);
+    const targetLabel = targetPage?.label || "the target page";
+
+    startResearchStatus(targetLabel);
+    setBusy(true);
+
+    const startTime = Date.now();
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: trimmed,
+          history: session.messages.slice(-8),
+          page: {
+            path: window.location.pathname,
+            title: document.title,
+            key: currentPageKey
+          },
+          targetPage: {
+            key: targetPage.key,
+            url: targetPage.url,
+            label: targetPage.label
+          },
+          research,
+          memory: buildMemorySummary()
+        })
+      });
+
+      const data = await response.json().catch(() => ({}));
+      const elapsed = Date.now() - startTime;
+      const minimumDelay = MIN_REPLY_DELAY_MS + Math.floor(Math.random() * REPLY_JITTER_MS);
+      if (elapsed < minimumDelay) {
+        await sleep(minimumDelay - elapsed);
+      }
+
+      const reply =
+        typeof data.reply === "string" && data.reply.trim()
+          ? data.reply.trim()
+          : "I am unable to reach the AI service at the moment. Please try again shortly.";
+
+      addMessage("assistant", reply);
+
+      session.messages.push({
+        role: "assistant",
+        content: reply,
+        time: Date.now()
+      });
+
+      if (data.focusPage) {
+        session.focusPageKey = sanitizePageKey(data.focusPage) || targetPageKey;
+      } else {
+        session.focusPageKey = targetPageKey;
+      }
+
+      pruneAndSaveSession(session);
+
+      if (data.action && typeof data.action === "object" && data.action.type === "navigate") {
+        addActionBubble(data.action.label, data.action.url, Boolean(data.action.auto));
+      }
+
+      renderFollowups(session.focusPageKey || currentPageKey);
+      showResearchDone(reply);
+    } catch {
+      const elapsed = Date.now() - startTime;
+      const minimumDelay = MIN_REPLY_DELAY_MS + Math.floor(Math.random() * REPLY_JITTER_MS);
+      if (elapsed < minimumDelay) {
+        await sleep(minimumDelay - elapsed);
+      }
+
+      const fallback = "I am unable to reach the AI service at the moment. Please try again shortly.";
+      addMessage("assistant", fallback);
+
+      session.messages.push({
+        role: "assistant",
+        content: fallback,
+        time: Date.now()
+      });
+
+      pruneAndSaveSession(session);
+      renderFollowups(session.focusPageKey || currentPageKey);
+      showResearchDone(fallback);
+    } finally {
+      setBusy(false);
+      ui.input.focus();
+      showIntroArea();
+    }
+  }
+
+  function resetBookingForm() {
+    currentBookingSummary = "";
+    ui.bookingResult.textContent = "";
+    ui.bookingResult.classList.remove("show");
+    populateBookingForm();
+  }
+
+  function openWidget() {
+    ui.panel.classList.add("open");
+    ui.input.focus();
+    showIntroArea();
+  }
+
+  function closeWidget() {
+    ui.panel.classList.remove("open");
+  }
+
+  function startNewChat() {
+    const session = createSession();
+    activeSessionId = session.id;
+    appState.activeSessionId = session.id;
+    saveState();
+
+    closeBookingPanel();
+    renderSession(session.id);
+    showToast("New chat started.");
+  }
+
+  function renderSessionListState() {
+    const session = ensureSession();
+    activeSessionId = session.id;
+    appState.activeSessionId = session.id;
+    saveState();
+
+    renderSession(session.id);
+  }
+
+  function renderCompanion() {
+    const current = getPageByKey(currentPageKey);
+    const previousKey = memory.lastPageKey && memory.lastPageKey !== currentPageKey ? memory.lastPageKey : null;
+    const previous = previousKey ? getPageByKey(previousKey) : null;
+
+    if (previous) {
+      ui.companion.innerHTML = `<strong>Site companion:</strong> You are on ${current.label}. Last time you were on ${previous.label}. I can read this page, scan related pages, and help you move through the site.`;
+    } else if (currentPageKey !== "home") {
+      ui.companion.innerHTML = `<strong>Site companion:</strong> You are on ${current.label}. I can read this page, scan related pages, and help you book an intake.`;
+    } else {
+      ui.companion.innerHTML = `<strong>Site companion:</strong> Browse WCS or ask Codeo to research any page on the site.`;
+    }
+  }
+
+  function addBookingMessage(text) {
+    addMessage("system", text);
+    const session = ensureSession();
+    session.messages.push({
+      role: "system",
+      content: text,
+      time: Date.now()
+    });
+    pruneAndSaveSession(session);
+  }
+
+  function mountWidget() {
+    const widget = document.createElement("div");
+    widget.id = "wcs-ai-widget";
+    widget.innerHTML = `
+      <button id="wcs-ai-launcher" type="button" aria-label="Open Codeo">
+        <i class="ri-global-line" aria-hidden="true"></i>
+      </button>
+
+      <section id="wcs-ai-panel" aria-label="Codeo assistant">
+        <header id="wcs-ai-header">
+          <div id="wcs-ai-title-wrap">
+            <div id="wcs-ai-title"></div>
+            <div id="wcs-ai-subtitle"></div>
+            <div id="wcs-ai-status"></div>
+          </div>
+
+          <div class="wcs-ai-header-actions">
+            <button id="wcs-ai-booking-btn" class="wcs-ai-icon-btn" type="button" aria-label="Open intake form" title="Intake">
+              <i class="ri-clipboard-line" aria-hidden="true"></i>
+            </button>
+            <button id="wcs-ai-newchat" class="wcs-ai-icon-btn" type="button" aria-label="Start new chat" title="New chat">
+              <i class="ri-add-line" aria-hidden="true"></i>
+            </button>
+            <button id="wcs-ai-notify" class="wcs-ai-icon-btn" type="button" aria-label="Enable notifications" title="Notifications">
+              <i class="ri-notification-3-line" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <button id="wcs-ai-close" type="button" aria-label="Close assistant">×</button>
+        </header>
+
+        <div id="wcs-ai-toast" aria-live="polite"></div>
+        <div id="wcs-ai-companion"></div>
+
+        <div id="wcs-ai-intro">
+          <div id="wcs-ai-intro-title">Start here</div>
+          <div id="wcs-ai-intro-copy">Use one of these questions, or type your own.</div>
+          <div id="wcs-ai-questions"></div>
+        </div>
+
+        <div id="wcs-ai-booking">
+          <div class="wcs-ai-booking-head">
+            <div>
+              <div class="wcs-ai-booking-title">Project intake</div>
+              <div class="wcs-ai-booking-subtitle">Tell Codeo what you need. It will prepare a clean intake summary.</div>
+            </div>
+            <button id="wcs-ai-booking-close" type="button" aria-label="Close intake form">×</button>
+          </div>
+
+          <form id="wcs-ai-booking-form">
+            <div class="wcs-ai-booking-grid">
+              <input id="wcs-ai-booking-name" type="text" placeholder="Full name" class="full" />
+              <input id="wcs-ai-booking-email" type="email" placeholder="Email address" />
+              <input id="wcs-ai-booking-business" type="text" placeholder="Business name" />
+              <input id="wcs-ai-booking-budget" type="text" placeholder="Budget" />
+              <input id="wcs-ai-booking-timeline" type="text" placeholder="Timeline" />
+              <textarea id="wcs-ai-booking-needs" class="full" placeholder="What do you need?"></textarea>
+              <textarea id="wcs-ai-booking-notes" class="full" placeholder="Extra notes"></textarea>
+            </div>
+
+            <div class="wcs-ai-booking-actions">
+              <button type="submit">Build intake summary</button>
+              <button type="button" id="wcs-ai-booking-copy" class="secondary">Copy summary</button>
+              <button type="button" id="wcs-ai-booking-email" class="secondary">Email draft</button>
+            </div>
+
+            <pre id="wcs-ai-booking-result"></pre>
+          </form>
+        </div>
+
+        <div id="wcs-ai-messages" aria-live="polite" aria-relevant="additions"></div>
+        <div id="wcs-ai-typing">
+          Codeo is researching
+          <span class="wcs-ai-dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+        </div>
+
+        <div id="wcs-ai-followups">
+          <div id="wcs-ai-followups-title">Next steps</div>
+          <div id="wcs-ai-followup-grid"></div>
+        </div>
+
+        <form id="wcs-ai-input-wrap">
+          <input
+            id="wcs-ai-input"
+            type="text"
+            placeholder="Ask about WCS services, contact, or site details"
+            autocomplete="off"
+          />
+          <button id="wcs-ai-send" type="submit">Send</button>
+        </form>
+
+        <div id="wcs-ai-footer-note">
+          Responses are limited to official WCS business and site guidance.
+        </div>
+      </section>
+    `;
+
+    document.body.appendChild(widget);
+
+    ui.widget = widget;
+    ui.launcher = document.getElementById("wcs-ai-launcher");
+    ui.panel = document.getElementById("wcs-ai-panel");
+    ui.closeBtn = document.getElementById("wcs-ai-close");
+    ui.newChatBtn = document.getElementById("wcs-ai-newchat");
+    ui.notifyBtn = document.getElementById("wcs-ai-notify");
+    ui.bookingBtn = document.getElementById("wcs-ai-booking-btn");
+    ui.intro = document.getElementById("wcs-ai-intro");
+    ui.questions = document.getElementById("wcs-ai-questions");
+    ui.messages = document.getElementById("wcs-ai-messages");
+    ui.typing = document.getElementById("wcs-ai-typing");
+    ui.followups = document.getElementById("wcs-ai-followups");
+    ui.followupGrid = document.getElementById("wcs-ai-followup-grid");
+    ui.input = document.getElementById("wcs-ai-input");
+    ui.sendBtn = document.getElementById("wcs-ai-send");
+    ui.title = document.getElementById("wcs-ai-title");
+    ui.subtitle = document.getElementById("wcs-ai-subtitle");
+    ui.status = document.getElementById("wcs-ai-status");
+    ui.toast = document.getElementById("wcs-ai-toast");
+    ui.companion = document.getElementById("wcs-ai-companion");
+    ui.booking = document.getElementById("wcs-ai-booking");
+    ui.bookingClose = document.getElementById("wcs-ai-booking-close");
+    ui.bookingForm = document.getElementById("wcs-ai-booking-form");
+    ui.bookingName = document.getElementById("wcs-ai-booking-name");
+    ui.bookingEmail = document.getElementById("wcs-ai-booking-email");
+    ui.bookingBusiness = document.getElementById("wcs-ai-booking-business");
+    ui.bookingBudget = document.getElementById("wcs-ai-booking-budget");
+    ui.bookingTimeline = document.getElementById("wcs-ai-booking-timeline");
+    ui.bookingNeeds = document.getElementById("wcs-ai-booking-needs");
+    ui.bookingNotes = document.getElementById("wcs-ai-booking-notes");
+    ui.bookingResult = document.getElementById("wcs-ai-booking-result");
+    ui.bookingCopy = document.getElementById("wcs-ai-booking-copy");
+    ui.bookingEmail = document.getElementById("wcs-ai-booking-email");
+
+    ui.title.textContent = config.assistantName || "Codeo";
+    ui.subtitle.textContent = config.subtitle || "WCS research assistant";
+
+    const previousPageKey = memory.lastPageKey;
+    currentPageKey = getPageKeyFromPath(window.location.pathname);
+    memory.lastPageKey = currentPageKey;
+    memory.lastSeenAt = Date.now();
+    saveMemory();
+
+    renderCompanion(previousPageKey);
+    showToast("Codeo is ready.", true);
+    setStatus("Ready.");
+
+    const session = ensureSession();
+    renderSession(session.id);
+
+    renderQuestions(ui.questions, config.starterQuestions.slice(0, 3));
+    renderFollowups(session.focusPageKey || currentPageKey);
+
+    if (canHoverFinePointer()) {
+      ui.widget.addEventListener("pointerenter", () => {
+        clearTimeout(closeTimer);
+        openPanel();
+      });
+
+      ui.widget.addEventListener("pointerleave", scheduleClose);
+      ui.launcher.addEventListener("focus", openPanel);
+      ui.panel.addEventListener("focusin", openPanel);
+      ui.panel.addEventListener("focusout", scheduleClose);
+    } else {
+      ui.launcher.addEventListener("click", () => {
+        touchOpen = !touchOpen;
+        if (touchOpen) openPanel();
+        else closePanel();
+      });
+    }
+
+    ui.closeBtn.addEventListener("click", closeWidget);
+    ui.newChatBtn.addEventListener("click", startNewChat);
+    ui.notifyBtn.addEventListener("click", requestNotifications);
+    ui.bookingBtn.addEventListener("click", toggleBookingPanel);
+    ui.bookingClose.addEventListener("click", closeBookingPanel);
+
+    ui.bookingForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const summary = buildBookingSummary();
+      ui.bookingResult.textContent = summary;
+      ui.bookingResult.classList.add("show");
+
+      addBookingMessage("Project intake summary prepared.");
+      addMessage("assistant", "I prepared your intake summary. You can copy it, email it, or continue the chat.");
+      renderFollowups(currentPageKey);
+      showToast("Intake summary prepared.");
+    });
+
+    ui.bookingCopy.addEventListener("click", copyBookingSummary);
+    ui.bookingEmail.addEventListener("click", openBookingEmailDraft);
+
+    ui.input.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeWidget();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && ui.panel.classList.contains("open")) {
+        closeWidget();
+      }
+    });
+
+    ui.panel.querySelector("form#wcs-ai-input-wrap").addEventListener("submit", (event) => {
+      event.preventDefault();
+      sendMessage(ui.input.value, { source: "manual" });
+      ui.input.value = "";
+    });
+
+    prefetchAllPagesInBackground();
+    setTimeout(() => {
+      if (!hasUserMessages(session)) {
+        ui.intro.classList.remove("hidden");
+      }
+    }, 50);
+  }
+
+  async function loadConfig() {
+    try {
+      const response = await fetch(CONFIG_URL, { cache: "no-store" });
+      if (!response.ok) {
+        config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+        return;
+      }
+
+      const data = await response.json();
+      config = {
+        ...JSON.parse(JSON.stringify(DEFAULT_CONFIG)),
+        ...data,
+        contact: {
+          ...DEFAULT_CONFIG.contact,
+          ...(data.contact || {})
+        },
+        pageDirectory:
+          Array.isArray(data.pageDirectory) && data.pageDirectory.length
+            ? data.pageDirectory
+            : DEFAULT_CONFIG.pageDirectory,
+        starterQuestions:
+          Array.isArray(data.starterQuestions) && data.starterQuestions.length
+            ? data.starterQuestions
+            : DEFAULT_CONFIG.starterQuestions,
+        followUpQuestionsByPage:
+          data.followUpQuestionsByPage && typeof data.followUpQuestionsByPage === "object"
+            ? data.followUpQuestionsByPage
+            : DEFAULT_CONFIG.followUpQuestionsByPage,
+        welcomeMessage: safeText(data.welcomeMessage) || DEFAULT_CONFIG.welcomeMessage
+      };
+    } catch {
+      config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    }
+  }
+
+  async function init() {
+    ensureRemixIcons();
+    await loadConfig();
+    currentPageKey = getPageKeyFromPath(window.location.pathname);
+
+    appState = loadState();
+    memory = loadMemory();
+    researchCache = loadResearchCache();
+
+    if (!activeSessionId || !appState.sessions[activeSessionId]) {
+      const created = createSession();
+      activeSessionId = created.id;
+      appState.activeSessionId = created.id;
+      saveState();
+    }
+
+    mountWidget();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
