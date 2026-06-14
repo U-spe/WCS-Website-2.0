@@ -1,1007 +1,626 @@
-(() => {
-  if (document.getElementById("wcs-ai-widget")) return;
+:root {
+  --wcs-bg: #101318;
+  --wcs-panel: #16191e;
+  --wcs-surface: #252a31;
+  --wcs-text: #f2f4f7;
+  --wcs-muted: #9ba3af;
+  --wcs-accent: #2563eb;
+  --wcs-accent-strong: #1d4ed8;
+  --wcs-border: rgba(255, 255, 255, 0.08);
+  --wcs-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --wcs-radius: 20px;
+  --wcs-font: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
 
-  const REMIX_ICON_URL = "https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css";
-  const CONFIG_URL = "/wcs-ai-widget/brand.json";
-  const API_URL = "/api/chat";
-  const STATE_KEY = "wcs-ai-state-v3";
-  const RESEARCH_KEY = "wcs-ai-research-v2";
-  const RESEARCH_TTL_MS = 1000 * 60 * 60 * 24 * 7;
+#wcs-ai-widget {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2147483647;
+  font-family: var(--wcs-font);
+  pointer-events: auto;
+}
 
-  const DEFAULT_CONFIG = {
-    assistantName: "Codeo",
-    companyName: "Web Creation Studios",
-    subtitle: "WCS research assistant",
-    contact: {
-      email: "solutionsforyourweb@gmail.com",
-      phone: "(302) 526-0930"
-    },
-    pageDirectory: [
-      {
-        key: "home",
-        label: "Home",
-        url: "/",
-        aliases: ["home", "homepage", "main"]
-      },
-      {
-        key: "about",
-        label: "About",
-        url: "/about.html",
-        aliases: ["about"]
-      },
-      {
-        key: "team",
-        label: "Team",
-        url: "/team.html",
-        aliases: ["team", "staff"]
-      },
-      {
-        key: "services",
-        label: "Services",
-        url: "/services.html",
-        aliases: ["services", "service"]
-      },
-      {
-        key: "pricing",
-        label: "Pricing",
-        url: "/pricing.html",
-        aliases: ["pricing", "price", "rates", "cost"]
-      },
-      {
-        key: "portfolio",
-        label: "Portfolio",
-        url: "/portfolio.html",
-        aliases: ["portfolio", "projects", "work", "gallery"]
-      }
-    ],
-    starterQuestions: [
-      {
-        label: "Services",
-        message: "What services does Web Creation Studios provide?"
-      },
-      {
-        label: "Pricing",
-        message: "What pricing information is available?"
-      },
-      {
-        label: "Portfolio",
-        message: "Show me the portfolio page."
-      }
-    ],
-    followUpQuestionsByPage: {
-      home: [
-        {
-          label: "What does WCS build?",
-          message: "What kinds of websites and projects does Web Creation Studios build?"
-        },
-        {
-          label: "Open Services",
-          message: "Open the services page.",
-          navigateTo: "/services.html"
-        },
-        {
-          label: "Open Pricing",
-          message: "Open the pricing page.",
-          navigateTo: "/pricing.html"
-        }
-      ],
-      about: [
-        {
-          label: "Open Team",
-          message: "Open the team page.",
-          navigateTo: "/team.html"
-        },
-        {
-          label: "Open Services",
-          message: "Open the services page.",
-          navigateTo: "/services.html"
-        },
-        {
-          label: "Learn WCS story",
-          message: "Tell me more about Web Creation Studios."
-        }
-      ],
-      team: [
-        {
-          label: "About WCS",
-          message: "Tell me more about Web Creation Studios."
-        },
-        {
-          label: "Open Services",
-          message: "Open the services page.",
-          navigateTo: "/services.html"
-        },
-        {
-          label: "Open Portfolio",
-          message: "Open the portfolio page.",
-          navigateTo: "/portfolio.html"
-        }
-      ],
-      services: [
-        {
-          label: "Help me choose",
-          message: "Help me choose the right Web Creation Studios service for my business."
-        },
-        {
-          label: "Open Pricing",
-          message: "Open the pricing page.",
-          navigateTo: "/pricing.html"
-        },
-        {
-          label: "See examples",
-          message: "Open the portfolio page.",
-          navigateTo: "/portfolio.html"
-        }
-      ],
-      pricing: [
-        {
-          label: "Open Services",
-          message: "Open the services page.",
-          navigateTo: "/services.html"
-        },
-        {
-          label: "Open Portfolio",
-          message: "Open the portfolio page.",
-          navigateTo: "/portfolio.html"
-        },
-        {
-          label: "What do I need?",
-          message: "What Web Creation Studios service fits my budget and goals?"
-        }
-      ],
-      portfolio: [
-        {
-          label: "Open Services",
-          message: "Open the services page.",
-          navigateTo: "/services.html"
-        },
-        {
-          label: "Open Pricing",
-          message: "Open the pricing page.",
-          navigateTo: "/pricing.html"
-        },
-        {
-          label: "Open About",
-          message: "Open the about page.",
-          navigateTo: "/about.html"
-        }
-      ]
-    },
-    welcomeMessage: "Hello. I am Codeo. How can I help with Web Creation Studios today?"
-  };
+#wcs-ai-launcher {
+  width: 60px;
+  height: 60px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #3b82f6 0%, var(--wcs-accent-strong) 100%);
+  color: #ffffff;
+  box-shadow: var(--wcs-shadow);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-  let config = { ...DEFAULT_CONFIG };
-  let currentPageKey = "home";
-  let activeSessionId = null;
-  let sessionsState = { activeSessionId: null, sessions: {} };
-  let researchCache = { pages: {}, lastPrefetchAt: 0 };
-  let canHover = false;
-  let closeTimer = null;
-  let touchOpen = false;
-  let notificationReady = false;
-  let elements = null;
+#wcs-ai-launcher:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
+  filter: brightness(1.03);
+}
 
-  function safeText(value) {
-    return typeof value === "string" ? value : "";
+#wcs-ai-launcher:focus-visible,
+#wcs-ai-close:focus-visible,
+#wcs-ai-send:focus-visible,
+.wcs-ai-chip:focus-visible,
+.wcs-ai-action-btn:focus-visible,
+.wcs-ai-mini-btn:focus-visible,
+.wcs-ai-icon-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 2px;
+}
+
+#wcs-ai-launcher i {
+  font-size: 30px;
+  color: #ffffff;
+  line-height: 1;
+}
+
+#wcs-ai-panel {
+  position: absolute;
+  right: 0;
+  bottom: 76px;
+  width: min(380px, calc(100vw - 32px));
+  height: 700px;
+  background: rgba(16, 18, 22, 0.98);
+  border: 1px solid var(--wcs-border);
+  border-radius: var(--wcs-radius);
+  box-shadow: var(--wcs-shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(12px) scale(0.985);
+  transition:
+    opacity 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 240ms;
+  will-change: opacity, transform;
+}
+
+#wcs-ai-panel.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
+}
+
+#wcs-ai-header {
+  background: linear-gradient(180deg, #252a31 0%, #1c2026 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 14px 14px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+#wcs-ai-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+#wcs-ai-title {
+  color: var(--wcs-text);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+#wcs-ai-subtitle {
+  color: var(--wcs-muted);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+#wcs-ai-status {
+  color: #bfdbfe;
+  font-size: 11px;
+  line-height: 1.3;
+  margin-top: 2px;
+  min-height: 14px;
+}
+
+.wcs-ai-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.wcs-ai-icon-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition:
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wcs-ai-icon-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.wcs-ai-icon-btn i {
+  font-size: 16px;
+  line-height: 1;
+  color: #ffffff;
+}
+
+#wcs-ai-close {
+  border: 0;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  flex: 0 0 auto;
+  margin-left: 4px;
+}
+
+#wcs-ai-toast {
+  margin: 12px 12px 0;
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  background: rgba(37, 99, 235, 0.12);
+  color: #dbeafe;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  display: none;
+}
+
+#wcs-ai-toast.show {
+  display: block;
+  animation: wcsToastIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes wcsToastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#wcs-ai-companion {
+  margin: 12px 12px 0;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(15, 18, 22, 0.75);
+  color: #e2e8f0;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+#wcs-ai-companion strong {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+#wcs-ai-intro {
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 40%),
+    linear-gradient(180deg, rgba(22, 25, 30, 1), rgba(18, 20, 24, 1));
+}
+
+#wcs-ai-intro.hidden {
+  display: none;
+}
+
+#wcs-ai-intro-title {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+#wcs-ai-intro-copy {
+  color: #cbd5e1;
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+#wcs-ai-questions {
+  display: grid;
+  gap: 8px;
+}
+
+.wcs-ai-chip {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: #111418;
+  color: #dbe3ee;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wcs-ai-chip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(59, 130, 246, 0.45);
+  background: #161b22;
+}
+
+#wcs-ai-booking {
+  margin: 12px 12px 0;
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  background: rgba(17, 20, 24, 0.95);
+  border-radius: 16px;
+  padding: 12px;
+  display: none;
+  max-height: 270px;
+  overflow: auto;
+}
+
+#wcs-ai-booking.show {
+  display: block;
+}
+
+.wcs-ai-booking-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.wcs-ai-booking-title {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.wcs-ai-booking-subtitle {
+  color: #cbd5e1;
+  font-size: 12px;
+  line-height: 1.45;
+  margin-top: 4px;
+}
+
+#wcs-ai-booking-close {
+  border: 0;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+#wcs-ai-booking-form {
+  display: grid;
+  gap: 10px;
+}
+
+.wcs-ai-booking-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.wcs-ai-booking-grid .full {
+  grid-column: 1 / -1;
+}
+
+.wcs-ai-booking-grid input,
+.wcs-ai-booking-grid textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0f1216;
+  color: #f8fafc;
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+  font-size: 12px;
+  font-family: var(--wcs-font);
+}
+
+.wcs-ai-booking-grid textarea {
+  min-height: 74px;
+  resize: vertical;
+}
+
+.wcs-ai-booking-grid input::placeholder,
+.wcs-ai-booking-grid textarea::placeholder {
+  color: #6b7280;
+}
+
+.wcs-ai-booking-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wcs-ai-booking-actions button {
+  border: 0;
+  background: linear-gradient(180deg, var(--wcs-accent) 0%, var(--wcs-accent-strong) 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.wcs-ai-booking-actions button.secondary {
+  background: #111418;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+#wcs-ai-booking-result {
+  display: none;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #0f1216;
+  color: #e5e7eb;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+#wcs-ai-booking-result.show {
+  display: block;
+}
+
+#wcs-ai-messages {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 36%),
+    linear-gradient(180deg, rgba(20, 23, 28, 0.95), rgba(14, 16, 19, 0.98));
+}
+
+.wcs-ai-message {
+  max-width: 88%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.wcs-ai-message.user {
+  align-self: flex-end;
+  background: linear-gradient(180deg, #2f343b 0%, #262b31 100%);
+  color: #ffffff;
+  border-top-right-radius: 6px;
+}
+
+.wcs-ai-message.assistant {
+  align-self: flex-start;
+  background: #171a1f;
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-top-left-radius: 6px;
+}
+
+.wcs-ai-message.system {
+  align-self: center;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 11px;
+  padding: 0;
+}
+
+.wcs-ai-message .wcs-ai-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.wcs-ai-action-btn {
+  border: 0;
+  background: linear-gradient(180deg, var(--wcs-accent) 0%, var(--wcs-accent-strong) 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+#wcs-ai-typing {
+  color: var(--wcs-muted);
+  font-size: 12px;
+  padding: 0 14px 10px;
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+
+#wcs-ai-typing.show {
+  display: flex;
+}
+
+.wcs-ai-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.wcs-ai-dots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #bfdbfe;
+  display: inline-block;
+  animation: wcsDotPulse 900ms infinite ease-in-out;
+}
+
+.wcs-ai-dots span:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.wcs-ai-dots span:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+@keyframes wcsDotPulse {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  40% {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+}
+
+#wcs-ai-followups {
+  padding: 0 14px 12px;
+  display: none;
+}
+
+#wcs-ai-followups.show {
+  display: block;
+}
+
+#wcs-ai-followups-title {
+  color: #cbd5e1;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+#wcs-ai-followup-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.wcs-ai-mini-btn {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: #111418;
+  color: #dbe3ee;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+#wcs-ai-input-wrap {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--wcs-panel);
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+#wcs-ai-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0f1216;
+  color: #f8fafc;
+  border-radius: 12px;
+  padding: 11px 12px;
+  outline: none;
+  font-size: 13px;
+}
+
+#wcs-ai-input::placeholder {
+  color: #6b7280;
+}
+
+#wcs-ai-send {
+  border: 0;
+  background: linear-gradient(180deg, var(--wcs-accent) 0%, var(--wcs-accent-strong) 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  min-width: 78px;
+  transition:
+    opacity 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#wcs-ai-send:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+#wcs-ai-send:disabled,
+#wcs-ai-input:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+#wcs-ai-footer-note {
+  padding: 0 14px 14px;
+  font-size: 11px;
+  color: var(--wcs-muted);
+  line-height: 1.45;
+}
+
+@media (max-width: 480px) {
+  #wcs-ai-widget {
+    right: 12px;
+    bottom: 12px;
   }
 
-  function ensureRemixIcons() {
-    if (document.querySelector('link[data-wcs-remixicons="true"]')) return;
-
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = REMIX_ICON_URL;
-    link.setAttribute("data-wcs-remixicons", "true");
-    document.head.appendChild(link);
+  #wcs-ai-panel {
+    width: min(100vw - 24px, 380px);
+    height: 760px;
+    bottom: 74px;
   }
 
-  function storageGet(key, fallback) {
-    try {
-      const raw = localStorage.getItem(key);
-      if (!raw) return fallback;
-      return JSON.parse(raw);
-    } catch {
-      return fallback;
-    }
+  .wcs-ai-message {
+    max-width: 92%;
   }
 
-  function storageSet(key, value) {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch {}
+  .wcs-ai-booking-grid {
+    grid-template-columns: 1fr;
   }
-
-  function sanitizePageKey(value) {
-    const lowered = safeText(value).trim().toLowerCase();
-    const page = config.pageDirectory.find(
-      (item) => item.key === lowered || item.aliases.includes(lowered)
-    );
-    return page ? page.key : null;
-  }
-
-  function getPageByKey(key) {
-    return config.pageDirectory.find((page) => page.key === key) || config.pageDirectory[0];
-  }
-
-  function getPageKeyFromPath(pathname) {
-    const path = safeText(pathname).split("?")[0].split("#")[0];
-
-    if (!path || path === "/" || path === "/index.html") return "home";
-    if (path === "/about.html" || path === "/about") return "about";
-    if (path === "/team.html" || path === "/team") return "team";
-    if (path === "/services.html" || path === "/services") return "services";
-    if (path === "/pricing.html" || path === "/pricing") return "pricing";
-    if (path === "/portfolio.html" || path === "/portfolio" || path === "/projects.html") return "portfolio";
-
-    const page = config.pageDirectory.find((item) => item.url === path);
-    return page ? page.key : "home";
-  }
-
-  function inferTargetPageKey(message, fallbackPageKey) {
-    const text = safeText(message).toLowerCase();
-    const patterns = [
-      { re: /(take me to|open|go to|show me).*(services?|service)/, key: "services" },
-      { re: /(take me to|open|go to|show me).*(pricing|price|rates|cost)/, key: "pricing" },
-      { re: /(take me to|open|go to|show me).*(portfolio|projects?|work|gallery)/, key: "portfolio" },
-      { re: /(take me to|open|go to|show me).*(team|staff)/, key: "team" },
-      { re: /(take me to|open|go to|show me).*(about)/, key: "about" },
-      { re: /(take me to|open|go to|show me).*(home|homepage|main page)/, key: "home" },
-      { re: /(services?|service|what do you build|what can you do)/, key: "services" },
-      { re: /(pricing|price|rates|cost|budget|quote)/, key: "pricing" },
-      { re: /(portfolio|projects?|work|examples|gallery)/, key: "portfolio" },
-      { re: /(team|staff|who works|about the team)/, key: "team" },
-      { re: /(about|story|background|who is wcs)/, key: "about" },
-      { re: /(home|homepage|main page|start page)/, key: "home" }
-    ];
-
-    for (const item of patterns) {
-      if (item.re.test(text)) return item.key;
-    }
-
-    return fallbackPageKey || "home";
-  }
-
-  function loadResearchCache() {
-    const saved = storageGet(RESEARCH_KEY, null);
-    if (!saved || typeof saved !== "object") {
-      return { pages: {}, lastPrefetchAt: 0 };
-    }
-
-    return {
-      pages: saved.pages && typeof saved.pages === "object" ? saved.pages : {},
-      lastPrefetchAt: typeof saved.lastPrefetchAt === "number" ? saved.lastPrefetchAt : 0
-    };
-  }
-
-  function saveResearchCache() {
-    storageSet(RESEARCH_KEY, researchCache);
-  }
-
-  function getCachedBrief(pageKey) {
-    const page = getPageByKey(pageKey);
-    const brief = researchCache.pages[page.url];
-    if (!brief) return null;
-
-    if (Date.now() - (brief.fetchedAt || 0) > RESEARCH_TTL_MS) return null;
-    return brief;
-  }
-
-  function saveBrief(pageUrl, brief) {
-    researchCache.pages[pageUrl] = brief;
-    saveResearchCache();
-  }
-
-  function textFromDocument(doc) {
-    const clone = doc.body ? doc.body.cloneNode(true) : doc.documentElement.cloneNode(true);
-    if (!clone) return "";
-
-    clone.querySelectorAll("script, style, noscript, svg, canvas, iframe, template").forEach((node) => node.remove());
-
-    const widget = clone.querySelector("#wcs-ai-widget");
-    if (widget) widget.remove();
-
-    return safeText(clone.textContent || "")
-      .replace(/\s+/g, " ")
-      .trim();
-  }
-
-  function trimText(text, max = 2200) {
-    const value = safeText(text).replace(/\s+/g, " ").trim();
-    if (value.length <= max) return value;
-    return `${value.slice(0, max - 1).trim()}…`;
-  }
-
-  async function fetchPageBrief(pageKey) {
-    const page = getPageByKey(pageKey);
-    const cached = getCachedBrief(page.key);
-    if (cached) return cached;
-
-    try {
-      const response = await fetch(page.url, { cache: "no-store" });
-      if (!response.ok) {
-        return cached || null;
-      }
-
-      const html = await response.text();
-      const doc = new DOMParser().parseFromString(html, "text/html");
-
-      const title = safeText(doc.title || page.label || page.key).trim();
-      const headings = Array.from(doc.querySelectorAll("h1, h2, h3"))
-        .slice(0, 8)
-        .map((node) => safeText(node.textContent))
-        .filter(Boolean);
-
-      const rawText = textFromDocument(doc);
-      const summary = trimText(rawText, 2600);
-
-      const brief = {
-        key: page.key,
-        url: page.url,
-        label: page.label,
-        title,
-        headings,
-        summary,
-        fetchedAt: Date.now()
-      };
-
-      saveBrief(page.url, brief);
-      return brief;
-    } catch {
-      return cached || null;
-    }
-  }
-
-  async function gatherResearchContext(targetPageKey) {
-    const target = targetPageKey ? await fetchPageBrief(targetPageKey) : null;
-    const current = await fetchPageBrief(currentPageKey);
-    const related = [];
-
-    if (target && target.key !== currentPageKey) related.push(target);
-    if (current && (!target || current.key !== target.key)) related.push(current);
-
-    return {
-      currentPage: current,
-      targetPage: target || current,
-      relatedPages: related.slice(0, 3)
-    };
-  }
-
-  function prefetchAllPagesInBackground() {
-    if (Date.now() - researchCache.lastPrefetchAt < 1000 * 60 * 10) return;
-
-    researchCache.lastPrefetchAt = Date.now();
-    saveResearchCache();
-
-    const run = async () => {
-      for (const page of config.pageDirectory) {
-        await fetchPageBrief(page.key);
-      }
-    };
-
-    if (typeof window.requestIdleCallback === "function") {
-      window.requestIdleCallback(() => {
-        run().catch(() => {});
-      }, { timeout: 2000 });
-    } else {
-      window.setTimeout(() => {
-        run().catch(() => {});
-      }, 1200);
-    }
-  }
-
-  function loadState() {
-    const saved = storageGet(STATE_KEY, null);
-    if (!saved || typeof saved !== "object") {
-      return { activeSessionId: null, sessions: {} };
-    }
-
-    return {
-      activeSessionId: typeof saved.activeSessionId === "string" ? saved.activeSessionId : null,
-      sessions:
-        saved.sessions && typeof saved.sessions === "object"
-          ? saved.sessions
-          : {}
-    };
-  }
-
-  function saveState() {
-    sessionsState.activeSessionId = activeSessionId;
-    storageSet(STATE_KEY, sessionsState);
-  }
-
-  function createSession({ preserveHistory = false } = {}) {
-    const id = `codeo_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    const welcome = config.welcomeMessage || DEFAULT_CONFIG.welcomeMessage;
-    const focusPageKey = currentPageKey;
-
-    const session = {
-      id,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      title: "New chat",
-      focusPageKey,
-      messages: [
-        {
-          role: "assistant",
-          content: welcome,
-          time: Date.now()
-        }
-      ]
-    };
-
-    sessionsState.sessions[id] = session;
-    activeSessionId = id;
-    saveState();
-
-    if (!preserveHistory) {
-      renderSession(id);
-    }
-
-    return session;
-  }
-
-  function getActiveSession() {
-    if (!activeSessionId) return null;
-    return sessionsState.sessions[activeSessionId] || null;
-  }
-
-  function ensureActiveSession() {
-    let session = getActiveSession();
-
-    if (!session) {
-      session = createSession({ preserveHistory: true });
-    }
-
-    if (!Array.isArray(session.messages) || !session.messages.length) {
-      session.messages = [
-        {
-          role: "assistant",
-          content: config.welcomeMessage || DEFAULT_CONFIG.welcomeMessage,
-          time: Date.now()
-        }
-      ];
-      session.updatedAt = Date.now();
-      sessionsState.sessions[session.id] = session;
-      saveState();
-    }
-
-    return session;
-  }
-
-  function normalizeMessagesForRender(messages) {
-    return Array.isArray(messages)
-      ? messages.filter((m) => m && (m.role === "user" || m.role === "assistant" || m.role === "system"))
-      : [];
-  }
-
-  function scrollToBottom() {
-    elements.messages.scrollTop = elements.messages.scrollHeight;
-  }
-
-  function addMessageToDOM(role, content) {
-    const el = document.createElement("div");
-    el.className = `wcs-ai-message ${role}`;
-    el.textContent = safeText(content);
-    elements.messages.appendChild(el);
-    scrollToBottom();
-    return el;
-  }
-
-  function showToast(text) {
-    elements.toast.textContent = safeText(text);
-    elements.toast.classList.add("show");
-
-    clearTimeout(elements.toastHideTimer);
-    elements.toastHideTimer = window.setTimeout(() => {
-      elements.toast.classList.remove("show");
-    }, 2400);
-  }
-
-  function setBusy(isBusy) {
-    elements.sendBtn.disabled = isBusy;
-    elements.input.disabled = isBusy;
-    elements.typing.classList.toggle("show", isBusy);
-  }
-
-  function canUseHoverPointer() {
-    return window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  }
-
-  function injectIconStyles() {
-    if (document.querySelector('link[data-wcs-remixicons="true"]')) return;
-
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = REMIX_ICON_URL;
-    link.setAttribute("data-wcs-remixicons", "true");
-    document.head.appendChild(link);
-  }
-
-  function renderFollowUpsForPage(pageKey) {
-    const normalized = sanitizePageKey(pageKey) || "home";
-    const items = config.followUpQuestionsByPage?.[normalized] || config.followUpQuestionsByPage?.home || [];
-
-    elements.followupGrid.innerHTML = "";
-
-    items.slice(0, 3).forEach((item) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "wcs-ai-mini-btn";
-      btn.textContent = item.label;
-
-      btn.addEventListener("click", () => {
-        if (item.navigateTo) {
-          addMessageToSession("user", item.message);
-          window.location.href = item.navigateTo;
-          return;
-        }
-
-        sendMessage(item.message, { source: "followup" });
-      });
-
-      elements.followupGrid.appendChild(btn);
-    });
-
-    elements.followups.classList.add("show");
-  }
-
-  function showIntro() {
-    const active = ensureActiveSession();
-    const hasUserMessage = active.messages.some((message) => message.role === "user");
-
-    if (!hasUserMessage) {
-      elements.intro.classList.remove("hidden");
-      elements.followups.classList.remove("show");
-
-      elements.questions.innerHTML = "";
-      config.starterQuestions.slice(0, 3).forEach((item) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "wcs-ai-chip";
-        btn.textContent = item.label;
-        btn.addEventListener("click", () => sendMessage(item.message, { source: "starter" }));
-        elements.questions.appendChild(btn);
-      });
-    } else {
-      elements.intro.classList.add("hidden");
-      renderFollowUpsForPage(active.focusPageKey || currentPageKey);
-    }
-  }
-
-  function renderSession(sessionId) {
-    const session = sessionsState.sessions[sessionId];
-    if (!session) return;
-
-    elements.messages.innerHTML = "";
-    normalizeMessagesForRender(session.messages).forEach((message) => {
-      addMessageToDOM(message.role, message.content);
-    });
-
-    const hasUserMessage = session.messages.some((message) => message.role === "user");
-    if (hasUserMessage) {
-      elements.intro.classList.add("hidden");
-      renderFollowUpsForPage(session.focusPageKey || currentPageKey);
-    } else {
-      showIntro();
-    }
-  }
-
-  function addMessageToSession(role, content) {
-    const session = ensureActiveSession();
-
-    session.messages.push({
-      role,
-      content: safeText(content),
-      time: Date.now()
-    });
-
-    session.updatedAt = Date.now();
-
-    if (role === "user" && session.title === "New chat") {
-      session.title = trimText(content, 34) || "New chat";
-    }
-
-    sessionsState.sessions[session.id] = session;
-
-    const maxMessages = 50;
-    if (session.messages.length > maxMessages) {
-      session.messages = session.messages.slice(-maxMessages);
-    }
-
-    saveState();
-  }
-
-  function startNewChat() {
-    const newSession = createSession({ preserveHistory: true });
-    activeSessionId = newSession.id;
-    sessionsState.activeSessionId = activeSessionId;
-    saveState();
-    renderSession(activeSessionId);
-    showToast("New chat started.");
-  }
-
-  async function requestNotifications() {
-    if (!("Notification" in window)) {
-      showToast("Notifications are not supported in this browser.");
-      return;
-    }
-
-    try {
-      if (Notification.permission === "granted") {
-        notificationReady = true;
-        showToast("Notifications are enabled.");
-        return;
-      }
-
-      if (Notification.permission === "denied") {
-        showToast("Notifications are blocked in browser settings.");
-        return;
-      }
-
-      const permission = await Notification.requestPermission();
-      notificationReady = permission === "granted";
-
-      if (notificationReady) {
-        showToast("Notifications are enabled.");
-      } else {
-        showToast("Notifications are off.");
-      }
-    } catch {
-      showToast("Notifications could not be enabled.");
-    }
-  }
-
-  function notifyDone(replyText) {
-    const preview = trimText(replyText, 90) || "Codeo finished responding.";
-
-    showToast("Codeo is done.");
-
-    if ("Notification" in window && Notification.permission === "granted") {
-      try {
-        new Notification("Codeo", {
-          body: preview
-        });
-      } catch {}
-    }
-
-    if (navigator.vibrate) {
-      navigator.vibrate(15);
-    }
-  }
-
-  function openPanel() {
-    elements.panel.classList.add("open");
-    elements.input.focus();
-    showIntro();
-  }
-
-  function closePanel() {
-    elements.panel.classList.remove("open");
-  }
-
-  function scheduleClose() {
-    clearTimeout(closeTimer);
-    closeTimer = window.setTimeout(() => {
-      if (canUseHoverPointer() && !elements.widget.matches(":hover")) {
-        closePanel();
-      }
-    }, 160);
-  }
-
-  function renderResponseAction(action) {
-    if (!action || action.type !== "navigate" || !action.url) return;
-
-    const bubble = document.createElement("div");
-    bubble.className = "wcs-ai-message assistant";
-
-    const text = document.createElement("div");
-    text.textContent = `Opening ${action.label || "page"}...`;
-    bubble.appendChild(text);
-
-    const row = document.createElement("div");
-    row.className = "wcs-ai-action-row";
-
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "wcs-ai-action-btn";
-    btn.textContent = action.label || "Open page";
-    btn.addEventListener("click", () => {
-      window.location.href = action.url;
-    });
-
-    row.appendChild(btn);
-    bubble.appendChild(row);
-
-    elements.messages.appendChild(bubble);
-    scrollToBottom();
-
-    if (action.auto) {
-      window.setTimeout(() => {
-        window.location.href = action.url;
-      }, 650);
-    }
-  }
-
-  function buildResearchForRequest(targetPageKey) {
-    const targetKey = sanitizePageKey(targetPageKey) || currentPageKey;
-    return gatherResearchContext(targetKey);
-  }
-
-  async function sendMessage(message, options = {}) {
-    const trimmed = safeText(message).trim();
-    if (!trimmed) return;
-
-    const session = ensureActiveSession();
-    if (!session) return;
-
-    if (!session.messages.some((item) => item.role === "user")) {
-      elements.intro.classList.add("hidden");
-    }
-
-    addMessageToDOM("user", trimmed);
-    addMessageToSession("user", trimmed);
-
-    const targetPageKey = inferTargetPageKey(trimmed, session.focusPageKey || currentPageKey);
-    const research = await buildResearchForRequest(targetPageKey);
-
-    setBusy(true);
-
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          message: trimmed,
-          history: session.messages.slice(-8),
-          page: {
-            path: window.location.pathname,
-            title: document.title,
-            key: currentPageKey
-          },
-          targetPage: {
-            key: targetPageKey,
-            url: getPageByKey(targetPageKey).url,
-            label: getPageByKey(targetPageKey).label
-          },
-          research
-        })
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      const reply =
-        typeof data.reply === "string" && data.reply.trim()
-          ? data.reply.trim()
-          : "I am unable to reach the AI service at the moment. Please try again shortly.";
-
-      addMessageToDOM("assistant", reply);
-      addMessageToSession("assistant", reply);
-
-      if (data.focusPage) {
-        session.focusPageKey = sanitizePageKey(data.focusPage) || targetPageKey || currentPageKey;
-      } else {
-        session.focusPageKey = targetPageKey || currentPageKey;
-      }
-
-      session.updatedAt = Date.now();
-      sessionsState.sessions[session.id] = session;
-      saveState();
-
-      if (data.action && typeof data.action === "object") {
-        renderResponseAction(data.action);
-      }
-
-      renderFollowUpsForPage(session.focusPageKey || currentPageKey);
-      notifyDone(reply);
-    } catch {
-      const fallback = "I am unable to reach the AI service at the moment. Please try again shortly.";
-      addMessageToDOM("assistant", fallback);
-      addMessageToSession("assistant", fallback);
-      renderFollowUpsForPage(session.focusPageKey || currentPageKey);
-      notifyDone(fallback);
-    } finally {
-      setBusy(false);
-      elements.input.focus();
-      showIntro();
-    }
-  }
-
-  async function loadConfig() {
-    try {
-      const response = await fetch(CONFIG_URL, { cache: "no-store" });
-      if (!response.ok) {
-        config = { ...DEFAULT_CONFIG };
-        return;
-      }
-
-      const data = await response.json();
-
-      config = {
-        ...DEFAULT_CONFIG,
-        ...data,
-        contact: {
-          ...DEFAULT_CONFIG.contact,
-          ...(data.contact || {})
-        },
-        pageDirectory:
-          Array.isArray(data.pageDirectory) && data.pageDirectory.length
-            ? data.pageDirectory
-            : DEFAULT_CONFIG.pageDirectory,
-        starterQuestions:
-          Array.isArray(data.starterQuestions) && data.starterQuestions.length
-            ? data.starterQuestions
-            : DEFAULT_CONFIG.starterQuestions,
-        followUpQuestionsByPage:
-          data.followUpQuestionsByPage && typeof data.followUpQuestionsByPage === "object"
-            ? data.followUpQuestionsByPage
-            : DEFAULT_CONFIG.followUpQuestionsByPage,
-        welcomeMessage: safeText(data.welcomeMessage) || DEFAULT_CONFIG.welcomeMessage
-      };
-    } catch {
-      config = { ...DEFAULT_CONFIG };
-    }
-  }
-
-  function mountWidget() {
-    const widget = document.createElement("div");
-    widget.id = "wcs-ai-widget";
-    widget.innerHTML = `
-      <button id="wcs-ai-launcher" type="button" aria-label="Open Codeo">
-        <i class="ri-robot-2-line" aria-hidden="true"></i>
-      </button>
-
-      <section id="wcs-ai-panel" aria-label="Codeo assistant">
-        <header id="wcs-ai-header">
-          <div id="wcs-ai-title-wrap">
-            <div id="wcs-ai-title"></div>
-            <div id="wcs-ai-subtitle"></div>
-          </div>
-
-          <div class="wcs-ai-header-actions">
-            <button id="wcs-ai-newchat" class="wcs-ai-icon-btn" type="button" aria-label="Start new chat" title="New chat">
-              <i class="ri-add-line" aria-hidden="true"></i>
-            </button>
-            <button id="wcs-ai-notify" class="wcs-ai-icon-btn" type="button" aria-label="Enable notifications" title="Notifications">
-              <i class="ri-notification-3-line" aria-hidden="true"></i>
-            </button>
-          </div>
-
-          <button id="wcs-ai-close" type="button" aria-label="Close assistant">×</button>
-        </header>
-
-        <div id="wcs-ai-toast" aria-live="polite"></div>
-
-        <div id="wcs-ai-intro">
-          <div id="wcs-ai-intro-title">Start here</div>
-          <div id="wcs-ai-intro-copy">Use one of these questions, or type your own.</div>
-          <div id="wcs-ai-questions"></div>
-        </div>
-
-        <div id="wcs-ai-messages" aria-live="polite" aria-relevant="additions"></div>
-        <div id="wcs-ai-typing">Codeo is typing...</div>
-
-        <div id="wcs-ai-followups">
-          <div id="wcs-ai-followups-title">Next steps</div>
-          <div id="wcs-ai-followup-grid"></div>
-        </div>
-
-        <form id="wcs-ai-input-wrap">
-          <input
-            id="wcs-ai-input"
-            type="text"
-            placeholder="Ask about WCS services, contact, or site details"
-            autocomplete="off"
-          />
-          <button id="wcs-ai-send" type="submit">Send</button>
-        </form>
-
-        <div id="wcs-ai-footer-note">
-          Responses are limited to official WCS business and site guidance.
-        </div>
-      </section>
-    `;
-
-    document.body.appendChild(widget);
-
-    elements = {
-      widget,
-      launcher: document.getElementById("wcs-ai-launcher"),
-      panel: document.getElementById("wcs-ai-panel"),
-      closeBtn: document.getElementById("wcs-ai-close"),
-      newChatBtn: document.getElementById("wcs-ai-newchat"),
-      notifyBtn: document.getElementById("wcs-ai-notify"),
-      intro: document.getElementById("wcs-ai-intro"),
-      questions: document.getElementById("wcs-ai-questions"),
-      messages: document.getElementById("wcs-ai-messages"),
-      typing: document.getElementById("wcs-ai-typing"),
-      followups: document.getElementById("wcs-ai-followups"),
-      followupGrid: document.getElementById("wcs-ai-followup-grid"),
-      input: document.getElementById("wcs-ai-input"),
-      sendBtn: document.getElementById("wcs-ai-send"),
-      title: document.getElementById("wcs-ai-title"),
-      subtitle: document.getElementById("wcs-ai-subtitle"),
-      toast: document.getElementById("wcs-ai-toast"),
-      toastHideTimer: null
-    };
-
-    elements.title.textContent = config.assistantName;
-    elements.subtitle.textContent = config.subtitle;
-
-    currentPageKey = getPageKeyFromPath(window.location.pathname);
-
-    sessionsState = loadState();
-    researchCache = loadResearchCache();
-    activeSessionId = sessionsState.activeSessionId;
-
-    if (!activeSessionId || !sessionsState.sessions[activeSessionId]) {
-      const created = createSession({ preserveHistory: true });
-      activeSessionId = created.id;
-      sessionsState.activeSessionId = activeSessionId;
-      saveState();
-    }
-
-    const active = ensureActiveSession();
-    active.focusPageKey = active.focusPageKey || currentPageKey;
-    sessionsState.sessions[active.id] = active;
-    saveState();
-
-    renderSession(activeSessionId);
-
-    if (canUseHoverPointer()) {
-      elements.widget.addEventListener("pointerenter", () => {
-        clearTimeout(closeTimer);
-        openPanel();
-      });
-
-      elements.widget.addEventListener("pointerleave", scheduleClose);
-      elements.launcher.addEventListener("focus", openPanel);
-      elements.panel.addEventListener("focusin", openPanel);
-      elements.panel.addEventListener("focusout", scheduleClose);
-    } else {
-      elements.launcher.addEventListener("click", () => {
-        touchOpen = !touchOpen;
-        if (touchOpen) {
-          openPanel();
-        } else {
-          closePanel();
-        }
-      });
-    }
-
-    elements.closeBtn.addEventListener("click", closePanel);
-    elements.newChatBtn.addEventListener("click", startNewChat);
-    elements.notifyBtn.addEventListener("click", requestNotifications);
-
-    elements.panel.querySelector("form").addEventListener("submit", (event) => {
-      event.preventDefault();
-      sendMessage(elements.input.value);
-    });
-
-    elements.input.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closePanel();
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && elements.panel.classList.contains("open")) {
-        closePanel();
-      }
-    });
-
-    prefetchAllPagesInBackground();
-  }
-
-  async function init() {
-    ensureRemixIcons();
-    currentPageKey = getPageKeyFromPath(window.location.pathname);
-    await loadConfig();
-    mountWidget();
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
-})();
+}
