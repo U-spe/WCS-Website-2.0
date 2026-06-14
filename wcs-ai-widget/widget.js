@@ -14,19 +14,19 @@
         message: "What services does Web Creation Studios provide?"
       },
       {
-        label: "Projects",
-        message: "Show me what kinds of projects Web Creation Studios builds."
+        label: "Pricing",
+        message: "What pricing information is available?"
       },
       {
-        label: "Contact",
-        message: "How can I contact Web Creation Studios?"
+        label: "Portfolio",
+        message: "Show me the portfolio page."
       }
     ],
     followUpQuestions: [
       {
-        label: "Open Services",
-        message: "Open the services page.",
-        navigateTo: "/services.html"
+        label: "Open Home",
+        message: "Open the home page.",
+        navigateTo: "/"
       },
       {
         label: "Open About",
@@ -47,13 +47,33 @@
   const CHAT_STATE_KEY = "wcs-ai-has-chatted";
 
   let config = { ...DEFAULT_CONFIG };
-  let hasChatted = sessionStorage.getItem(CHAT_STATE_KEY) === "1";
+  let hasChatted = false;
   const history = [];
 
   let elements = null;
+  let hoverCloseTimer = null;
+  let touchModeOpen = false;
 
   function safeText(value) {
     return typeof value === "string" ? value : "";
+  }
+
+  function canHoverFinePointer() {
+    return window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  }
+
+  function getSessionFlag() {
+    try {
+      return sessionStorage.getItem(CHAT_STATE_KEY) === "1";
+    } catch {
+      return false;
+    }
+  }
+
+  function setSessionFlag() {
+    try {
+      sessionStorage.setItem(CHAT_STATE_KEY, "1");
+    } catch {}
   }
 
   function scrollToBottom() {
@@ -68,10 +88,6 @@
     elements.messages.appendChild(el);
     scrollToBottom();
     return el;
-  }
-
-  function addSystemNote(text) {
-    return addMessage("system", text);
   }
 
   function setBusy(isBusy) {
@@ -91,8 +107,12 @@
       return "Web Creation Studios provides web design, website development, ecommerce setup, branding, logo design, hosting support, domain setup, analytics setup, email setup, site security, and custom website features.";
     }
 
-    if (text.includes("project") || text.includes("work") || text.includes("portfolio")) {
-      return "Web Creation Studios builds modern business sites, branded landing pages, service pages, and custom web features.";
+    if (text.includes("pricing") || text.includes("price") || text.includes("rates")) {
+      return "Pricing information is available on the pricing page. If you need current exact numbers, contact Web Creation Studios directly.";
+    }
+
+    if (text.includes("portfolio") || text.includes("projects") || text.includes("work")) {
+      return "The portfolio page shows examples of the type of work Web Creation Studios builds.";
     }
 
     if (text.includes("about")) {
@@ -101,6 +121,10 @@
 
     if (text.includes("team") || text.includes("staff")) {
       return "The team page shows the people behind Web Creation Studios.";
+    }
+
+    if (text.includes("home")) {
+      return "The home page is the main entry point for Web Creation Studios.";
     }
 
     return "I am unable to reach the AI service at the moment. Please try again shortly.";
@@ -132,8 +156,8 @@
   function showIntro() {
     if (hasChatted) {
       elements.intro.classList.add("hidden");
-      elements.followups.classList.remove("show");
-      elements.followupGrid.innerHTML = "";
+      elements.followups.classList.add("show");
+      renderQuestions(elements.followupGrid, config.followUpQuestions, "followup");
       return;
     }
 
@@ -149,12 +173,37 @@
     renderQuestions(elements.followupGrid, config.followUpQuestions, "followup");
   }
 
-  function navigateFromAction(action) {
+  function togglePanel(open) {
+    const shouldOpen = typeof open === "boolean" ? open : !elements.panel.classList.contains("open");
+    elements.panel.classList.toggle("open", shouldOpen);
+
+    if (shouldOpen) {
+      elements.input.focus();
+    }
+  }
+
+  function openPanel() {
+    togglePanel(true);
+  }
+
+  function closePanel() {
+    togglePanel(false);
+  }
+
+  function scheduleClose() {
+    clearTimeout(hoverCloseTimer);
+    hoverCloseTimer = setTimeout(() => {
+      if (canHoverFinePointer() && !elements.widget.matches(":hover")) {
+        closePanel();
+      }
+    }, 160);
+  }
+
+  function renderActionButton(action) {
     if (!action || action.type !== "navigate" || !action.url) return;
 
     const bubble = document.createElement("div");
     bubble.className = "wcs-ai-message assistant";
-    bubble.innerHTML = "";
 
     const text = document.createElement("div");
     text.textContent = `Opening ${action.label || "page"}...`;
@@ -212,12 +261,71 @@
     }
   }
 
+  async function sendMessage(message) {
+    const trimmed = safeText(message).trim();
+    if (!trimmed) return;
+
+    if (!hasChatted) {
+      hasChatted = true;
+      setSessionFlag();
+      elements.intro.classList.add("hidden");
+    }
+
+    addMessage("user", trimmed);
+    history.push({ role: "user", content: trimmed });
+    elements.input.value = "";
+    setBusy(true);
+
+    const payload = {
+      message: trimmed,
+      history: history.slice(-8),
+      page: window.location.pathname,
+      title: document.title
+    };
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      const reply =
+        typeof data.reply === "string" && data.reply.trim()
+          ? data.reply.trim()
+          : buildFallbackReply(trimmed);
+
+      addMessage("assistant", reply);
+      history.push({ role: "assistant", content: reply });
+
+      if (data.action && typeof data.action === "object") {
+        renderActionButton(data.action);
+      }
+
+      showFollowUps();
+    } catch {
+      const reply = buildFallbackReply(trimmed);
+      addMessage("assistant", reply);
+      history.push({ role: "assistant", content: reply });
+      showFollowUps();
+    } finally {
+      setBusy(false);
+      elements.input.focus();
+    }
+  }
+
   function mountWidget() {
     const widget = document.createElement("div");
     widget.id = "wcs-ai-widget";
     widget.innerHTML = `
-      <button id="wcs-ai-toggle" type="button" aria-label="Open WCS AI Assistant">
-        <span>AI</span>
+      <button id="wcs-ai-launcher" type="button" aria-label="Open WCS AI Assistant">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2a7 7 0 0 0-7 7v4a4 4 0 0 0 4 4h1v2H8v2h8v-2h-2v-2h1a4 4 0 0 0 4-4V9a7 7 0 0 0-7-7Zm-4 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm8 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3ZM9 13h6v1a3 3 0 1 1-6 0v-1Z"/>
+        </svg>
       </button>
 
       <section id="wcs-ai-panel" aria-label="WCS AI Assistant">
@@ -262,7 +370,8 @@
     document.body.appendChild(widget);
 
     elements = {
-      toggle: document.getElementById("wcs-ai-toggle"),
+      widget,
+      launcher: document.getElementById("wcs-ai-launcher"),
       panel: document.getElementById("wcs-ai-panel"),
       closeBtn: document.getElementById("wcs-ai-close"),
       intro: document.getElementById("wcs-ai-intro"),
@@ -282,88 +391,28 @@
 
     renderQuestions(elements.introQuestions, config.starterQuestions, "starter");
     renderQuestions(elements.followupGrid, config.followUpQuestions, "followup");
+
     showIntro();
-
-    function openPanel() {
-      elements.panel.classList.add("open");
-      elements.input.focus();
-    }
-
-    function closePanel() {
-      elements.panel.classList.remove("open");
-    }
-
-    async function sendMessage(message) {
-      const trimmed = safeText(message).trim();
-      if (!trimmed) return;
-
-      if (!hasChatted) {
-        hasChatted = true;
-        sessionStorage.setItem(CHAT_STATE_KEY, "1");
-        elements.intro.classList.add("hidden");
-      }
-
-      addMessage("user", trimmed);
-      history.push({ role: "user", content: trimmed });
-      elements.input.value = "";
-      setBusy(true);
-
-      const payload = {
-        message: trimmed,
-        history: history.slice(-8),
-        page: window.location.pathname,
-        title: document.title
-      };
-
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json().catch(() => ({}));
-
-        const reply =
-          typeof data.reply === "string" && data.reply.trim()
-            ? data.reply.trim()
-            : buildFallbackReply(trimmed);
-
-        addMessage("assistant", reply);
-        history.push({ role: "assistant", content: reply });
-
-        if (data.action && typeof data.action === "object") {
-          navigateFromAction(data.action);
-        }
-
-        if (history.filter((item) => item.role === "assistant").length >= 1) {
-          showFollowUps();
-        }
-      } catch {
-        const reply = buildFallbackReply(trimmed);
-        addMessage("assistant", reply);
-        history.push({ role: "assistant", content: reply });
-        showFollowUps();
-      } finally {
-        setBusy(false);
-        elements.input.focus();
-      }
-    }
-
-    elements.toggle.addEventListener("click", () => {
-      const isOpen = elements.panel.classList.toggle("open");
-      if (isOpen) {
-        elements.input.focus();
-      }
-    });
+    addMessage("assistant", config.welcomeMessage);
 
     elements.closeBtn.addEventListener("click", closePanel);
 
-    elements.sendBtn.addEventListener("click", (event) => {
-      event.preventDefault();
-    });
+    if (canHoverFinePointer()) {
+      elements.widget.addEventListener("pointerenter", () => {
+        clearTimeout(hoverCloseTimer);
+        openPanel();
+      });
+
+      elements.widget.addEventListener("pointerleave", scheduleClose);
+      elements.launcher.addEventListener("focus", openPanel);
+      elements.panel.addEventListener("focusin", openPanel);
+      elements.panel.addEventListener("focusout", scheduleClose);
+    } else {
+      elements.launcher.addEventListener("click", () => {
+        touchModeOpen = !touchModeOpen;
+        togglePanel(touchModeOpen);
+      });
+    }
 
     elements.panel.querySelector("form").addEventListener("submit", (event) => {
       event.preventDefault();
@@ -371,7 +420,9 @@
     });
 
     elements.input.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closePanel();
+      if (event.key === "Escape") {
+        closePanel();
+      }
     });
 
     document.addEventListener("keydown", (event) => {
@@ -379,12 +430,10 @@
         closePanel();
       }
     });
-
-    addMessage("assistant", config.welcomeMessage);
-    showIntro();
   }
 
   async function init() {
+    hasChatted = getSessionFlag();
     await loadConfig();
     mountWidget();
   }
