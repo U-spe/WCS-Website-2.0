@@ -71,9 +71,8 @@
         "navigateTo": "/services.html"
       },
       {
-        "label": "Open Pricing",
-        "message": "Open the pricing page.",
-        "navigateTo": "/pricing.html"
+        "label": "Start Intake",
+        "action": "booking"
       }
     ],
     "about": [
@@ -88,8 +87,8 @@
         "navigateTo": "/services.html"
       },
       {
-        "label": "Learn WCS story",
-        "message": "Tell me more about Web Creation Studios."
+        "label": "Start Intake",
+        "action": "booking"
       }
     ],
     "team": [
@@ -103,9 +102,8 @@
         "navigateTo": "/services.html"
       },
       {
-        "label": "Open Portfolio",
-        "message": "Open the portfolio page.",
-        "navigateTo": "/portfolio.html"
+        "label": "Start Intake",
+        "action": "booking"
       }
     ],
     "services": [
@@ -119,9 +117,8 @@
         "navigateTo": "/pricing.html"
       },
       {
-        "label": "See examples",
-        "message": "Open the portfolio page.",
-        "navigateTo": "/portfolio.html"
+        "label": "Start Intake",
+        "action": "booking"
       }
     ],
     "pricing": [
@@ -136,8 +133,8 @@
         "navigateTo": "/portfolio.html"
       },
       {
-        "label": "What do I need?",
-        "message": "What Web Creation Studios service fits my budget and goals?"
+        "label": "Start Intake",
+        "action": "booking"
       }
     ],
     "portfolio": [
@@ -152,9 +149,8 @@
         "navigateTo": "/pricing.html"
       },
       {
-        "label": "Open About",
-        "message": "Open the about page.",
-        "navigateTo": "/about.html"
+        "label": "Start Intake",
+        "action": "booking"
       }
     ]
   },
