@@ -7,10 +7,11 @@ const groq = new Groq({
 const SITE_PAGES = [
   { label: "Home", url: "/" },
   { label: "About", url: "/about.html" },
-  { label: "Services", url: "/services.html" },
   { label: "Team", url: "/team.html" },
-  { label: "Pricing", url: "/pricing.html" }
- ];
+  { label: "Services", url: "/services.html" },
+  { label: "Pricing", url: "/pricing.html" },
+  { label: "Portfolio", url: "/portfolio.html" }
+];
 
 function cleanString(value) {
   return typeof value === "string" ? value.trim() : "";
@@ -26,7 +27,7 @@ function sanitizeHistory(history) {
         typeof item === "object" &&
         (item.role === "user" || item.role === "assistant") &&
         typeof item.content === "string" &&
-        item.content.trim()
+        item.content.trim().length > 0
     )
     .slice(-10)
     .map((item) => ({
@@ -61,18 +62,25 @@ Current page context:
 - Path: ${page || "unknown"}
 - Title: ${title || "unknown"}
 
-Allowed site pages:
-${SITE_PAGES.map((p) => `- ${p.label}: ${p.url}`).join("\n")}
+Allowed pages:
+${SITE_PAGES.map((pageItem) => `- ${pageItem.label}: ${pageItem.url}`).join("\n")}
 
 Behavior:
-- Answer questions about Web Creation Studios, services, pages, projects, and contact.
-- If the user wants to go to a page, return an action object with the correct URL.
-- If the user makes a direct request like "take me to services" or "open the about page", set action.auto = true.
-- If the user is asking generally about a page, you may set action.auto = false and still provide the action.
-- If you are not sure, do not invent facts.
+- Answer questions about Web Creation Studios, services, pages, projects, pricing, and contact.
+- If the user wants to go to a page, return a navigation action.
+- If the user makes a direct request like "open services" or "take me to pricing", set action.auto to true.
+- If the user is asking generally about a page, action.auto can be false.
+- Do not invent facts.
+- Keep the reply short and practical.
 
-Response format:
-Return ONLY valid JSON with this shape:
+Return ONLY valid JSON in this shape:
+
+{
+  "reply": "string",
+  "action": null
+}
+
+or
 
 {
   "reply": "string",
@@ -81,14 +89,8 @@ Return ONLY valid JSON with this shape:
     "label": "string",
     "url": "string",
     "auto": true
-  } or null
+  }
 }
-
-Rules:
-- reply must be a short, useful business response
-- action must be null unless a page navigation is needed
-- do not wrap in markdown
-- do not include extra keys
 `.trim();
 }
 
@@ -105,9 +107,8 @@ function extractJson(text) {
   const lastBrace = trimmed.lastIndexOf("}");
 
   if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-    const candidate = trimmed.slice(firstBrace, lastBrace + 1);
     try {
-      return JSON.parse(candidate);
+      return JSON.parse(trimmed.slice(firstBrace, lastBrace + 1));
     } catch {}
   }
 
@@ -117,39 +118,89 @@ function extractJson(text) {
 function fallbackAction(message) {
   const text = message.toLowerCase();
 
-  const directNavigate = [
-    { test: /(take me to|open|go to|show me).*(services?)/, url: "/services.html", label: "Open Services" },
-    { test: /(take me to|open|go to|show me).*(about)/, url: "/about.html", label: "Open About" },
-    { test: /(take me to|open|go to|show me).*(team|staff)/, url: "/team.html", label: "Open Team" },
-    { test: /(take me to|open|go to|show me).*(projects?|work)/, url: "/projects.html", label: "Open Projects" },
-    { test: /(take me to|open|go to|show me).*(home|homepage|main page)/, url: "/", label: "Open Home" }
+  const directMatches = [
+    {
+      test: /(take me to|open|go to|show me).*(home|homepage|main page)/,
+      url: "/",
+      label: "Open Home"
+    },
+    {
+      test: /(take me to|open|go to|show me).*(about)/,
+      url: "/about.html",
+      label: "Open About"
+    },
+    {
+      test: /(take me to|open|go to|show me).*(team|staff)/,
+      url: "/team.html",
+      label: "Open Team"
+    },
+    {
+      test: /(take me to|open|go to|show me).*(services?)/,
+      url: "/services.html",
+      label: "Open Services"
+    },
+    {
+      test: /(take me to|open|go to|show me).*(pricing|price|rates)/,
+      url: "/pricing.html",
+      label: "Open Pricing"
+    },
+    {
+      test: /(take me to|open|go to|show me).*(portfolio|projects?|work|gallery)/,
+      url: "/portfolio.html",
+      label: "Open Portfolio"
+    }
   ];
 
-  const suggestionNavigate = [
-    { test: /(services?)/, url: "/services.html", label: "Open Services" },
-    { test: /(about)/, url: "/about.html", label: "Open About" },
-    { test: /(team|staff)/, url: "/team.html", label: "Open Team" },
-    { test: /(projects?|work|portfolio)/, url: "/projects.html", label: "Open Projects" },
-    { test: /(home|homepage|main page)/, url: "/", label: "Open Home" }
+  const suggestionMatches = [
+    {
+      test: /(home|homepage|main page)/,
+      url: "/",
+      label: "Open Home"
+    },
+    {
+      test: /(about)/,
+      url: "/about.html",
+      label: "Open About"
+    },
+    {
+      test: /(team|staff)/,
+      url: "/team.html",
+      label: "Open Team"
+    },
+    {
+      test: /(services?)/,
+      url: "/services.html",
+      label: "Open Services"
+    },
+    {
+      test: /(pricing|price|rates)/,
+      url: "/pricing.html",
+      label: "Open Pricing"
+    },
+    {
+      test: /(portfolio|projects?|work|gallery)/,
+      url: "/portfolio.html",
+      label: "Open Portfolio"
+    }
   ];
 
-  for (const item of directNavigate) {
-    if (item.test.test(text)) {
+  for (const match of directMatches) {
+    if (match.test.test(text)) {
       return {
         type: "navigate",
-        label: item.label,
-        url: item.url,
+        label: match.label,
+        url: match.url,
         auto: true
       };
     }
   }
 
-  for (const item of suggestionNavigate) {
-    if (item.test.test(text)) {
+  for (const match of suggestionMatches) {
+    if (match.test.test(text)) {
       return {
         type: "navigate",
-        label: item.label,
-        url: item.url,
+        label: match.label,
+        url: match.url,
         auto: false
       };
     }
@@ -169,8 +220,12 @@ function fallbackReply(message) {
     return "Web Creation Studios provides web design, website development, ecommerce setup, branding, logo design, hosting support, domain setup, analytics setup, email setup, site security, and custom website features.";
   }
 
-  if (text.includes("project") || text.includes("work") || text.includes("portfolio")) {
-    return "Web Creation Studios builds modern business sites, branded landing pages, service pages, and custom web features.";
+  if (text.includes("pricing") || text.includes("price") || text.includes("rates")) {
+    return "Pricing information is available on the pricing page. If you need current exact numbers, contact Web Creation Studios directly.";
+  }
+
+  if (text.includes("portfolio") || text.includes("projects") || text.includes("work")) {
+    return "The portfolio page shows examples of the type of work Web Creation Studios builds.";
   }
 
   if (text.includes("about")) {
@@ -228,21 +283,25 @@ module.exports = async function handler(req, res) {
       cleanString(raw) ||
       fallbackReply(message);
 
-    const actionFromModel = parsed?.action && typeof parsed.action === "object" ? parsed.action : null;
-    const actionFromFallback = fallbackAction(message);
+    const modelAction =
+      parsed && parsed.action && typeof parsed.action === "object"
+        ? parsed.action
+        : null;
+
+    const fallback = fallbackAction(message);
 
     const action =
-      actionFromModel &&
-      actionFromModel.type === "navigate" &&
-      typeof actionFromModel.url === "string" &&
-      typeof actionFromModel.label === "string"
+      modelAction &&
+      modelAction.type === "navigate" &&
+      typeof modelAction.label === "string" &&
+      typeof modelAction.url === "string"
         ? {
             type: "navigate",
-            label: actionFromModel.label,
-            url: actionFromModel.url,
-            auto: Boolean(actionFromModel.auto)
+            label: modelAction.label,
+            url: modelAction.url,
+            auto: Boolean(modelAction.auto)
           }
-        : actionFromFallback;
+        : fallback;
 
     return res.status(200).json({
       reply,
