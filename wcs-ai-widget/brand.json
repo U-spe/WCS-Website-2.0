@@ -1,36 +1,48 @@
 {
-  "assistantName": "WCS AI Assistant",
+  "assistantName": "Codeo",
   "companyName": "Web Creation Studios",
   "founder": "CJ",
-  "subtitle": "Business support and site guidance",
+  "subtitle": "WCS research assistant",
   "contact": {
     "email": "solutionsforyourweb@gmail.com",
     "phone": "(302) 526-0930"
   },
-  "pages": [
+  "pageDirectory": [
     {
+      "key": "home",
       "label": "Home",
-      "url": "/"
+      "url": "/",
+      "aliases": ["home", "homepage", "main"]
     },
     {
+      "key": "about",
       "label": "About",
-      "url": "/about.html"
+      "url": "/about.html",
+      "aliases": ["about"]
     },
     {
+      "key": "team",
       "label": "Team",
-      "url": "/team.html"
+      "url": "/team.html",
+      "aliases": ["team", "staff"]
     },
     {
+      "key": "services",
       "label": "Services",
-      "url": "/services.html"
+      "url": "/services.html",
+      "aliases": ["services", "service"]
     },
     {
+      "key": "pricing",
       "label": "Pricing",
-      "url": "/pricing.html"
+      "url": "/pricing.html",
+      "aliases": ["pricing", "price", "rates", "cost"]
     },
     {
+      "key": "portfolio",
       "label": "Portfolio",
-      "url": "/portfolio.html"
+      "url": "/portfolio.html",
+      "aliases": ["portfolio", "projects", "work", "gallery"]
     }
   ],
   "starterQuestions": [
@@ -47,22 +59,104 @@
       "message": "Show me the portfolio page."
     }
   ],
-  "followUpQuestions": [
-    {
-      "label": "Open Home",
-      "message": "Open the home page.",
-      "navigateTo": "/"
-    },
-    {
-      "label": "Open About",
-      "message": "Open the about page.",
-      "navigateTo": "/about.html"
-    },
-    {
-      "label": "Open Team",
-      "message": "Open the team page.",
-      "navigateTo": "/team.html"
-    }
-  ],
-  "welcomeMessage": "Hello. How can I help with Web Creation Studios today?"
+  "followUpQuestionsByPage": {
+    "home": [
+      {
+        "label": "What does WCS build?",
+        "message": "What kinds of websites and projects does Web Creation Studios build?"
+      },
+      {
+        "label": "Open Services",
+        "message": "Open the services page.",
+        "navigateTo": "/services.html"
+      },
+      {
+        "label": "Open Pricing",
+        "message": "Open the pricing page.",
+        "navigateTo": "/pricing.html"
+      }
+    ],
+    "about": [
+      {
+        "label": "Open Team",
+        "message": "Open the team page.",
+        "navigateTo": "/team.html"
+      },
+      {
+        "label": "Open Services",
+        "message": "Open the services page.",
+        "navigateTo": "/services.html"
+      },
+      {
+        "label": "Learn WCS story",
+        "message": "Tell me more about Web Creation Studios."
+      }
+    ],
+    "team": [
+      {
+        "label": "About WCS",
+        "message": "Tell me more about Web Creation Studios."
+      },
+      {
+        "label": "Open Services",
+        "message": "Open the services page.",
+        "navigateTo": "/services.html"
+      },
+      {
+        "label": "Open Portfolio",
+        "message": "Open the portfolio page.",
+        "navigateTo": "/portfolio.html"
+      }
+    ],
+    "services": [
+      {
+        "label": "Help me choose",
+        "message": "Help me choose the right Web Creation Studios service for my business."
+      },
+      {
+        "label": "Open Pricing",
+        "message": "Open the pricing page.",
+        "navigateTo": "/pricing.html"
+      },
+      {
+        "label": "See examples",
+        "message": "Open the portfolio page.",
+        "navigateTo": "/portfolio.html"
+      }
+    ],
+    "pricing": [
+      {
+        "label": "Open Services",
+        "message": "Open the services page.",
+        "navigateTo": "/services.html"
+      },
+      {
+        "label": "Open Portfolio",
+        "message": "Open the portfolio page.",
+        "navigateTo": "/portfolio.html"
+      },
+      {
+        "label": "What do I need?",
+        "message": "What Web Creation Studios service fits my budget and goals?"
+      }
+    ],
+    "portfolio": [
+      {
+        "label": "Open Services",
+        "message": "Open the services page.",
+        "navigateTo": "/services.html"
+      },
+      {
+        "label": "Open Pricing",
+        "message": "Open the pricing page.",
+        "navigateTo": "/pricing.html"
+      },
+      {
+        "label": "Open About",
+        "message": "Open the about page.",
+        "navigateTo": "/about.html"
+      }
+    ]
+  },
+  "welcomeMessage": "Hello. I am Codeo. How can I help with Web Creation Studios today?"
 }
