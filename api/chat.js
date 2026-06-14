@@ -19,6 +19,7 @@ function cleanString(value) {
 
 function sanitizeHistory(history) {
   if (!Array.isArray(history)) return [];
+
   return history
     .filter(
       (item) =>
@@ -35,17 +36,17 @@ function sanitizeHistory(history) {
     }));
 }
 
-function normalizeFocusKey(value) {
+function normalizePageKey(value) {
   const cleaned = cleanString(value).toLowerCase();
-  const match = SITE_PAGES.find((page) => page.key === cleaned || page.aliases.includes(cleaned));
-  return match ? match.key : null;
+  const page = SITE_PAGES.find((item) => item.key === cleaned || item.aliases.includes(cleaned));
+  return page ? page.key : null;
 }
 
 function inferPageFromText(text) {
   const lowered = cleanString(text).toLowerCase();
 
   const directMatches = [
-    { test: /(take me to|open|go to|show me).*(services?)/, key: "services", label: "Open Services", url: "/services.html", auto: true },
+    { test: /(take me to|open|go to|show me).*(services?|service)/, key: "services", label: "Open Services", url: "/services.html", auto: true },
     { test: /(take me to|open|go to|show me).*(pricing|price|rates|cost)/, key: "pricing", label: "Open Pricing", url: "/pricing.html", auto: true },
     { test: /(take me to|open|go to|show me).*(portfolio|projects?|work|gallery)/, key: "portfolio", label: "Open Portfolio", url: "/portfolio.html", auto: true },
     { test: /(take me to|open|go to|show me).*(team|staff)/, key: "team", label: "Open Team", url: "/team.html", auto: true },
@@ -73,48 +74,72 @@ function inferPageFromText(text) {
   return null;
 }
 
+function formatPageBrief(brief) {
+  if (!brief) return "No page brief available.";
+
+  const headings = Array.isArray(brief.headings) && brief.headings.length
+    ? brief.headings.slice(0, 5).join(" | ")
+    : "none";
+
+  const links = Array.isArray(brief.links) && brief.links.length
+    ? brief.links
+        .slice(0, 5)
+        .map((item) => (item.text ? `${item.text} (${item.href || "#"})` : item.href || "#"))
+        .join(" | ")
+    : "none";
+
+  return [
+    `Key: ${brief.key || "unknown"}`,
+    `URL: ${brief.url || "unknown"}`,
+    `Title: ${brief.title || "unknown"}`,
+    `Source: ${brief.sourceType || "unknown"}`,
+    `Source length: ${brief.sourceLength || 0}`,
+    `Headings: ${headings}`,
+    `Links: ${links}`,
+    `Summary: ${brief.summary || "none"}`
+  ].join("\n");
+}
+
 function formatResearchContext(research) {
-  if (!research || typeof research !== "object") return "No site research provided.";
+  if (!research || typeof research !== "object") return "No research provided.";
 
   const blocks = [];
-
-  const pushBrief = (label, brief) => {
-    if (!brief) return;
-    const headings = Array.isArray(brief.headings) && brief.headings.length ? brief.headings.join(" | ") : "none";
-    blocks.push(
-      [
-        `${label}:`,
-        `- key: ${brief.key || "unknown"}`,
-        `- url: ${brief.url || "unknown"}`,
-        `- title: ${brief.title || "unknown"}`,
-        `- headings: ${headings}`,
-        `- summary: ${brief.summary || "none"}`
-      ].join("\n")
-    );
-  };
-
-  pushBrief("Current page brief", research.currentPage);
-  pushBrief("Target page brief", research.targetPage);
+  if (research.currentPage) blocks.push(`Current page\n${formatPageBrief(research.currentPage)}`);
+  if (research.targetPage) blocks.push(`Target page\n${formatPageBrief(research.targetPage)}`);
 
   if (Array.isArray(research.relatedPages) && research.relatedPages.length) {
     for (const item of research.relatedPages.slice(0, 3)) {
-      pushBrief("Related page brief", item);
+      blocks.push(`Related page\n${formatPageBrief(item)}`);
     }
   }
 
-  if (!blocks.length) return "No site research provided.";
-
-  return blocks.join("\n\n");
+  return blocks.length ? blocks.join("\n\n") : "No research provided.";
 }
 
-function buildSystemPrompt({ currentPage, targetPage, research, userMessage }) {
-  const currentKey = normalizeFocusKey(currentPage?.key || currentPage?.path || "");
-  const targetKey = normalizeFocusKey(targetPage?.key || targetPage?.path || "") || targetPage?.key || null;
+function formatMemorySummary(memory) {
+  if (!memory || typeof memory !== "object") return "No memory provided.";
+
+  const intake = memory.intake && typeof memory.intake === "object" ? memory.intake : {};
+
+  return [
+    `Last page key: ${memory.lastPageKey || "unknown"}`,
+    `Business type: ${memory.businessType || "unknown"}`,
+    `Budget: ${memory.budget || "unknown"}`,
+    `Timeline: ${memory.timeline || "unknown"}`,
+    `Recent topics: ${Array.isArray(memory.recentTopics) && memory.recentTopics.length ? memory.recentTopics.join(", ") : "none"}`,
+    `Intake name: ${intake.fullName || "unknown"}`,
+    `Intake business: ${intake.businessName || "unknown"}`
+  ].join("\n");
+}
+
+function buildSystemPrompt({ currentPage, targetPage, research, memory, userMessage }) {
+  const currentKey = normalizePageKey(currentPage?.key || currentPage?.path || "");
+  const targetKey = normalizePageKey(targetPage?.key || targetPage?.path || "") || targetPage?.key || null;
 
   return `
 You are Codeo, the official AI assistant for Web Creation Studios.
 
-Brand rules:
+Rules:
 - Stay locked to Web Creation Studios only.
 - Use a strict business tone.
 - Be professional, direct, and concise.
@@ -122,31 +147,24 @@ Brand rules:
 - Do not use emojis.
 - Do not hype.
 - Do not invent facts.
-
-Known company facts:
-- Company: Web Creation Studios
-- Founder: CJ
-- Contact email: solutionsforyourweb@gmail.com
-- Contact phone: (302) 526-0930
-
-Allowed site pages:
-- Home: /
-- About: /about.html
-- Team: /team.html
-- Services: /services.html
-- Pricing: /pricing.html
-- Portfolio: /portfolio.html
-
-Operating rules:
 - Treat the research context below as the primary source of truth.
-- If the question is about a page, answer from that page's content.
+- If the user asks about a page, answer from that page's content.
 - If the user asks to open a page, return a navigation action.
 - If the request clearly asks to go somewhere, set action.auto to true.
 - If the answer is uncertain, say so briefly and direct the user to the relevant page or contact information.
 - If the user asks about anything outside Web Creation Studios, redirect them back to WCS.
 
+Company facts:
+- Company: Web Creation Studios
+- Founder: CJ
+- Contact email: solutionsforyourweb@gmail.com
+- Contact phone: (302) 526-0930
+
 Current page key: ${currentKey || "unknown"}
 Target page key: ${targetKey || "unknown"}
+
+Memory summary:
+${formatMemorySummary(memory)}
 
 Research context:
 ${formatResearchContext(research)}
@@ -243,9 +261,9 @@ function fallbackAction(message) {
   };
 }
 
-function fallbackFocusKey(message, currentPageKey, targetPageKey) {
+function fallbackFocusPage(message, currentPageKey, targetPageKey) {
   const inferred = inferPageFromText(message);
-  return normalizeFocusKey(targetPageKey) || inferred?.key || normalizeFocusKey(currentPageKey) || "home";
+  return normalizePageKey(targetPageKey) || inferred?.key || normalizePageKey(currentPageKey) || "home";
 }
 
 module.exports = async function handler(req, res) {
@@ -263,6 +281,7 @@ module.exports = async function handler(req, res) {
     const currentPage = body.page && typeof body.page === "object" ? body.page : {};
     const targetPage = body.targetPage && typeof body.targetPage === "object" ? body.targetPage : {};
     const research = body.research && typeof body.research === "object" ? body.research : null;
+    const memory = body.memory && typeof body.memory === "object" ? body.memory : null;
 
     if (!message) {
       return res.status(400).json({ error: "Missing message" });
@@ -272,7 +291,7 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({
         reply: "WCS AI is not configured. Add GROQ_API_KEY in Vercel environment variables.",
         action: null,
-        focusPage: fallbackFocusKey(message, currentPage.key, targetPage.key)
+        focusPage: fallbackFocusPage(message, currentPage.key, targetPage.key)
       });
     }
 
@@ -287,6 +306,7 @@ module.exports = async function handler(req, res) {
             currentPage,
             targetPage,
             research,
+            memory,
             userMessage: message
           })
         },
@@ -303,17 +323,10 @@ module.exports = async function handler(req, res) {
       cleanString(raw) ||
       fallbackReply(message);
 
-    const focusPage =
-      normalizeFocusKey(parsed?.focusPage) ||
-      normalizeFocusKey(targetPage?.key) ||
-      fallbackFocusKey(message, currentPage.key, targetPage.key);
-
     const modelAction =
       parsed && parsed.action && typeof parsed.action === "object"
         ? parsed.action
         : null;
-
-    const fallback = fallbackAction(message);
 
     const action =
       modelAction &&
@@ -326,12 +339,12 @@ module.exports = async function handler(req, res) {
             url: modelAction.url,
             auto: Boolean(modelAction.auto)
           }
-        : fallback;
+        : fallbackAction(message);
 
     return res.status(200).json({
       reply,
       action,
-      focusPage
+      focusPage: fallbackFocusPage(message, currentPage.key, targetPage.key)
     });
   } catch (error) {
     console.error("WCS AI error:", error);
