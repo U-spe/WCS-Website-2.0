@@ -18,13 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetImage = document.getElementById(targetId);
             
             // 4. Activate the corresponding image
-            if(targetImage) {
+            if (targetImage) {
                 targetImage.classList.add('active');
             }
         });
     });
 
-    // Optional: Add simple 3D tilt tracking for architecture cards if desired
+    // --- Interactive 3D Card Tilt Effect ---
     const tiltCards = document.querySelectorAll('.interactive-tilt');
     tiltCards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
@@ -35,13 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            const rotateX = ((y - centerY) / centerY) * -5; // Adjust the 5 for more/less tilt
-            const rotateY = ((x - centerX) / centerX) * 5;
+            // Calculate rotational angles based on cursor offset
+            const rotateX = ((y - centerY) / centerY) * -6; 
+            const rotateY = ((x - centerX) / centerX) * 6;
             
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
         });
 
         card.addEventListener('mouseleave', () => {
+            // Smooth reset when mouse departures the surface
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)`;
         });
     });
