@@ -47,112 +47,33 @@
         message: "Show me the portfolio page."
       }
     ],
-    followUpQuestionsByPage: {
-      home: [
-        {
-          label: "What does WCS build?",
-          message: "What kinds of websites and projects does Web Creation Studios build?"
-        },
-        {
-          label: "Open Services",
-          message: "Open the services page.",
-          navigateTo: "/services.html"
-        },
-        {
-          label: "Start Intake",
-          action: "booking"
-        }
-      ],
-      about: [
-        {
-          label: "Open Team",
-          message: "Open the team page.",
-          navigateTo: "/team.html"
-        },
-        {
-          label: "Open Services",
-          message: "Open the services page.",
-          navigateTo: "/services.html"
-        },
-        {
-          label: "Start Intake",
-          action: "booking"
-        }
-      ],
-      team: [
-        {
-          label: "About WCS",
-          message: "Tell me more about Web Creation Studios."
-        },
-        {
-          label: "Open Services",
-          message: "Open the services page.",
-          navigateTo: "/services.html"
-        },
-        {
-          label: "Start Intake",
-          action: "booking"
-        }
-      ],
-      services: [
-        {
-          label: "Help me choose",
-          message: "Help me choose the right Web Creation Studios service for my business."
-        },
-        {
-          label: "Open Pricing",
-          message: "Open the pricing page.",
-          navigateTo: "/pricing.html"
-        },
-        {
-          label: "Start Intake",
-          action: "booking"
-        }
-      ],
-      pricing: [
-        {
-          label: "Open Services",
-          message: "Open the services page.",
-          navigateTo: "/services.html"
-        },
-        {
-          label: "Open Portfolio",
-          message: "Open the portfolio page.",
-          navigateTo: "/portfolio.html"
-        },
-        {
-          label: "Start Intake",
-          action: "booking"
-        }
-      ],
-      portfolio: [
-        {
-          label: "Open Services",
-          message: "Open the services page.",
-          navigateTo: "/services.html"
-        },
-        {
-          label: "Open Pricing",
-          message: "Open the pricing page.",
-          navigateTo: "/pricing.html"
-        },
-        {
-          label: "Start Intake",
-          action: "booking"
-        }
-      ]
-    },
     welcomeMessage: "Hello. I am Codeo. How can I help with Web Creation Studios today?"
   };
 
   let config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
   let currentPageKey = "home";
 
-  let appState = loadState();
-  let memory = loadMemory();
-  let researchCache = loadResearchCache();
+  let appState = { activeSessionId: null, sessions: {} };
+  let memory = {
+    lastPageKey: null,
+    lastSeenAt: 0,
+    businessType: "",
+    budget: "",
+    timeline: "",
+    recentTopics: [],
+    intake: {
+      fullName: "",
+      email: "",
+      businessName: "",
+      budget: "",
+      timeline: "",
+      needs: "",
+      notes: ""
+    }
+  };
+  let researchCache = { pages: {}, lastPrefetchAt: 0 };
 
-  let activeSessionId = appState.activeSessionId || null;
+  let activeSessionId = null;
   let closeTimer = null;
   let touchOpen = false;
   let researchTimer = null;
@@ -166,14 +87,6 @@
 
   function safeText(value) {
     return typeof value === "string" ? value : "";
-  }
-
-  function safeJsonParse(raw, fallback) {
-    try {
-      return raw ? JSON.parse(raw) : fallback;
-    } catch {
-      return fallback;
-    }
   }
 
   function storageGet(key, fallback) {
@@ -299,25 +212,24 @@
 
   function loadMemory() {
     const saved = storageGet(MEMORY_KEY, null);
-    if (!saved || typeof saved !== "object") {
-      return {
-        lastPageKey: null,
-        lastSeenAt: 0,
-        businessType: "",
+    const defaultMemory = {
+      lastPageKey: null,
+      lastSeenAt: 0,
+      businessType: "",
+      budget: "",
+      timeline: "",
+      recentTopics: [],
+      intake: {
+        fullName: "",
+        email: "",
+        businessName: "",
         budget: "",
         timeline: "",
-        recentTopics: [],
-        intake: {
-          fullName: "",
-          email: "",
-          businessName: "",
-          budget: "",
-          timeline: "",
-          needs: "",
-          notes: ""
-        }
-      };
-    }
+        needs: "",
+        notes: ""
+      }
+    };
+    if (!saved || typeof saved !== "object") return defaultMemory;
 
     return {
       lastPageKey: safeText(saved.lastPageKey) || null,
@@ -407,28 +319,16 @@
     saveState();
   }
 
-  function getFollowupItems(pageKey) {
-    const key = sanitizePageKey(pageKey) || "home";
-    const items = config.followUpQuestionsByPage?.[key] || config.followUpQuestionsByPage?.home || [];
-    const copy = items.slice(0, 3);
-
-    if (!copy.some((item) => item.action === "booking")) {
-      copy.push({ label: "Start Intake", action: "booking" });
-    }
-
-    return copy.slice(0, 3);
-  }
-
   function extractBusinessType(text) {
     const lowered = safeText(text).toLowerCase();
-    const map = [
+    const keywords = [
       "bakery", "church", "nonprofit", "school", "restaurant", "real estate", "coaching", "consulting",
       "photography", "music", "beauty", "salon", "barber", "construction", "legal", "medical", "sports",
       "gaming", "ecommerce", "store", "events", "portfolio", "fitness", "travel", "hospitality"
     ];
 
-    for (const item of map) {
-      if (lowered.includes(item)) return item;
+    for (const word of keywords) {
+      if (lowered.includes(word)) return word;
     }
 
     return "";
@@ -493,10 +393,11 @@
   }
 
   function setStatus(text) {
-    ui.status.textContent = safeText(text);
+    if (ui.status) ui.status.textContent = safeText(text);
   }
 
   function showToast(text, autoClear = true) {
+    if (!ui.toast) return;
     ui.toast.textContent = safeText(text);
     ui.toast.classList.add("show");
 
@@ -509,23 +410,26 @@
   }
 
   function openBookingPanel() {
+    if (!ui.booking) return;
     ui.booking.classList.add("show");
-    ui.bookingResult.classList.remove("show");
-    ui.bookingForm.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (ui.bookingResult) ui.bookingResult.classList.remove("show");
+    if (ui.bookingForm) ui.bookingForm.scrollIntoView({ behavior: "smooth", block: "nearest" });
     populateBookingForm();
     showToast("Project intake opened.");
   }
 
   function closeBookingPanel() {
-    ui.booking.classList.remove("show");
+    if (ui.booking) ui.booking.classList.remove("show");
   }
 
   function toggleBookingPanel() {
+    if (!ui.booking) return;
     if (ui.booking.classList.contains("show")) closeBookingPanel();
     else openBookingPanel();
   }
 
   function populateBookingForm() {
+    if (!ui.bookingName) return;
     ui.bookingName.value = memory.intake.fullName || "";
     ui.bookingEmail.value = memory.intake.email || "";
     ui.bookingBusiness.value = memory.intake.businessName || memory.businessType || "";
@@ -535,8 +439,9 @@
     ui.bookingNotes.value = memory.intake.notes || "";
   }
 
-  function buildBookingSummary() {
-    const data = {
+  function syncBookingInputsToMemory() {
+    if (!ui.bookingName) return;
+    memory.intake = {
       fullName: safeText(ui.bookingName.value).trim(),
       email: safeText(ui.bookingEmail.value).trim(),
       businessName: safeText(ui.bookingBusiness.value).trim(),
@@ -545,12 +450,15 @@
       needs: safeText(ui.bookingNeeds.value).trim(),
       notes: safeText(ui.bookingNotes.value).trim()
     };
-
-    memory.intake = { ...data };
-    if (data.businessName && !memory.businessType) memory.businessType = data.businessName;
-    if (data.budget) memory.budget = data.budget;
-    if (data.timeline) memory.timeline = data.timeline;
+    if (memory.intake.businessName && !memory.businessType) memory.businessType = memory.intake.businessName;
+    if (memory.intake.budget) memory.budget = memory.intake.budget;
+    if (memory.intake.timeline) memory.timeline = memory.intake.timeline;
     saveMemory();
+  }
+
+  function buildBookingSummary() {
+    syncBookingInputsToMemory();
+    const data = memory.intake;
 
     const summary = [
       "WCS Project Intake",
@@ -595,6 +503,7 @@
   }
 
   function renderCompanionBanner(previousPageKey) {
+    if (!ui.companion) return;
     const current = getPageByKey(currentPageKey);
     const previous = previousPageKey && previousPageKey !== currentPageKey ? getPageByKey(previousPageKey) : null;
 
@@ -608,19 +517,25 @@
   }
 
   function clearMessages() {
-    ui.messages.innerHTML = "";
+    if (ui.messages) ui.messages.innerHTML = "";
   }
 
   function addMessage(role, content) {
+    if (!ui.messages) return;
     const bubble = document.createElement("div");
     bubble.className = `wcs-ai-message ${role}`;
     bubble.textContent = safeText(content);
     ui.messages.appendChild(bubble);
-    ui.messages.scrollTop = ui.messages.scrollHeight;
+    
+    ui.messages.scrollTo({
+      top: ui.messages.scrollHeight,
+      behavior: "smooth"
+    });
     return bubble;
   }
 
   function addActionBubble(label, url, auto = false) {
+    if (!ui.messages) return;
     const bubble = document.createElement("div");
     bubble.className = "wcs-ai-message assistant";
 
@@ -642,7 +557,11 @@
     row.appendChild(button);
     bubble.appendChild(row);
     ui.messages.appendChild(bubble);
-    ui.messages.scrollTop = ui.messages.scrollHeight;
+    
+    ui.messages.scrollTo({
+      top: ui.messages.scrollHeight,
+      behavior: "smooth"
+    });
 
     if (auto) {
       window.setTimeout(() => {
@@ -652,9 +571,9 @@
   }
 
   function setBusy(isBusy) {
-    ui.sendBtn.disabled = isBusy;
-    ui.input.disabled = isBusy;
-    ui.typing.classList.toggle("show", isBusy);
+    if (ui.sendBtn) ui.sendBtn.disabled = isBusy;
+    if (ui.input) ui.input.disabled = isBusy;
+    if (ui.typing) ui.typing.classList.toggle("show", isBusy);
   }
 
   function startResearchStatus(targetLabel) {
@@ -674,8 +593,10 @@
     researchTimer = window.setInterval(() => {
       researchStepIndex = (researchStepIndex + 1) % steps.length;
       setStatus(steps[researchStepIndex]);
-      ui.toast.textContent = steps[researchStepIndex];
-      ui.toast.classList.add("show");
+      if (ui.toast) {
+        ui.toast.textContent = steps[researchStepIndex];
+        ui.toast.classList.add("show");
+      }
     }, RESEARCH_TICK_MS);
   }
 
@@ -688,8 +609,8 @@
 
     clearTimeout(statusAutoClearTimer);
     statusAutoClearTimer = window.setTimeout(() => {
-      if (!ui.panel.classList.contains("open")) {
-        ui.toast.classList.remove("show");
+      if (ui.panel && !ui.panel.classList.contains("open")) {
+        if (ui.toast) ui.toast.classList.remove("show");
       }
     }, 1200);
   }
@@ -714,12 +635,7 @@
 
       const permission = await Notification.requestPermission();
       notificationReady = permission === "granted";
-
-      if (notificationReady) {
-        showToast("Notifications are enabled.");
-      } else {
-        showToast("Notifications are off.");
-      }
+      showToast(notificationReady ? "Notifications are enabled." : "Notifications are off.");
     } catch {
       showToast("Notifications could not be enabled.");
     }
@@ -741,25 +657,27 @@
     }
   }
 
-  function openPanel() {
-    ui.panel.classList.add("open");
-    ui.input.focus();
+  function openWidget() {
+    if (ui.panel) ui.panel.classList.add("open");
+    if (ui.input) ui.input.focus();
+    showIntroArea();
   }
 
-  function closePanel() {
-    ui.panel.classList.remove("open");
+  function closeWidget() {
+    if (ui.panel) ui.panel.classList.remove("open");
   }
 
   function scheduleClose() {
     clearTimeout(closeTimer);
     closeTimer = window.setTimeout(() => {
-      if (canHoverFinePointer() && !ui.widget.matches(":hover")) {
-        closePanel();
+      if (canHoverFinePointer() && ui.widget && !ui.widget.matches(":hover")) {
+        closeWidget();
       }
     }, 220);
   }
 
   function renderQuestions(container, questions) {
+    if (!container) return;
     container.innerHTML = "";
 
     questions.forEach((question) => {
@@ -769,17 +687,6 @@
       button.textContent = question.label;
 
       button.addEventListener("click", () => {
-        if (question.action === "booking") {
-          openBookingPanel();
-          return;
-        }
-
-        if (question.navigateTo) {
-          addMessage("user", question.message);
-          window.location.href = question.navigateTo;
-          return;
-        }
-
         sendMessage(question.message, { source: "starter" });
       });
 
@@ -787,47 +694,15 @@
     });
   }
 
-  function renderFollowups(pageKey) {
-    const items = getFollowupItems(pageKey);
-    ui.followupGrid.innerHTML = "";
-    items.forEach((item) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "wcs-ai-mini-btn";
-      button.textContent = item.label;
-
-      button.addEventListener("click", () => {
-        if (item.action === "booking") {
-          openBookingPanel();
-          return;
-        }
-
-        if (item.navigateTo) {
-          addMessage("user", item.message);
-          window.location.href = item.navigateTo;
-          return;
-        }
-
-        sendMessage(item.message, { source: "followup" });
-      });
-
-      ui.followupGrid.appendChild(button);
-    });
-
-    ui.followups.classList.add("show");
-  }
-
   function showIntroArea() {
     const session = ensureSession();
+    if (!ui.intro) return;
 
     if (hasUserMessages(session)) {
       ui.intro.classList.add("hidden");
-      renderFollowups(session.focusPageKey || currentPageKey);
     } else {
       ui.intro.classList.remove("hidden");
       renderQuestions(ui.questions, config.starterQuestions.slice(0, 3));
-      ui.followups.classList.remove("show");
-      ui.followupGrid.innerHTML = "";
     }
   }
 
@@ -841,7 +716,9 @@
     });
 
     showIntroArea();
-    ui.messages.scrollTop = ui.messages.scrollHeight;
+    if (ui.messages) {
+      ui.messages.scrollTop = ui.messages.scrollHeight;
+    }
   }
 
   function getVisibleTextFromDocument(doc) {
@@ -857,15 +734,13 @@
   }
 
   function extractLinksFromDocument(doc) {
-    const links = Array.from(doc.querySelectorAll("a[href]"))
+    return Array.from(doc.querySelectorAll("a[href]"))
       .slice(0, 6)
       .map((node) => ({
         text: trimText(node.textContent || "", 80),
         href: safeText(node.getAttribute("href")).trim()
       }))
       .filter((item) => item.href);
-
-    return links;
   }
 
   function briefFromDocument(doc, page, sourceType) {
@@ -1000,113 +875,6 @@
     }
   }
 
-  function updateMemoryFromText(text, targetPageKey) {
-    const businessType = extractBusinessType(text);
-    const budget = extractBudget(text);
-    const timeline = extractTimeline(text);
-
-    if (businessType) memory.businessType = businessType;
-    if (budget) memory.budget = budget;
-    if (timeline) memory.timeline = timeline;
-
-    const topicKey = sanitizePageKey(targetPageKey);
-    if (topicKey) {
-      const recent = Array.isArray(memory.recentTopics) ? memory.recentTopics.slice() : [];
-      recent.push(topicKey);
-      memory.recentTopics = Array.from(new Set(recent)).slice(-8);
-    }
-
-    saveMemory();
-  }
-
-  function extractBusinessType(text) {
-    const lowered = safeText(text).toLowerCase();
-    const keywords = [
-      "bakery",
-      "church",
-      "nonprofit",
-      "school",
-      "restaurant",
-      "real estate",
-      "coaching",
-      "consulting",
-      "photography",
-      "music",
-      "beauty",
-      "salon",
-      "barber",
-      "construction",
-      "legal",
-      "medical",
-      "sports",
-      "gaming",
-      "ecommerce",
-      "store",
-      "events",
-      "portfolio",
-      "fitness",
-      "travel",
-      "hospitality"
-    ];
-
-    for (const word of keywords) {
-      if (lowered.includes(word)) return word;
-    }
-
-    return "";
-  }
-
-  function extractBudget(text) {
-    const lowered = safeText(text);
-    const match = lowered.match(/(?:budget|price|cost|quote)\s*(?:is|=|around|about)?\s*([$£€]\s?\d[\d,]*(?:\.\d{1,2})?|(?:\d[\d,]*(?:\.\d{1,2})?\s*(?:k|thousand)))/i);
-    if (match) return match[1].replace(/\s+/g, " ").trim();
-
-    const money = lowered.match(/([$£€]\s?\d[\d,]*(?:\.\d{1,2})?)/);
-    if (money) return money[1].replace(/\s+/g, " ").trim();
-
-    return "";
-  }
-
-  function extractTimeline(text) {
-    const lowered = safeText(text).toLowerCase();
-    const patterns = [
-      /(asap|immediately|right away|urgent)/,
-      /(this week|next week|this month|next month)/,
-      /(soon|later|by [a-z]+|in \d+ days?|in \d+ weeks?)/,
-      /(deadline|due date|launch date)/
-    ];
-
-    for (const re of patterns) {
-      const match = lowered.match(re);
-      if (match) return match[0];
-    }
-
-    return "";
-  }
-
-  function buildMemorySummary() {
-    return {
-      lastPageKey: memory.lastPageKey,
-      businessType: memory.businessType,
-      budget: memory.budget,
-      timeline: memory.timeline,
-      recentTopics: Array.isArray(memory.recentTopics) ? memory.recentTopics.slice(-8) : [],
-      intake: memory.intake
-    };
-  }
-
-  function createBookingEmailLink(summary) {
-    const subject = encodeURIComponent(`WCS Project Intake - ${memory.intake.businessName || memory.businessType || "New Lead"}`);
-    const body = encodeURIComponent(summary);
-    return `mailto:${config.contact.email}?subject=${subject}&body=${body}`;
-  }
-
-  function showResearchDone(replyText) {
-    stopResearchStatus("Codeo is done.");
-    showToast("Codeo finished.");
-    notifyDone(replyText);
-  }
-
   async function sendMessage(message, options = {}) {
     const trimmed = safeText(message).trim();
     if (!trimmed) return;
@@ -1114,9 +882,8 @@
     const session = ensureSession();
     const targetPageKey = inferTargetPageKey(trimmed, session.focusPageKey || currentPageKey);
 
-    if (!hasUserMessages(session)) {
+    if (!hasUserMessages(session) && ui.intro) {
       ui.intro.classList.add("hidden");
-      ui.followups.classList.remove("show");
     }
 
     addMessage("user", trimmed);
@@ -1201,8 +968,9 @@
         addActionBubble(data.action.label, data.action.url, Boolean(data.action.auto));
       }
 
-      renderFollowups(session.focusPageKey || currentPageKey);
-      showResearchDone(reply);
+      stopResearchStatus("Codeo is done.");
+      showToast("Codeo finished.");
+      notifyDone(reply);
     } catch {
       const elapsed = Date.now() - startTime;
       const minimumDelay = MIN_REPLY_DELAY_MS + Math.floor(Math.random() * REPLY_JITTER_MS);
@@ -1220,30 +988,14 @@
       });
 
       pruneAndSaveSession(session);
-      renderFollowups(session.focusPageKey || currentPageKey);
-      showResearchDone(fallback);
+      stopResearchStatus("Codeo is done.");
+      showToast("Codeo finished.");
+      notifyDone(fallback);
     } finally {
       setBusy(false);
-      ui.input.focus();
+      if (ui.input) ui.input.focus();
       showIntroArea();
     }
-  }
-
-  function resetBookingForm() {
-    currentBookingSummary = "";
-    ui.bookingResult.textContent = "";
-    ui.bookingResult.classList.remove("show");
-    populateBookingForm();
-  }
-
-  function openWidget() {
-    ui.panel.classList.add("open");
-    ui.input.focus();
-    showIntroArea();
-  }
-
-  function closeWidget() {
-    ui.panel.classList.remove("open");
   }
 
   function startNewChat() {
@@ -1255,29 +1007,6 @@
     closeBookingPanel();
     renderSession(session.id);
     showToast("New chat started.");
-  }
-
-  function renderSessionListState() {
-    const session = ensureSession();
-    activeSessionId = session.id;
-    appState.activeSessionId = session.id;
-    saveState();
-
-    renderSession(session.id);
-  }
-
-  function renderCompanion() {
-    const current = getPageByKey(currentPageKey);
-    const previousKey = memory.lastPageKey && memory.lastPageKey !== currentPageKey ? memory.lastPageKey : null;
-    const previous = previousKey ? getPageByKey(previousKey) : null;
-
-    if (previous) {
-      ui.companion.innerHTML = `<strong>Site companion:</strong> You are on ${current.label}. Last time you were on ${previous.label}. I can read this page, scan related pages, and help you move through the site.`;
-    } else if (currentPageKey !== "home") {
-      ui.companion.innerHTML = `<strong>Site companion:</strong> You are on ${current.label}. I can read this page, scan related pages, and help you book an intake.`;
-    } else {
-      ui.companion.innerHTML = `<strong>Site companion:</strong> Browse WCS or ask Codeo to research any page on the site.`;
-    }
   }
 
   function addBookingMessage(text) {
@@ -1354,7 +1083,7 @@
             <div class="wcs-ai-booking-actions">
               <button type="submit">Build intake summary</button>
               <button type="button" id="wcs-ai-booking-copy" class="secondary">Copy summary</button>
-              <button type="button" id="wcs-ai-booking-email" class="secondary">Email draft</button>
+              <button type="button" id="wcs-ai-booking-email-draft" class="secondary">Email draft</button>
             </div>
 
             <pre id="wcs-ai-booking-result"></pre>
@@ -1369,11 +1098,6 @@
           </span>
         </div>
 
-        <div id="wcs-ai-followups">
-          <div id="wcs-ai-followups-title">Next steps</div>
-          <div id="wcs-ai-followup-grid"></div>
-        </div>
-
         <form id="wcs-ai-input-wrap">
           <input
             id="wcs-ai-input"
@@ -1383,10 +1107,6 @@
           />
           <button id="wcs-ai-send" type="submit">Send</button>
         </form>
-
-        <div id="wcs-ai-footer-note">
-          Responses are limited to official WCS business and site guidance.
-        </div>
       </section>
     `;
 
@@ -1403,8 +1123,6 @@
     ui.questions = document.getElementById("wcs-ai-questions");
     ui.messages = document.getElementById("wcs-ai-messages");
     ui.typing = document.getElementById("wcs-ai-typing");
-    ui.followups = document.getElementById("wcs-ai-followups");
-    ui.followupGrid = document.getElementById("wcs-ai-followup-grid");
     ui.input = document.getElementById("wcs-ai-input");
     ui.sendBtn = document.getElementById("wcs-ai-send");
     ui.title = document.getElementById("wcs-ai-title");
@@ -1424,10 +1142,17 @@
     ui.bookingNotes = document.getElementById("wcs-ai-booking-notes");
     ui.bookingResult = document.getElementById("wcs-ai-booking-result");
     ui.bookingCopy = document.getElementById("wcs-ai-booking-copy");
-    ui.bookingEmail = document.getElementById("wcs-ai-booking-email");
+    ui.bookingEmailDraft = document.getElementById("wcs-ai-booking-email-draft");
 
     ui.title.textContent = config.assistantName || "Codeo";
     ui.subtitle.textContent = config.subtitle || "WCS research assistant";
+
+    const inputsToSync = [ui.bookingName, ui.bookingEmail, ui.bookingBusiness, ui.bookingBudget, ui.bookingTimeline, ui.bookingNeeds, ui.bookingNotes];
+    inputsToSync.forEach(input => {
+      if (input) {
+        input.addEventListener("input", syncBookingInputsToMemory);
+      }
+    });
 
     const previousPageKey = memory.lastPageKey;
     currentPageKey = getPageKeyFromPath(window.location.pathname);
@@ -1435,31 +1160,28 @@
     memory.lastSeenAt = Date.now();
     saveMemory();
 
-    renderCompanion(previousPageKey);
+    renderCompanionBanner(previousPageKey);
     showToast("Codeo is ready.", true);
     setStatus("Ready.");
 
     const session = ensureSession();
     renderSession(session.id);
 
-    renderQuestions(ui.questions, config.starterQuestions.slice(0, 3));
-    renderFollowups(session.focusPageKey || currentPageKey);
-
     if (canHoverFinePointer()) {
       ui.widget.addEventListener("pointerenter", () => {
         clearTimeout(closeTimer);
-        openPanel();
+        openWidget();
       });
 
       ui.widget.addEventListener("pointerleave", scheduleClose);
-      ui.launcher.addEventListener("focus", openPanel);
-      ui.panel.addEventListener("focusin", openPanel);
+      ui.launcher.addEventListener("focus", openWidget);
+      ui.panel.addEventListener("focusin", openWidget);
       ui.panel.addEventListener("focusout", scheduleClose);
     } else {
       ui.launcher.addEventListener("click", () => {
         touchOpen = !touchOpen;
-        if (touchOpen) openPanel();
-        else closePanel();
+        if (touchOpen) openWidget();
+        else closeWidget();
       });
     }
 
@@ -1478,12 +1200,11 @@
 
       addBookingMessage("Project intake summary prepared.");
       addMessage("assistant", "I prepared your intake summary. You can copy it, email it, or continue the chat.");
-      renderFollowups(currentPageKey);
       showToast("Intake summary prepared.");
     });
 
     ui.bookingCopy.addEventListener("click", copyBookingSummary);
-    ui.bookingEmail.addEventListener("click", openBookingEmailDraft);
+    ui.bookingEmailDraft.addEventListener("click", openBookingEmailDraft);
 
     ui.input.addEventListener("keydown", (event) => {
       if (event.key === "Escape") closeWidget();
@@ -1503,7 +1224,7 @@
 
     prefetchAllPagesInBackground();
     setTimeout(() => {
-      if (!hasUserMessages(session)) {
+      if (!hasUserMessages(session) && ui.intro) {
         ui.intro.classList.remove("hidden");
       }
     }, 50);
@@ -1533,10 +1254,6 @@
           Array.isArray(data.starterQuestions) && data.starterQuestions.length
             ? data.starterQuestions
             : DEFAULT_CONFIG.starterQuestions,
-        followUpQuestionsByPage:
-          data.followUpQuestionsByPage && typeof data.followUpQuestionsByPage === "object"
-            ? data.followUpQuestionsByPage
-            : DEFAULT_CONFIG.followUpQuestionsByPage,
         welcomeMessage: safeText(data.welcomeMessage) || DEFAULT_CONFIG.welcomeMessage
       };
     } catch {
