@@ -1,3 +1,4 @@
+```javascript
 /**
  * he-fo.js
  * Core Dynamic Fragment Injector & Asset Pipeline
@@ -5,32 +6,55 @@
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Initialize responsive environment
+
     initializeResponsiveEnvironment();
 
-    // Execute dynamic injection layout sequences
-    injectComponent("#global-header", "/header.html", initializeNavInteractions);
-    injectComponent("#global-footer", "/footer.html");
+    injectComponent(
+        "#global-header",
+        "/header.html",
+        initializeNavInteractions
+    );
 
-    // Mount identity assets
-    mountDynamicFavicon();
+    injectComponent(
+        "#global-footer",
+        "/footer.html"
+    );
+
+    initializeSiteIdentity();
+
 });
 
 /**
- * Asynchronously fetches semantic markup partials and injects them into layout nodes
+ * Initializes all site-wide identity assets.
+ */
+function initializeSiteIdentity() {
+    mountDynamicFavicons();
+    applyThemeColor();
+    applyAppleTouchIcon();
+    applyManifest();
+}
+
+/**
+ * Asynchronously fetches semantic markup partials and injects them.
  */
 async function injectComponent(selector, targetUrl, callback = null) {
+
     const targetNode = document.querySelector(selector);
+
     if (!targetNode) return;
 
     try {
+
         const response = await fetch(targetUrl);
 
         if (!response.ok) {
-            throw new Error(`HTTP status verification failed: ${response.status}`);
+            throw new Error(
+                `HTTP status verification failed: ${response.status}`
+            );
         }
 
         const plainTextMarkup = await response.text();
+
         targetNode.innerHTML = plainTextMarkup;
 
         if (callback) {
@@ -40,86 +64,271 @@ async function injectComponent(selector, targetUrl, callback = null) {
         applyResponsiveAssets();
 
     } catch (systemError) {
+
         console.error(
             `[Layout Exception] Failed to inject container from ${targetUrl}:`,
             systemError
         );
+
     }
+
 }
 
 /**
- * Validates window routing parameters to apply active navigation menu styling rules
+ * Navigation state detection.
  */
 function initializeNavInteractions() {
-    const currentPathname = window.location.pathname;
-    const interfaceLinks = document.querySelectorAll(".nav-link");
+
+    const currentPathname =
+        window.location.pathname;
+
+    const interfaceLinks =
+        document.querySelectorAll(".nav-link");
 
     interfaceLinks.forEach(linkElement => {
-        const matchingRoute = linkElement.getAttribute("href");
+
+        const matchingRoute =
+            linkElement.getAttribute("href");
 
         if (
+
             currentPathname === matchingRoute ||
-            (matchingRoute !== "/" &&
-                currentPathname.startsWith(matchingRoute))
+
+            (
+                matchingRoute !== "/" &&
+                currentPathname.startsWith(
+                    matchingRoute
+                )
+            )
+
         ) {
-            linkElement.classList.add("active-route-token");
+
+            linkElement.classList.add(
+                "active-route-token"
+            );
+
         }
+
     });
+
 }
 
 /**
- * Programmatically configures and mounts the site favicon
+ * Mounts ALL favicon formats.
  */
-function mountDynamicFavicon() {
-    const coreFaviconPath = "/images/logos/favicon.ico";
 
-    let targetFaviconNode = document.querySelector("link[rel~='icon']");
+function mountDynamicFavicons() {
 
-    if (!targetFaviconNode) {
-        targetFaviconNode = document.createElement("link");
-        targetFaviconNode.rel = "icon";
-        document.head.appendChild(targetFaviconNode);
+    const faviconAssets = [
+
+        {
+            rel: "icon",
+            type: "image/x-icon",
+            href: "/images/logos/favicon.ico"
+        },
+
+        {
+            rel: "icon",
+            type: "image/png",
+            sizes: "32x32",
+            href: "/images/logos/favicon-32x32.png"
+        },
+
+        {
+            rel: "icon",
+            type: "image/png",
+            sizes: "16x16",
+            href: "/images/logos/favicon-16x16.png"
+        },
+
+        {
+            rel: "shortcut icon",
+            href: "/images/logos/wcs-logo.png"
+        }
+
+    ];
+
+    faviconAssets.forEach(asset => {
+
+        let existing =
+            document.querySelector(
+                `link[rel="${asset.rel}"]${asset.sizes ? `[sizes="${asset.sizes}"]` : ""}`
+            );
+
+        if (!existing) {
+
+            existing =
+                document.createElement("link");
+
+            document.head.appendChild(
+                existing
+            );
+
+        }
+
+        existing.rel =
+            asset.rel;
+
+        existing.href =
+            asset.href;
+
+        if (asset.type)
+            existing.type =
+                asset.type;
+
+        if (asset.sizes)
+            existing.sizes =
+                asset.sizes;
+
+    });
+
+}
+
+/**
+ * Apple devices.
+ */
+
+function applyAppleTouchIcon() {
+
+    let icon =
+        document.querySelector(
+            'link[rel="apple-touch-icon"]'
+        );
+
+    if (!icon) {
+
+        icon =
+            document.createElement(
+                "link"
+            );
+
+        document.head.appendChild(
+            icon
+        );
+
     }
 
-    targetFaviconNode.href = coreFaviconPath;
-    targetFaviconNode.type = "image/x-icon";
+    icon.rel =
+        "apple-touch-icon";
+
+    icon.href =
+        "/images/logos/apple-touch-icon.png";
+
 }
 
 /**
- * Initializes global responsive utilities
+ * Manifest support.
  */
+
+function applyManifest() {
+
+    let manifest =
+        document.querySelector(
+            'link[rel="manifest"]'
+        );
+
+    if (!manifest) {
+
+        manifest =
+            document.createElement(
+                "link"
+            );
+
+        document.head.appendChild(
+            manifest
+        );
+
+    }
+
+    manifest.rel =
+        "manifest";
+
+    manifest.href =
+        "/site.webmanifest";
+
+}
+
+/**
+ * Browser theme color.
+ */
+
+function applyThemeColor() {
+
+    let theme =
+        document.querySelector(
+            'meta[name="theme-color"]'
+        );
+
+    if (!theme) {
+
+        theme =
+            document.createElement(
+                "meta"
+            );
+
+        document.head.appendChild(
+            theme
+        );
+
+    }
+
+    theme.name =
+        "theme-color";
+
+    theme.content =
+        "#081019";
+
+}
+
+/**
+ * Responsive initialization.
+ */
+
 function initializeResponsiveEnvironment() {
+
     updateViewportHeight();
     updateScreenClass();
 
-    window.addEventListener("resize", () => {
-        updateViewportHeight();
-        updateScreenClass();
-    });
+    window.addEventListener(
+        "resize",
+        () => {
+
+            updateViewportHeight();
+            updateScreenClass();
+
+        }
+    );
 
     detectTouchDevice();
+
 }
 
 /**
- * Creates a reliable mobile viewport height variable
- *
- * CSS Usage:
- * min-height: calc(var(--vh, 1vh) * 100);
+ * Mobile viewport helper.
  */
+
 function updateViewportHeight() {
-    const vh = window.innerHeight * 0.01;
 
-    document.documentElement.style.setProperty(
-        "--vh",
-        `${vh}px`
-    );
+    const vh =
+        window.innerHeight * 0.01;
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--vh",
+            `${vh}px`
+        );
+
 }
 
 /**
- * Applies mobile/desktop body classes
+ * Mobile/Desktop classes.
  */
+
 function updateScreenClass() {
-    const mobileBreakpoint = 768;
+
+    const mobileBreakpoint =
+        768;
 
     document.body.classList.toggle(
         "mobile-layout",
@@ -130,41 +339,89 @@ function updateScreenClass() {
         "desktop-layout",
         window.innerWidth > mobileBreakpoint
     );
+
 }
 
 /**
- * Detects touch-capable devices
+ * Touch detection.
  */
+
 function detectTouchDevice() {
+
     const isTouch =
+
         "ontouchstart" in window ||
+
         navigator.maxTouchPoints > 0 ||
+
         navigator.msMaxTouchPoints > 0;
 
     if (isTouch) {
-        document.body.classList.add("touch-device");
-    } else {
-        document.body.classList.add("pointer-device");
+
+        document.body.classList.add(
+            "touch-device"
+        );
+
     }
+
+    else {
+
+        document.body.classList.add(
+            "pointer-device"
+        );
+
+    }
+
 }
 
 /**
- * Applies responsive defaults to dynamically injected assets
+ * Responsive media defaults.
  */
+
 function applyResponsiveAssets() {
-    document.querySelectorAll("img").forEach(imageElement => {
-        imageElement.style.maxWidth = "100%";
-        imageElement.style.height = "auto";
-        imageElement.style.display = "block";
-    });
 
-    document.querySelectorAll("iframe, video").forEach(mediaElement => {
-        mediaElement.style.maxWidth = "100%";
-    });
+    document
+        .querySelectorAll("img")
+        .forEach(imageElement => {
 
-    document.querySelectorAll("table").forEach(tableElement => {
-        tableElement.style.maxWidth = "100%";
-        tableElement.style.display = "block";
-        tableElement.style.overflowX = "auto";
-    });
+            imageElement.style.maxWidth =
+                "100%";
+
+            imageElement.style.height =
+                "auto";
+
+            imageElement.style.display =
+                "block";
+
+        });
+
+    document
+        .querySelectorAll(
+            "iframe, video"
+        )
+        .forEach(mediaElement => {
+
+            mediaElement.style.maxWidth =
+                "100%";
+
+        });
+
+    document
+        .querySelectorAll(
+            "table"
+        )
+        .forEach(tableElement => {
+
+            tableElement.style.maxWidth =
+                "100%";
+
+            tableElement.style.display =
+                "block";
+
+            tableElement.style.overflowX =
+                "auto";
+
+        });
+
 }
+```
