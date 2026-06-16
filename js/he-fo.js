@@ -1,4 +1,3 @@
-```javascript
 /**
  * he-fo.js
  * Core Dynamic Fragment Injector & Asset Pipeline
@@ -424,4 +423,3 @@ function applyResponsiveAssets() {
         });
 
 }
-```
