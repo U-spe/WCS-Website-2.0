@@ -1,10 +1,10 @@
 /* ==========================================================================
-   PRICING PAGE INTERACTIONS
+   WCS PRICING INTERACTION & REVEAL SYSTEM
    ========================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
     
-    // FAQ Accordion Logic
+    // 1. FAQ ACCORDION LOGIC
     const faqItems = document.querySelectorAll(".faq-item");
 
     faqItems.forEach(item => {
@@ -14,34 +14,35 @@ document.addEventListener("DOMContentLoaded", () => {
             const answer = item.querySelector(".faq-answer");
             const isOpen = item.classList.contains("open");
 
-            // Close all other open items
+            // Close all others cleanly
             faqItems.forEach(i => {
                 i.classList.remove("open");
-                i.querySelector(".faq-answer").style.maxHeight = null;
+                if(i.querySelector(".faq-answer")) {
+                    i.querySelector(".faq-answer").style.maxHeight = null;
+                }
             });
 
-            // If the clicked item wasn't open, open it
+            // Toggle target
             if (!isOpen) {
                 item.classList.add("open");
+                // Uses scrollHeight of the inner padding wrapper to get true height
                 answer.style.maxHeight = answer.scrollHeight + "px";
             }
         });
     });
 
-    // Intersection Observer for Reveal Animations (if not already handled in main.js)
+    // 2. SCROLL REVEAL OBSERVER (Self-contained fail-safe)
     const reveals = document.querySelectorAll(".reveal");
     
-    if (reveals.length > 0) {
+    if (reveals.length > 0 && "IntersectionObserver" in window) {
         const revealOptions = {
             threshold: 0.15,
             rootMargin: "0px 0px -50px 0px"
         };
 
-        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+        const revealOnScroll = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
-                if (!entry.isIntersecting) {
-                    return;
-                } else {
+                if (entry.isIntersecting) {
                     entry.target.classList.add("active");
                     observer.unobserve(entry.target);
                 }
@@ -51,5 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
         reveals.forEach(reveal => {
             revealOnScroll.observe(reveal);
         });
+    } else {
+        // Fallback for older browsers: show everything immediately
+        reveals.forEach(reveal => reveal.classList.add("active"));
     }
 });
