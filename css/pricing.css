@@ -1,0 +1,144 @@
+/* ==========================================================================
+   PRICING SPECIFIC STYLES (WCS SLATE ENGINE)
+   ========================================================================== */
+
+/* Section 1: Hero Adjustment */
+.pricing-hero {
+    padding: 12rem 0 6rem 0;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* Section 2: Value Strip */
+.value-strip-section { padding: 4rem 0 8rem 0; }
+.value-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+}
+.value-card {
+    background: var(--slate-bg-card);
+    border: 1px solid var(--slate-border);
+    padding: 1rem 2rem;
+    border-radius: 6px;
+    color: var(--text-pure-white);
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition-speed);
+}
+.value-card:hover {
+    border-color: var(--mint-green);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Section 3: Foundation Package */
+.foundation-section { padding: 8rem 0; background: var(--slate-bg-darker); border-top: 1px solid var(--slate-border); }
+.foundation-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    background: var(--slate-bg-card);
+    border: 1px solid var(--slate-border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.foundation-image-wrapper { height: 100%; min-height: 400px; }
+.foundation-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(10%);
+}
+.foundation-content { padding: 4rem 3rem; }
+.foundation-content h3 { font-size: 2rem; color: var(--text-pure-white); margin-bottom: 0.5rem; }
+.price-display { margin-bottom: 1.5rem; }
+.price-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted-slate); display: block; }
+.price-number { font-size: 3.5rem; font-weight: 900; color: var(--mint-green); line-height: 1; }
+.foundation-features { list-style: none; margin-top: 2rem; }
+.foundation-features li {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+    color: var(--text-pure-white);
+    font-weight: 500;
+}
+.foundation-features li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--mint-green);
+    font-weight: bold;
+}
+
+/* Section 4: Add-ons Grid */
+.addons-section { padding: 8rem 0; background: var(--slate-bg-main); border-top: 1px solid var(--slate-border); }
+.addons-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+.addon-card {
+    background: var(--slate-bg-darker);
+    border: 1px solid var(--slate-border);
+    padding: 2.5rem 2rem;
+    border-radius: 8px;
+    transition: var(--transition-speed);
+    display: flex;
+    flex-direction: column;
+}
+.addon-card:hover {
+    border-color: var(--mint-green);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+}
+.addon-icon { font-size: 2.5rem; margin-bottom: 1.5rem; }
+.addon-card h3 { color: var(--text-pure-white); font-size: 1.25rem; margin-bottom: 0.5rem; }
+.addon-price { font-size: 1.5rem; font-weight: 800; color: var(--mint-green); margin-bottom: 1rem; }
+.addon-price span { font-size: 0.8rem; font-weight: 500; color: var(--text-muted-slate); text-transform: uppercase; }
+.addon-card p { font-size: 0.9rem; line-height: 1.5; margin-top: auto; }
+
+/* Section 5: FAQ Accordion */
+.faq-section { padding: 8rem 0; background: var(--slate-bg-darker); border-top: 1px solid var(--slate-border); }
+.faq-grid { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+.faq-item {
+    background: var(--slate-bg-card);
+    border: 1px solid var(--slate-border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: var(--transition-speed);
+}
+.faq-question {
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+}
+.faq-question h4 { color: var(--text-pure-white); font-size: 1.1rem; margin: 0; pointer-events: none; }
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    background: rgba(15, 23, 42, 0.4);
+}
+.faq-answer p { padding: 0 2rem 1.5rem 2rem; margin: 0; font-size: 0.95rem; }
+.faq-item.open { border-color: var(--mint-green); }
+.faq-item.open .expand-indicator { transform: rotate(45deg); color: var(--mint-green); }
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .addons-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+    .foundation-container { grid-template-columns: 1fr; }
+    .foundation-image-wrapper { min-height: 250px; }
+    .addons-grid { grid-template-columns: 1fr; }
+    .value-grid { flex-direction: column; }
+    .value-card { text-align: center; }
+}
