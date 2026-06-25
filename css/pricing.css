@@ -1,8 +1,14 @@
 /* ==========================================================================
-   PRICING SPECIFIC STYLES (WCS SLATE ENGINE)
+   PRICING SPECIFIC STYLES - BULLETPROOF GRID MAPPING
    ========================================================================== */
 
-/* Section 1: Hero Adjustment */
+/* --- GENERAL STRUCTURAL WRAPPERS --- */
+.pricing-wrapper {
+    position: relative;
+    z-index: 3; /* Keeps text above grid/glows */
+}
+
+/* --- SECTION 1: HERO --- */
 .pricing-hero {
     padding: 12rem 0 6rem 0;
     min-height: 60vh;
@@ -11,13 +17,17 @@
     position: relative;
 }
 
-/* Section 2: Value Strip */
-.value-strip-section { padding: 4rem 0 8rem 0; }
+/* --- SECTION 2: VALUE STRIP --- */
+.value-strip-section { 
+    padding: 4rem 0 8rem 0; 
+    position: relative;
+}
 .value-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
     justify-content: center;
+    width: 100%;
 }
 .value-card {
     background: var(--slate-bg-card);
@@ -28,6 +38,9 @@
     font-weight: 600;
     font-size: 1rem;
     transition: var(--transition-speed);
+    text-align: center;
+    flex: 1 1 180px; /* Forces equal sizing while allowing wrapping */
+    max-width: 250px;
 }
 .value-card:hover {
     border-color: var(--mint-green);
@@ -35,31 +48,71 @@
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
-/* Section 3: Foundation Package */
-.foundation-section { padding: 8rem 0; background: var(--slate-bg-darker); border-top: 1px solid var(--slate-border); }
-.foundation-container {
+/* --- SECTION 3: FOUNDATION PACKAGE --- */
+.foundation-section { 
+    padding: 8rem 0; 
+    background: var(--slate-bg-darker); 
+    border-top: 1px solid var(--slate-border); 
+}
+.foundation-grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    grid-template-columns: 1fr 1.2fr; /* Explicit grid definition */
     background: var(--slate-bg-card);
     border: 1px solid var(--slate-border);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
-.foundation-image-wrapper { height: 100%; min-height: 400px; }
-.foundation-image-wrapper img {
+.foundation-image-col { 
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+}
+.foundation-img {
+    position: absolute;
+    top: 0; left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     filter: grayscale(10%);
 }
-.foundation-content { padding: 4rem 3rem; }
-.foundation-content h3 { font-size: 2rem; color: var(--text-pure-white); margin-bottom: 0.5rem; }
+.foundation-content-col { 
+    padding: 4rem; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.foundation-content-col h3 { 
+    font-size: 2.2rem; 
+    color: var(--text-pure-white); 
+    margin-bottom: 0.5rem; 
+    font-weight: 800;
+}
 .price-display { margin-bottom: 1.5rem; }
-.price-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted-slate); display: block; }
-.price-number { font-size: 3.5rem; font-weight: 900; color: var(--mint-green); line-height: 1; }
-.foundation-features { list-style: none; margin-top: 2rem; }
+.price-label { 
+    font-size: 0.9rem; 
+    text-transform: uppercase; 
+    letter-spacing: 0.05em; 
+    color: var(--text-muted-slate); 
+    display: block; 
+}
+.price-number { 
+    font-size: 3.5rem; 
+    font-weight: 900; 
+    color: var(--mint-green); 
+    line-height: 1; 
+}
+.foundation-desc { 
+    color: var(--text-pure-white);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+.foundation-features { 
+    list-style: none; 
+    margin-top: 2rem; 
+    padding: 0;
+}
 .foundation-features li {
     position: relative;
     padding-left: 2rem;
@@ -75,12 +128,17 @@
     font-weight: bold;
 }
 
-/* Section 4: Add-ons Grid */
-.addons-section { padding: 8rem 0; background: var(--slate-bg-main); border-top: 1px solid var(--slate-border); }
+/* --- SECTION 4: ADD-ONS --- */
+.addons-section { 
+    padding: 8rem 0; 
+    background: var(--slate-bg-main); 
+    border-top: 1px solid var(--slate-border); 
+}
 .addons-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
+    width: 100%;
 }
 .addon-card {
     background: var(--slate-bg-darker);
@@ -96,20 +154,29 @@
     transform: translateY(-5px);
     box-shadow: 0 15px 30px rgba(0,0,0,0.25);
 }
-.addon-icon { font-size: 2.5rem; margin-bottom: 1.5rem; }
+.addon-icon { font-size: 2.5rem; margin-bottom: 1rem; }
 .addon-card h3 { color: var(--text-pure-white); font-size: 1.25rem; margin-bottom: 0.5rem; }
 .addon-price { font-size: 1.5rem; font-weight: 800; color: var(--mint-green); margin-bottom: 1rem; }
 .addon-price span { font-size: 0.8rem; font-weight: 500; color: var(--text-muted-slate); text-transform: uppercase; }
-.addon-card p { font-size: 0.9rem; line-height: 1.5; margin-top: auto; }
+.addon-card p { font-size: 0.9rem; line-height: 1.5; margin-top: auto; color: var(--text-muted-slate); }
 
-/* Section 5: FAQ Accordion */
-.faq-section { padding: 8rem 0; background: var(--slate-bg-darker); border-top: 1px solid var(--slate-border); }
-.faq-grid { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+/* --- SECTION 5: FAQ --- */
+.faq-section { 
+    padding: 8rem 0; 
+    background: var(--slate-bg-darker); 
+    border-top: 1px solid var(--slate-border); 
+}
+.faq-container-grid { 
+    max-width: 800px; 
+    margin: 0 auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1rem; 
+}
 .faq-item {
     background: var(--slate-bg-card);
     border: 1px solid var(--slate-border);
     border-radius: 6px;
-    overflow: hidden;
     transition: var(--transition-speed);
 }
 .faq-question {
@@ -118,27 +185,45 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: transparent;
+    user-select: none;
 }
-.faq-question h4 { color: var(--text-pure-white); font-size: 1.1rem; margin: 0; pointer-events: none; }
+.faq-question h4 { 
+    color: var(--text-pure-white); 
+    font-size: 1.1rem; 
+    margin: 0; 
+    font-weight: 700; 
+}
+.expand-indicator {
+    font-size: 1.5rem;
+    color: var(--text-muted-slate);
+    transition: transform 0.3s ease;
+    line-height: 1;
+}
 .faq-answer {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     background: rgba(15, 23, 42, 0.4);
 }
-.faq-answer p { padding: 0 2rem 1.5rem 2rem; margin: 0; font-size: 0.95rem; }
+.faq-inner-pad {
+    padding: 0 2rem 1.5rem 2rem;
+}
+.faq-inner-pad p { margin: 0; font-size: 0.95rem; color: var(--text-muted-slate); }
+
 .faq-item.open { border-color: var(--mint-green); }
 .faq-item.open .expand-indicator { transform: rotate(45deg); color: var(--mint-green); }
+.faq-item.open .faq-question h4 { color: var(--mint-green); }
 
-/* Responsive Adjustments */
+/* --- RESPONSIVE LOCKS --- */
 @media (max-width: 1024px) {
     .addons-grid { grid-template-columns: repeat(2, 1fr); }
+    .foundation-grid-container { grid-template-columns: 1fr; }
+    .foundation-image-col { min-height: 300px; }
 }
+
 @media (max-width: 768px) {
-    .foundation-container { grid-template-columns: 1fr; }
-    .foundation-image-wrapper { min-height: 250px; }
     .addons-grid { grid-template-columns: 1fr; }
-    .value-grid { flex-direction: column; }
-    .value-card { text-align: center; }
+    .value-card { flex: 1 1 100%; max-width: 100%; }
+    .foundation-content-col { padding: 2.5rem 1.5rem; }
+    .faq-question { padding: 1.2rem 1.5rem; }
 }
