@@ -1,25 +1,38 @@
+/**
+ * pricing.js
+ * Specialized Interactive Interface Logic
+ * Web Creation Studios
+ */
+
 document.addEventListener("DOMContentLoaded", () => {
-    // FAQ Logic Only
+    initializeFaqAccordion();
+});
+
+/**
+ * Handles smooth max-height transitions for content accordions.
+ */
+function initializeFaqAccordion() {
     const faqItems = document.querySelectorAll(".faq-item");
 
     faqItems.forEach(item => {
-        const questionArea = item.querySelector(".faq-question");
+        const structuralTrigger = item.querySelector(".faq-question");
         
-        questionArea.addEventListener("click", () => {
-            const answer = item.querySelector(".faq-answer");
+        structuralTrigger.addEventListener("click", () => {
+            const answerContainer = item.querySelector(".faq-answer");
             const isOpen = item.classList.contains("open");
 
-            faqItems.forEach(i => {
-                i.classList.remove("open");
-                if(i.querySelector(".faq-answer")) {
-                    i.querySelector(".faq-answer").style.maxHeight = null;
-                }
+            // Collapses all open rows smoothly to maintain clean context layout
+            faqItems.forEach(innerItem => {
+                innerItem.classList.remove("open");
+                const innerAnswer = innerItem.querySelector(".faq-answer");
+                if (innerAnswer) innerAnswer.style.maxHeight = null;
             });
 
+            // If the clicked element wasn't open, expand it using dynamic element height limits
             if (!isOpen) {
                 item.classList.add("open");
-                answer.style.maxHeight = answer.scrollHeight + "px";
+                answerContainer.style.maxHeight = answerContainer.scrollHeight + "px";
             }
         });
     });
-});
+}
