@@ -1,4 +1,9 @@
 /* ==========================================================================
+   EXTERNAL LIBRARIES
+   ========================================================================== */
+@import url("https://cdn.jsdelivr.net/npm/remixicon@latest/fonts/remixicon.css");
+
+/* ==========================================================================
    THE SLATE ENGINE - GLOBAL VARIABLES
    ========================================================================== */
 :root {
@@ -120,6 +125,7 @@ body.slate-theme {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 0.5rem; /* Added gap to neatly space text and Remix icons */
     padding: 0.9rem 2.2rem;
     font-weight: 600;
     font-size: 0.9rem;
@@ -184,6 +190,28 @@ body.slate-theme {
     align-items: center;
 }
 .margin-top-1 { margin-top: 1rem; }
+
+/* ==========================================================================
+   REMIX ICON OVERRIDES & UTILITIES
+   ========================================================================== */
+/* Ensures icons vertically center with your text */
+[class^="ri-"], [class*=" ri-"] {
+    vertical-align: middle;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Base icon sizing */
+.icon-sm { font-size: 1.2rem; }
+.icon-md { font-size: 1.5rem; }
+.icon-lg { font-size: 2rem; }
+
+/* Icon colors matching your theme */
+.icon-mint { color: var(--mint-green); }
+.icon-slate { color: var(--text-muted-slate); }
+.icon-white { color: var(--text-pure-white); }
+.icon-pink { color: var(--light-pink); }
 
 /* GLOBAL ANIMATIONS */
 .reveal {
