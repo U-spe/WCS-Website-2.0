@@ -28,8 +28,8 @@
 
     <main class="page-wrapper">
         
-        <!-- SECTION 1: Portfolio Hero -->
-        <section class="hero-section reveal">
+        <!-- SECTION 1: Portfolio Hero (Added .active so it doesn't get stuck hidden) -->
+        <section class="hero-section reveal active">
             <div class="container hero-layout section-header-centered">
                 <span class="section-tag font-mint">Our Work</span>
                 <h1 class="hero-title">Digital craftsmanship on display.</h1>
@@ -189,11 +189,15 @@
             const reveals = document.querySelectorAll('.reveal');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
+                    // Only trigger if intersecting. We don't remove the class if it leaves view.
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
                     }
                 });
-            }, { threshold: 0.15 });
+            }, { 
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px" // Triggers slightly before it fully comes into view
+            });
 
             reveals.forEach(reveal => observer.observe(reveal));
         });
