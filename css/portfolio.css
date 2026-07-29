@@ -2,6 +2,18 @@
    PORTFOLIO PAGE SPECIFIC STYLES
    ========================================================================== */
 
+/* Hero Section Adjustments */
+.hero-section {
+    padding: 10rem 0 6rem 0; /* Added padding to clear the fixed global header */
+    text-align: center;
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    color: var(--text-muted-slate);
+    line-height: 1.6;
+}
+
 /* Split Feature Sections (For the new image sections) */
 .split-feature-section {
     padding: 6rem 0;
@@ -46,6 +58,15 @@
     font-size: 2.5rem;
     color: var(--text-pure-white);
     margin-bottom: 1rem;
+}
+
+.narrative-block p {
+    color: var(--text-muted-slate);
+    line-height: 1.7;
+}
+
+.margin-top-1 {
+    margin-top: 1rem;
 }
 
 /* Portfolio Grid System */
@@ -117,7 +138,7 @@
     padding: 0.5rem;
     border-radius: 4px;
     background: rgba(100, 255, 218, 0.05);
-    transition: var(--transition-speed);
+    transition: var(--transition-speed, 0.3s);
     text-decoration: none;
 }
 
@@ -153,6 +174,66 @@
     border: 1px solid rgba(100, 255, 218, 0.1);
 }
 
+/* ==========================================================================
+   FINAL CTA SECTION (Imported from home.css to ensure formatting)
+   ========================================================================== */
+
+.cta-conversion-section {
+    padding: 6rem 0 8rem 0;
+}
+
+.conversion-container-box {
+    position: relative;
+    background-color: var(--slate-bg-card);
+    border: 1px solid var(--slate-border);
+    border-radius: 16px;
+    padding: 5rem 3rem;
+    text-align: center;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(10, 25, 47, 0.4);
+}
+
+.conversion-glow-layer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(100, 255, 218, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.conversion-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.conversion-content h2 {
+    font-size: 2.5rem;
+    color: var(--text-pure-white);
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.conversion-content p {
+    color: var(--text-muted-slate);
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+}
+
+.conversion-btn-cluster {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
 /* Animations (Standalone) */
 .reveal {
     opacity: 0;
@@ -170,5 +251,15 @@
     .split-grid, .portfolio-grid {
         grid-template-columns: 1fr;
         gap: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .conversion-container-box {
+        padding: 3rem 1.5rem;
+    }
+    
+    .conversion-content h2 {
+        font-size: 2rem;
     }
 }
