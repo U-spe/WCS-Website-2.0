@@ -8,19 +8,18 @@
     <!-- Remix Icon CDN -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@latest/fonts/remixicon.css" rel="stylesheet">
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="/css/index.css"> <!-- Global variables & base styles -->
-    <link rel="stylesheet" href="/css/portfolio.css"> <!-- Specific portfolio styles -->
+    <!-- Stylesheets & Widgets -->
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/portfolio.css">
     <link rel="stylesheet" href="/wcs-ai-widget/widget.css">
     
+    <!-- External Scripts -->
     <script src="/js/he-fo.js" defer></script>
     <script src="/js/index.js" defer></script>
     <script src="/wcs-ai-widget/widget.js" defer></script>
-  
 </head>
 <body class="slate-theme">
 
-    <!-- Global Background System -->
     <div class="bg-glow glow-1"></div>
     <div class="bg-glow glow-2"></div>
     <div class="bg-grid"></div>
@@ -29,8 +28,8 @@
 
     <main class="page-wrapper">
         
-        <!-- Portfolio Hero -->
-        <section class="hero-section reveal active">
+        <!-- SECTION 1: Portfolio Hero -->
+        <section class="hero-section reveal">
             <div class="container hero-layout section-header-centered">
                 <span class="section-tag font-mint">Our Work</span>
                 <h1 class="hero-title">Digital craftsmanship on display.</h1>
@@ -40,18 +39,35 @@
             </div>
         </section>
 
-        <!-- Portfolio Grid Section -->
+        <!-- SECTION 2: Architecture & Process (Includes Image 1) -->
+        <section class="split-feature-section reveal">
+            <div class="container split-grid">
+                <div class="visual-panel">
+                    <div class="image-container-frame">
+                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80" alt="Code engineering and syntax">
+                        <div class="image-overlay-glow"></div>
+                    </div>
+                </div>
+                <div class="narrative-block">
+                    <span class="section-tag font-purple">The Foundation</span>
+                    <h2>Precision Engineering.</h2>
+                    <p>Beautiful designs are only half the equation. Underneath every layout we create is a bedrock of pristine, semantic code optimized for lightning-fast loading speeds and flawless responsive behavior.</p>
+                    <p class="margin-top-1">We refuse to rely on bloated site builders. Hand-crafting our platforms ensures zero technical debt and maximum scalability for your brand.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Portfolio Grid Section -->
         <section class="portfolio-showcase reveal">
             <div class="container">
+                <div class="section-header-centered" style="margin-bottom: 4rem;">
+                    <h2>Featured Client Platforms</h2>
+                </div>
                 <div class="portfolio-grid">
                     
-                    <!-- Project 1 -->
                     <div class="portfolio-card">
                         <div class="card-image-wrapper">
-                            <!-- Placeholder for a high-quality mockup image -->
-                            <div class="mockup-placeholder" style="background: linear-gradient(45deg, #0F172A, #334155);">
-                                <i class="ri-image-line icon-slate" style="font-size: 4rem; opacity: 0.5;"></i>
-                            </div>
+                            <img src="/images/logos/e2e.jpg" alt="ExitToExcel Platform">
                         </div>
                         <div class="card-content">
                             <div class="project-header">
@@ -68,12 +84,9 @@
                         </div>
                     </div>
 
-                    <!-- Project 2 -->
                     <div class="portfolio-card">
                         <div class="card-image-wrapper">
-                            <div class="mockup-placeholder" style="background: linear-gradient(45deg, #0F172A, #334155);">
-                                <i class="ri-image-line icon-slate" style="font-size: 4rem; opacity: 0.5;"></i>
-                            </div>
+                            <img src="/images/logos/hcm.jpg" alt="Harvest Christian Ministries Platform">
                         </div>
                         <div class="card-content">
                             <div class="project-header">
@@ -90,12 +103,9 @@
                         </div>
                     </div>
 
-                    <!-- Project 3 -->
                     <div class="portfolio-card">
                         <div class="card-image-wrapper">
-                            <div class="mockup-placeholder" style="background: linear-gradient(45deg, #0F172A, #334155);">
-                                <i class="ri-image-line icon-slate" style="font-size: 4rem; opacity: 0.5;"></i>
-                            </div>
+                            <img src="/images/logos/MJ.jpg" alt="MJ Events Platform">
                         </div>
                         <div class="card-content">
                             <div class="project-header">
@@ -112,12 +122,9 @@
                         </div>
                     </div>
 
-                    <!-- Project 4 -->
                     <div class="portfolio-card">
                         <div class="card-image-wrapper">
-                            <div class="mockup-placeholder" style="background: linear-gradient(45deg, #0F172A, #334155);">
-                                <i class="ri-image-line icon-slate" style="font-size: 4rem; opacity: 0.5;"></i>
-                            </div>
+                            <img src="/images/logos/jetx.jpg" alt="JetX Silk Platform">
                         </div>
                         <div class="card-content">
                             <div class="project-header">
@@ -129,7 +136,7 @@
                             <p>A high-octane gaming portal built for extreme performance. Features fluid animations and an immersive dark-mode user interface.</p>
                             <div class="project-tags">
                                 <span class="tech-tag">Frontend Engineering</span>
-                                <span class="tech-tag">Performance Optimization</span>
+                                <span class="tech-tag">Performance</span>
                             </div>
                         </div>
                     </div>
@@ -138,7 +145,25 @@
             </div>
         </section>
 
-        <!-- Final Conversion Section -->
+        <!-- SECTION 4: Our Studio Culture (Includes Image 2) -->
+        <section class="split-feature-section reveal">
+            <div class="container split-grid" style="align-items: center;">
+                <div class="narrative-block">
+                    <span class="section-tag font-blue">Studio Culture</span>
+                    <h2>Designed for impact.</h2>
+                    <p>We are a specialized team of visual storytellers and technical problem-solvers. By keeping our agency intentionally boutique, we guarantee that senior developers and lead designers are hands-on with your project from day one.</p>
+                    <a href="/contact" class="btn btn-secondary" style="margin-top: 1.5rem;"><i class="ri-group-line"></i> Meet the Team</a>
+                </div>
+                <div class="visual-panel">
+                    <div class="image-container-frame">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1000&q=80" alt="Creative team collaborating in studio">
+                        <div class="image-overlay-glow" style="background: linear-gradient(45deg, rgba(56,189,248,0.2), transparent);"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Final CTA Section -->
         <section class="cta-conversion-section reveal">
             <div class="container">
                 <div class="conversion-container-box">
@@ -158,5 +183,20 @@
 
     <div id="global-footer"></div>
 
+    <!-- Inline Animation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            reveals.forEach(reveal => observer.observe(reveal));
+        });
+    </script>
 </body>
 </html>
