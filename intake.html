@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intake Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #000;
+            border-radius: 8px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            text-align: center;
+            color: #000;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #000;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+        .checkbox-group {
+            margin-bottom: 20px;
+        }
+        .checkbox-group label {
+            display: inline-block;
+            margin-left: 8px;
+        }
+        .divider {
+            height: 1px;
+            background-color: #000;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Intake Form</h2>
+        <form action="https://formspree.io/f/xrbgpqgp" method="POST">
+            <label for="name">Name *</label>
+            <input type="text" id="name" name="name" placeholder="Jane Smith" required>
+
+            <label for="email">Email address *</label>
+            <input type="email" id="email" name="email" placeholder="email@website.com" required>
+
+            <label for="phone">Phone number</label>
+            <input type="tel" id="phone" name="phone" placeholder="000-000-0000">
+
+            <div class="divider"></div>
+
+            <label>What type of website do you need?</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="e-commerce" name="website-type" value="E-commerce">
+                <label for="e-commerce">E-commerce</label>
+
+                <input type="checkbox" id="portfolio" name="website-type" value="Portfolio">
+                <label for="portfolio">Portfolio</label>
+
+                <input type="checkbox" id="blog" name="website-type" value="Blog">
+                <label for="blog">Blog</label>
+
+                <input type="checkbox" id="business" name="website-type" value="Business">
+                <label for="business">Business</label>
+
+                <input type="checkbox" id="landing-page" name="website-type" value="Landing Page">
+                <label for="landing-page">Landing Page</label>
+
+                <input type="checkbox" id="non-profit" name="website-type" value="Non-Profit">
+                <label for="non-profit">Non-Profit</label>
+
+                <input type="checkbox" id="other" name="website-type" value="Other">
+                <label for="other">Other</label>
+            </div>
+
+            <div class="divider"></div>
+
+            <label>What features do you want on your website?</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="contact-form" name="features" value="Contact Form">
+                <label for="contact-form">Contact Form</label>
+
+                <input type="checkbox" id="blog-section" name="features" value="Blog Section">
+                <label for="blog-section">Blog Section</label>
+
+                <input type="checkbox" id="gallery" name="features" value="Gallery">
+                <label for="gallery">Gallery</label>
+
+                <input type="checkbox" id="e-commerce-functionality" name="features" value="E-commerce Functionality">
+                <label for="e-commerce-functionality">E-commerce Functionality</label>
+
+                <input type="checkbox" id="social-media-integration" name="features" value="Social Media Integration">
+                <label for="social-media-integration">Social Media Integration</label>
+
+                <input type="checkbox" id="newsletter-signup" name="features" value="Newsletter Signup">
+                <label for="newsletter-signup">Newsletter Signup</label>
+
+                <input type="checkbox" id="seo-optimization" name="features" value="SEO Optimization">
+                <label for="seo-optimization">SEO Optimization</label>
+
+                <input type="checkbox" id="live-chat" name="features" value="Live Chat">
+                <label for="live-chat">Live Chat</label>
+            </div>
+
+            <div class="divider"></div>
+
+            <label for="timeline">What is your preferred timeline for the project?</label>
+            <select id="timeline" name="timeline" required>
+                <option value="" disabled selected>Select</option>
+                <option value="1-month">1 Month</option>
+                <option value="2-months">2 Months</option>
+                <option value="3-months">3 Months</option>
+                <option value="more-than-3-months">More than 3 Months</option>
+            </select>
+
+            <label for="budget">What is your budget range for this project?</label>
+            <select id="budget" name="budget" required>
+                <option value="" disabled selected>Select</option>
+                <option value="under-1000">Under $1,000</option>
+                <option value="1000-5000">$1,000 - $5,000</option>
+                <option value="5000-10000">$5,000 - $10,000</option>
+                <option value="over-10000">Over $10,000</option>
+            </select>
+
+            <div class="divider"></div>
+
+            <label for="competitors">Who are your main competitors?</label>
+            <input type="text" id="competitors" name="competitors">
+
+            <div class="divider"></div>
+
+            <label>What is the primary goal of your website?</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="increase-sales" name="goal" value="Increase Sales">
+                <label for="increase-sales">Increase Sales</label>
+
+                <input type="checkbox" id="generate-leads" name="goal" value="Generate Leads">
+                <label for="generate-leads">Generate Leads</label>
+
+                <input type="checkbox" id="build-brand-awareness" name="goal" value="Build Brand Awareness">
+                <label for="build-brand-awareness">Build Brand Awareness</label>
+
+                <input type="checkbox" id="provide-information" name="goal" value="Provide Information">
+                <label for="provide-information">Provide Information</label>
+
+                <input type="checkbox" id="engage-customers" name="goal" value="Engage Customers">
+                <label for="engage-customers">Engage Customers</label>
+            </div>
+
+            <div class="divider"></div>
+
+            <label for="branding">Do you have existing branding materials?</label>
+            <select id="branding" name="branding" required>
+                <option value="" disabled selected>Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <div class="divider"></div>
+
+            <label>What is your preferred style or theme for the website?</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="modern" name="style" value="Modern">
+                <label for="modern">Modern</label>
+
+                <input type="checkbox" id="minimalist" name="style" value="Minimalist">
+                <label for="minimalist">Minimalist</label>
+
+                <input type="checkbox" id="professional" name="style" value="Professional">
+                <label for="professional">Professional</label>
+
+                <input type="checkbox" id="creative" name="style" value="Creative">
+                <label for="creative">Creative</label>
+
+                <input type="checkbox" id="corporate" name="style" value="Corporate">
+                <label for="corporate">Corporate</label>
+            </div>
+
+            <div class="divider"></div>
+
+            <label>How did you hear about us?</label>
+            <select id="source" name="source" required>
+                <option value="" disabled selected>Select</option>
+                <option value="search-engine">Search Engine</option>
+                <option value="social-media">Social Media</option>
+                <option value="word-of-mouth">Word of Mouth</option>
+                <option value="advertisement">Advertisement</option>
+                <option value="other">Other</option>
+            </select>
+
+            <div class="divider"></div>
+
+            <label>Additional Comments or Questions</label>
+            <textarea id="comments" name="comments" rows="4" placeholder="Enter any additional comments or questions here..."></textarea>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+</body>
+</html>
+
