@@ -14,6 +14,100 @@
     <script src="/js/he-fo.js" defer></script>
     <script src="/js/index.js" defer></script>
     <script src="/wcs-ai-widget/widget.js" defer></script>
+
+    <!-- Mobile Responsive CSS Injected Here -->
+    <style>
+        /* ==========================================================================
+           Responsive Layout Optimization (Mobile & Tablet)
+           ========================================================================== */
+
+        /* Tablet & Smaller Laptops (< 992px) */
+        @media (max-width: 992px) {
+            .split-grid,
+            .services-split-layout,
+            .why-choose-grid-wrapper {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .services-left-intro,
+            .why-choose-discussion {
+                text-align: center;
+            }
+
+            .process-image-grid,
+            .projects-logo-links-grid,
+            .team-expand-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        /* Mobile Devices (< 768px) */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.25rem;
+                line-height: 1.2;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero-actions,
+            .conversion-btn-cluster {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                width: 100%;
+            }
+
+            .hero-actions .btn,
+            .conversion-btn-cluster .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .process-image-grid,
+            .projects-logo-links-grid,
+            .team-expand-grid,
+            .services-right-grid,
+            .why-choose-interactive-panels {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .hero-section,
+            .about-section,
+            .team-section,
+            .process-section,
+            .services-section,
+            .why-choose-section,
+            .projects-section,
+            .cta-conversion-section {
+                padding-top: 4rem;
+                padding-bottom: 4rem;
+            }
+
+            .container {
+                padding-left: 1.25rem;
+                padding-right: 1.25rem;
+            }
+        }
+
+        /* Small Mobile (< 480px) */
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.85rem;
+            }
+            
+            .section-tag {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -44,7 +138,7 @@
                 </div>
                 <div class="visual-panel">
                     <div class="image-container-frame">
-                        <img src="images/unsplash/photo1.jpg" alt="Web Design Workspace Layout">
+                        <img src="images/unsplash/photo1.jpg" alt="Web Design Workspace Layout" loading="lazy">
                     </div>
                 </div>
             </div>
@@ -62,7 +156,7 @@
                         <div class="card-accent-strip"></div>
                         <div class="card-visible-layer">
                             <div class="team-avatar-frame">
-                                <img src="https://raw.githubusercontent.com/U-spe/WCS-Website/refs/heads/main/images/team/member1%20(1).jpg" alt="CJ Lead Web Developer">
+                                <img src="https://raw.githubusercontent.com/U-spe/WCS-Website/refs/heads/main/images/team/member1%20(1).jpg" alt="CJ Lead Web Developer" loading="lazy">
                                 <div class="profile-status-dot"></div>
                             </div>
                             <div class="team-meta-data">
@@ -86,7 +180,7 @@
                         <div class="card-accent-strip"></div>
                         <div class="card-visible-layer">
                             <div class="team-avatar-frame">
-                                <img src="https://raw.githubusercontent.com/U-spe/WCS-Website/refs/heads/main/images/team/member2.jpg" alt="MJ Creative Director">
+                                <img src="https://raw.githubusercontent.com/U-spe/WCS-Website/refs/heads/main/images/team/member2.jpg" alt="MJ Creative Director" loading="lazy">
                                 <div class="profile-status-dot"></div>
                             </div>
                             <div class="team-meta-data">
@@ -110,7 +204,7 @@
                         <div class="card-accent-strip"></div>
                         <div class="card-visible-layer">
                             <div class="team-avatar-frame">
-                                <img src="https://raw.githubusercontent.com/U-spe/WCS-Website/refs/heads/main/images/team/member4.jpg" alt="DW UI/UX Designer">
+                                <img src="https://raw.githubusercontent.com/U-spe/WCS-Website/refs/heads/main/images/team/member4.jpg" alt="DW UI/UX Designer" loading="lazy">
                                 <div class="profile-status-dot"></div>
                             </div>
                             <div class="team-meta-data">
@@ -143,7 +237,7 @@
                 <div class="process-image-grid">
                     <div class="process-interactive-card" data-tilt>
                         <div class="process-media-header">
-                            <img src="images/unsplash/photo2.jpg" alt="Discovery and Strategy">
+                            <img src="images/unsplash/photo2.jpg" alt="Discovery and Strategy" loading="lazy">
                             <div class="phase-number-badge">01</div>
                         </div>
                         <div class="process-card-text">
@@ -153,7 +247,7 @@
                     </div>
                     <div class="process-interactive-card" data-tilt>
                         <div class="process-media-header">
-                            <img src="images/unsplash/photo3.jpg" alt="Wireframing and UI Design">
+                            <img src="images/unsplash/photo3.jpg" alt="Wireframing and UI Design" loading="lazy">
                             <div class="phase-number-badge">02</div>
                         </div>
                         <div class="process-card-text">
@@ -163,7 +257,7 @@
                     </div>
                     <div class="process-interactive-card" data-tilt>
                         <div class="process-media-header">
-                            <img src="images/unsplash/photo4.jpg" alt="Development and Launch">
+                            <img src="images/unsplash/photo4.jpg" alt="Development and Launch" loading="lazy">
                             <div class="phase-number-badge">03</div>
                         </div>
                         <div class="process-card-text">
@@ -249,7 +343,7 @@
                     <a href="https://exittoexcel.com" class="project-clickable-card" target="_blank" rel="noopener">
                         <div class="project-card-inner">
                             <div class="brand-logo-container">
-                                <img src="/images/logos/e2e.jpg" alt="ExitToExcel Brand Identity">
+                                <img src="/images/logos/e2e.jpg" alt="ExitToExcel Brand Identity" loading="lazy">
                             </div>
                             <div class="project-card-meta">
                                 <h3>ExitToExcel</h3>
@@ -262,7 +356,7 @@
                     <a href="https://harvestgo.org" class="project-clickable-card" target="_blank" rel="noopener">
                         <div class="project-card-inner">
                             <div class="brand-logo-container">
-                                <img src="/images/logos/hcm.jpg" alt="Harvest Christian Ministries Brand Identity">
+                                <img src="/images/logos/hcm.jpg" alt="Harvest Christian Ministries Brand Identity" loading="lazy">
                             </div>
                             <div class="project-card-meta">
                                 <h3>Harvest Christian Ministries</h3>
@@ -275,7 +369,7 @@
                     <a href="https://mjevents.org" class="project-clickable-card" target="_blank" rel="noopener">
                         <div class="project-card-inner">
                             <div class="brand-logo-container">
-                                <img src="/images/logos/MJ.jpg" alt="MJ Events Brand Identity">
+                                <img src="/images/logos/MJ.jpg" alt="MJ Events Brand Identity" loading="lazy">
                             </div>
                             <div class="project-card-meta">
                                 <h3>MJ Events</h3>
@@ -288,7 +382,7 @@
                     <a href="https://jet-x-silk.vercel.app" class="project-clickable-card" target="_blank" rel="noopener">
                         <div class="project-card-inner">
                             <div class="brand-logo-container">
-                                <img src="/images/logos/jetx.jpg" alt="JetX Silk Brand Identity">
+                                <img src="/images/logos/jetx.jpg" alt="JetX Silk Brand Identity" loading="lazy">
                             </div>
                             <div class="project-card-meta">
                                 <h3>JetX (Silk)</h3>
@@ -322,13 +416,10 @@
     <div id="global-footer"></div>
 
     <!-- Vercel Web Analytics -->
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
-
-</body>
-</html>
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 
 </body>
 </html>
