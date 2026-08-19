@@ -7,6 +7,11 @@
             <span class="header-firm-title">Web Creation Studios</span>
         </a>
 
+        <!-- Added: Mobile Hamburger Button -->
+        <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+            <i class="ri-menu-3-line"></i>
+        </button>
+
         <nav class="header-nav-menu" aria-label="Main Website Navigation">
             <a href="/" class="nav-link">Home</a>
             <a href="/about" class="nav-link">About Us</a>
@@ -48,7 +53,8 @@
         align-items: center;
         gap: 1rem;
         text-decoration: none;
-        transition: var(--transition-speed);
+        transition: var(--transition-speed, 0.3s ease);
+        z-index: 1001; /* Keeps logo above mobile menu */
     }
     .header-logo-frame {
         width: 32px;
@@ -71,6 +77,18 @@
         font-size: 1.1rem;
         letter-spacing: -0.01em;
     }
+    
+    /* Toggle Button - Hidden on Desktop */
+    .mobile-menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text-pure-white);
+        font-size: 1.75rem;
+        cursor: pointer;
+        z-index: 1001; /* Keeps button above mobile menu */
+    }
+
     .header-nav-menu {
         display: flex;
         align-items: center;
@@ -81,14 +99,15 @@
         text-decoration: none;
         font-size: 0.9rem;
         font-weight: 600;
-        transition: var(--transition-speed);
+        transition: var(--transition-speed, 0.3s ease);
         position: relative;
         padding: 0.5rem 0;
     }
     .header-nav-menu .nav-link:hover {
         color: var(--text-pure-white);
     }
-    /* Routing Link Highlight Highlight */
+    
+    /* Routing Link Highlight */
     .header-nav-menu .nav-link.active-route-token {
         color: var(--mint-green);
     }
@@ -99,6 +118,7 @@
         background: var(--mint-green);
         border-radius: 2px;
     }
+    
     .header-nav-menu .header-cta-pill {
         background: rgba(100, 255, 218, 0.1);
         border: 1px solid var(--mint-green);
@@ -109,10 +129,46 @@
     }
     .header-nav-menu .header-cta-pill:hover {
         background: var(--mint-green);
-        color: var(--dark-blue) !important;
+        color: var(--dark-blue, #0f172a) !important;
     }
+
+    /* Mobile Drawer Styles */
     @media (max-width: 1024px) {
-        .header-nav-menu { gap: 1.25rem; }
-        .header-nav-menu .nav-link:not(.header-cta-pill) { display: none; }
+        .mobile-menu-toggle { 
+            display: block; 
+        }
+        
+        .header-nav-menu { 
+            position: fixed;
+            top: 0;
+            left: -100%; /* Hidden off-screen by default */
+            width: 100%;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.98); /* Solid dark slate */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            flex-direction: column;
+            justify-content: center;
+            gap: 2rem;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 2rem;
+        }
+
+        /* Slide in animation class triggered by JS */
+        .header-nav-menu.menu-open {
+            left: 0;
+        }
+
+        /* Make tap targets larger on mobile */
+        .header-nav-menu .nav-link {
+            font-size: 1.25rem;
+        }
+        
+        .header-nav-menu .header-cta-pill {
+            margin-left: 0;
+            margin-top: 1rem;
+            width: 100%;
+            text-align: center;
+        }
     }
 </style>
