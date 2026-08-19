@@ -15,155 +15,91 @@
     <script src="/js/about.js" defer></script>
     <script src="/wcs-ai-widget/widget.js" defer></script>
 
-    <!-- Scoped Editorial Hero Override: Completely unique from the Team page -->
+    <!-- MOBILE OVERRIDES: Forces grids to stack cleanly -->
     <style>
-        .about-header {
-            position: relative;
-            padding: 10rem 0 6rem 0;
-            overflow: hidden;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        @media screen and (max-width: 1024px) {
+            .values-grid { 
+                grid-template-columns: repeat(2, 1fr) !important; 
+            }
         }
 
-        .about-header .header-content-alignment {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            text-align: left;
+        @media screen and (max-width: 900px) {
+            /* Force structural grids to stack on mobile/tablet */
+            .split-feature-layout,
+            .story-content-split,
+            .hero-narrative-row { 
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 2.5rem !important; 
+            }
+            
+            /* Reverses image/text order so the image sits on top for mobile flow */
+            .wcs-feature-block.reverse .split-feature-layout { 
+                flex-direction: column-reverse !important; 
+            }
+            
+            .wcs-text, .wcs-image-box, .story-text, .story-card {
+                width: 100% !important;
+            }
         }
 
-        /* Top Layer Typography */
-        .about-header .hero-top-meta {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            width: 100%;
-        }
+        @media screen and (max-width: 768px) {
+            /* Adjust container padding to prevent horizontal scrolling */
+            .container {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                overflow-x: hidden;
+            }
 
-        .about-header .page-tag {
-            font-family: monospace;
-            color: #64FFDA;
-            background: rgba(100, 255, 218, 0.08);
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            padding: 0.4rem 1rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin: 0;
-        }
+            /* Crunch section padding for mobile screens */
+            .wcs-feature-block, 
+            .about-intro, 
+            .story-section, 
+            .mission-section, 
+            .values-section, 
+            .about-cta,
+            .about-header { 
+                padding: 4rem 0 !important; 
+            }
 
-        .about-header .hero-line-accent {
-            flex-grow: 1;
-            height: 1px;
-            background: linear-gradient(90deg, rgba(71, 85, 105, 0.5), transparent);
-        }
+            /* Scale down headings for mobile */
+            .wcs-text h2, 
+            .story-text h2, 
+            .values-header-centered h2, 
+            .cta-layout-box h2,
+            .about-header h1 { 
+                font-size: 2rem !important; 
+                line-height: 1.2 !important;
+            }
 
-        /* Giant Overlap Heading */
-        .about-header h1 {
-            font-size: clamp(2.5rem, 6vw, 5.5rem);
-            font-weight: 900;
-            line-height: 0.95;
-            letter-spacing: -0.03em;
-            margin: 0 0 3rem 0;
-            text-transform: uppercase;
-            max-width: 1100px;
-        }
+            /* Center align text for better mobile readability */
+            .wcs-text, .story-text, .hero-narrative-row p {
+                text-align: center;
+            }
 
-        .about-header h1 span {
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(244, 232, 238, 0.6);
-            display: block;
-        }
+            /* Adjust card paddings */
+            .about-intro-card, 
+            .story-card, 
+            .mission-card, 
+            .cta-layout-box { 
+                padding: 2.5rem 1.5rem !important; 
+            }
 
-        /* Cinematic Wide-Aspect Image Slice */
-        .about-header .cinematic-slice-container {
-            width: 100%;
-            position: relative;
-            margin-bottom: 4rem;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(100, 255, 218, 0.15);
-            box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8);
-        }
-
-        .about-header .cinematic-frame {
-            width: 100%;
-            height: 380px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .about-header .cinematic-frame img {
-            width: 100%;
-            height: 140%;
-            object-fit: cover;
-            position: absolute;
-            top: -20%;
-            left: 0;
-            filter: grayscale(30%) contrast(1.1) brightness(0.85);
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .about-header .cinematic-slice-container:hover img {
-            transform: scale(1.03);
-            filter: grayscale(0%) contrast(1.1) brightness(0.9);
-        }
-
-        /* Floating Technical Coordinates Overlay */
-        .about-header .frame-coordinates {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            font-family: monospace;
-            font-size: 0.75rem;
-            color: #64FFDA;
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(8px);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            border: 1px solid rgba(71, 85, 105, 0.5);
-            pointer-events: none;
-            letter-spacing: 0.1em;
-        }
-
-        /* Asymmetric Bottom Narrative Row */
-        .about-header .hero-narrative-row {
-            display: grid;
-            grid-template-columns: 0.4fr 1.6fr;
-            gap: 2rem;
-            width: 100%;
-            align-items: flex-start;
-        }
-
-        .about-header .narrative-anchor-label {
-            font-family: monospace;
-            font-size: 0.8rem;
-            color: rgba(244, 232, 238, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            padding-top: 0.5rem;
-        }
-
-        .about-header p {
-            font-size: clamp(1.1rem, 2vw, 1.4rem);
-            line-height: 1.6;
-            color: #94A3B8;
-            margin: 0;
-            max-width: 850px;
-            font-weight: 400;
-        }
-
-        /* Responsive Adaptive Layout Rules */
-        @media (max-width: 900px) {
-            .about-header { padding: 8rem 0 4rem 0; }
-            .about-header h1 { line-height: 1.0; margin-bottom: 2rem; }
-            .about-header .cinematic-frame { height: 240px; }
-            .about-header .hero-narrative-row { grid-template-columns: 1fr; gap: 0.5rem; }
+            /* Force 4-column values grid into a single column */
+            .values-grid { 
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5rem !important;
+            }
+            
+            /* Adjust the hero image frame for phones */
+            .cinematic-frame { 
+                height: 240px !important; 
+            }
         }
     </style>
 </head>
-<body>
+<body class="slate-theme">
 
     <div id="global-header"></div>
 
@@ -177,19 +113,16 @@
         <section class="about-header reveal">
             <div class="container header-content-alignment">
                 
-                <!-- Metadata Layer -->
                 <div class="hero-top-meta">
                     <span class="page-tag">About Web Creation Studios</span>
                     <div class="hero-line-accent"></div>
                 </div>
 
-                <!-- Structural Editorial Typography -->
                 <h1>
                     The Studio Behind
                     <span>Modern Digital Experiences</span>
                 </h1>
 
-                <!-- Cinematic Wide-Aspect Focal Graphic Slice -->
                 <div class="cinematic-slice-container">
                     <div class="cinematic-frame">
                         <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1600&auto=format&fit=crop" alt="Web Creation Studios Editorial Concept Layout">
@@ -197,7 +130,6 @@
                     <div class="frame-coordinates">WCS // EST. 2026</div>
                 </div>
 
-                <!-- Lower Asymmetric Narrative Block -->
                 <div class="hero-narrative-row">
                     <div class="narrative-anchor-label">[ Manifest ]</div>
                     <p>
