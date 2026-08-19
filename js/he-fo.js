@@ -7,7 +7,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // Inject Header & Footer
     injectComponent("#global-header", "/header.html", highlightActiveNav);
     injectComponent("#global-footer", "/footer.html");
+
+    // Dynamically import the mobile redirect script
+    loadScript("/js/redirect.mobile.js");
 });
+
+// Helper to inject external JS files
+function loadScript(src) {
+    const script = document.createElement("script");
+    script.src = src;
+    script.defer = true;
+    document.head.appendChild(script);
+}
 
 async function injectComponent(selector, targetUrl, callback) {
     const target = document.querySelector(selector);
