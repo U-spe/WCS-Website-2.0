@@ -3,228 +3,423 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intake Form</title>
+    <title>Project Intake | Web Creation Studios</title>
+    
+    <!-- Remix Icon CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@latest/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Assuming your standard WCS global stylesheets -->
+    <link rel="stylesheet" href="/css/index.css">
+
     <style>
+        /* WCS Design System Overrides for Intake Form */
+        :root {
+            --slate-bg: #0F172A;
+            --slate-card: #1E293B;
+            --slate-border: #334155;
+            --mint-accent: #64FFDA;
+            --mint-glow: rgba(100, 255, 218, 0.15);
+            --text-light: #F8FAFC;
+            --text-muted: #94A3B8;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #fff;
-            color: #000;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--slate-bg);
+            color: var(--text-light);
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            line-height: 1.6;
         }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #000;
-            border-radius: 8px;
-            background-color: #f4f4f4;
+
+        .intake-wrapper {
+            position: relative;
+            z-index: 10;
+            padding: 4rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        h2 {
-            text-align: center;
-            color: #000;
-        }
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-        input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+
+        .form-container {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #000;
-            border-radius: 4px;
+            max-width: 750px;
+            background-color: var(--slate-card);
+            border: 1px solid var(--slate-border);
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
         }
-        input[type="submit"] {
-            background-color: #000;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 4px;
+
+        /* Top Accent Bar */
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--mint-accent);
         }
-        input[type="submit"]:hover {
-            background-color: #555;
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 3rem;
         }
+
+        .form-header .section-tag {
+            color: var(--mint-accent);
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header h2 {
+            margin: 0;
+            font-size: 2.2rem;
+            color: var(--text-light);
+        }
+
+        .form-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #E2E8F0;
+            font-size: 0.95rem;
+        }
+
+        label i {
+            color: var(--mint-accent);
+        }
+
+        input[type="text"], 
+        input[type="email"], 
+        input[type="tel"], 
+        textarea, 
+        select {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--slate-border);
+            border-radius: 6px;
+            color: var(--text-light);
+            font-family: inherit;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder, 
+        textarea::placeholder {
+            color: #475569;
+        }
+
+        input:focus, 
+        textarea:focus, 
+        select:focus {
+            outline: none;
+            border-color: var(--mint-accent);
+            box-shadow: 0 0 0 3px var(--mint-glow);
+            background-color: rgba(15, 23, 42, 0.9);
+        }
+
+        select option {
+            background-color: var(--slate-card);
+            color: var(--text-light);
+        }
+
+        /* Checkbox Grid Styling */
+        .checkbox-group-wrapper {
+            margin-bottom: 1.5rem;
+        }
+
         .checkbox-group {
-            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--slate-border);
+            padding: 1.5rem;
+            border-radius: 6px;
         }
-        .checkbox-group label {
-            display: inline-block;
-            margin-left: 8px;
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
+
+        .checkbox-item label {
+            margin: 0;
+            font-weight: 400;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .checkbox-item:hover label {
+            color: var(--text-light);
+        }
+
+        input[type="checkbox"] {
+            appearance: none;
+            background-color: var(--slate-bg);
+            margin: 0;
+            font: inherit;
+            color: var(--mint-accent);
+            width: 1.25em;
+            height: 1.25em;
+            border: 1px solid var(--slate-border);
+            border-radius: 0.25em;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        input[type="checkbox"]::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em var(--mint-accent);
+            background-color: transform-origin: bottom left;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        input[type="checkbox"]:checked {
+            border-color: var(--mint-accent);
+            background-color: rgba(100, 255, 218, 0.1);
+        }
+
+        input[type="checkbox"]:checked::before {
+            transform: scale(1);
+        }
+
         .divider {
             height: 1px;
-            background-color: #000;
-            margin: 20px 0;
+            background: linear-gradient(90deg, transparent, var(--slate-border), transparent);
+            margin: 2.5rem 0;
+        }
+
+        button[type="submit"] {
+            background-color: var(--mint-accent);
+            color: var(--slate-bg);
+            border: none;
+            padding: 1.2rem;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: inherit;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #4cd8b8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px var(--mint-glow);
+        }
+
+        /* Mobile tweaks */
+        @media screen and (max-width: 600px) {
+            .form-container {
+                padding: 2rem 1.5rem;
+            }
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-<body>
+<body class="slate-theme">
 
-    <div class="container">
-        <h2>Intake Form</h2>
-        <form action="https://formspree.io/f/xrbgpqgp" method="POST">
-            <label for="name">Name *</label>
-            <input type="text" id="name" name="name" placeholder="Jane Smith" required>
+    <!-- WCS Background Architecture -->
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+    <div class="bg-grid"></div>
 
-            <label for="email">Email address *</label>
-            <input type="email" id="email" name="email" placeholder="email@website.com" required>
+    <div id="global-header"></div>
 
-            <label for="phone">Phone number</label>
-            <input type="tel" id="phone" name="phone" placeholder="000-000-0000">
-
-            <div class="divider"></div>
-
-            <label>What type of website do you need?</label>
-            <div class="checkbox-group">
-                <input type="checkbox" id="e-commerce" name="website-type" value="E-commerce">
-                <label for="e-commerce">E-commerce</label>
-
-                <input type="checkbox" id="portfolio" name="website-type" value="Portfolio">
-                <label for="portfolio">Portfolio</label>
-
-                <input type="checkbox" id="blog" name="website-type" value="Blog">
-                <label for="blog">Blog</label>
-
-                <input type="checkbox" id="business" name="website-type" value="Business">
-                <label for="business">Business</label>
-
-                <input type="checkbox" id="landing-page" name="website-type" value="Landing Page">
-                <label for="landing-page">Landing Page</label>
-
-                <input type="checkbox" id="non-profit" name="website-type" value="Non-Profit">
-                <label for="non-profit">Non-Profit</label>
-
-                <input type="checkbox" id="other" name="website-type" value="Other">
-                <label for="other">Other</label>
+    <main class="page-wrapper intake-wrapper">
+        <div class="form-container reveal">
+            <div class="form-header">
+                <span class="section-tag">Project Initialization</span>
+                <h2>Client Intake Form</h2>
+                <p>Provide the details below so we can accurately architect your solution.</p>
             </div>
 
-            <div class="divider"></div>
+            <form action="https://formspree.io/f/xrbgpqgp" method="POST">
+                
+                <!-- Contact Info -->
+                <div class="input-group">
+                    <label for="name"><i class="ri-user-line"></i> Name *</label>
+                    <input type="text" id="name" name="name" placeholder="Jane Smith" required>
+                </div>
 
-            <label>What features do you want on your website?</label>
-            <div class="checkbox-group">
-                <input type="checkbox" id="contact-form" name="features" value="Contact Form">
-                <label for="contact-form">Contact Form</label>
+                <div class="input-group">
+                    <label for="email"><i class="ri-mail-line"></i> Email address *</label>
+                    <input type="email" id="email" name="email" placeholder="email@website.com" required>
+                </div>
 
-                <input type="checkbox" id="blog-section" name="features" value="Blog Section">
-                <label for="blog-section">Blog Section</label>
+                <div class="input-group">
+                    <label for="phone"><i class="ri-phone-line"></i> Phone number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="000-000-0000">
+                </div>
 
-                <input type="checkbox" id="gallery" name="features" value="Gallery">
-                <label for="gallery">Gallery</label>
+                <div class="divider"></div>
 
-                <input type="checkbox" id="e-commerce-functionality" name="features" value="E-commerce Functionality">
-                <label for="e-commerce-functionality">E-commerce Functionality</label>
+                <!-- Project Scope -->
+                <div class="checkbox-group-wrapper">
+                    <label><i class="ri-layout-masonry-line"></i> What type of website do you need?</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="e-commerce" name="website-type" value="E-commerce"><label for="e-commerce">E-commerce</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="portfolio" name="website-type" value="Portfolio"><label for="portfolio">Portfolio</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="blog" name="website-type" value="Blog"><label for="blog">Blog</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="business" name="website-type" value="Business"><label for="business">Business</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="landing-page" name="website-type" value="Landing Page"><label for="landing-page">Landing Page</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="non-profit" name="website-type" value="Non-Profit"><label for="non-profit">Non-Profit</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="other" name="website-type" value="Other"><label for="other">Other</label></div>
+                    </div>
+                </div>
 
-                <input type="checkbox" id="social-media-integration" name="features" value="Social Media Integration">
-                <label for="social-media-integration">Social Media Integration</label>
+                <div class="checkbox-group-wrapper">
+                    <label><i class="ri-settings-4-line"></i> What features do you want on your website?</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="contact-form" name="features" value="Contact Form"><label for="contact-form">Contact Form</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="blog-section" name="features" value="Blog Section"><label for="blog-section">Blog Section</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="gallery" name="features" value="Gallery"><label for="gallery">Gallery</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="e-commerce-functionality" name="features" value="E-commerce Functionality"><label for="e-commerce-functionality">E-commerce</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="social-media-integration" name="features" value="Social Media Integration"><label for="social-media-integration">Social Integration</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="newsletter-signup" name="features" value="Newsletter Signup"><label for="newsletter-signup">Newsletter</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="seo-optimization" name="features" value="SEO Optimization"><label for="seo-optimization">SEO Optimization</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="live-chat" name="features" value="Live Chat"><label for="live-chat">Live Chat</label></div>
+                    </div>
+                </div>
 
-                <input type="checkbox" id="newsletter-signup" name="features" value="Newsletter Signup">
-                <label for="newsletter-signup">Newsletter Signup</label>
+                <div class="divider"></div>
 
-                <input type="checkbox" id="seo-optimization" name="features" value="SEO Optimization">
-                <label for="seo-optimization">SEO Optimization</label>
+                <!-- Logistics -->
+                <div class="input-group">
+                    <label for="timeline"><i class="ri-timer-line"></i> What is your preferred timeline for the project?</label>
+                    <select id="timeline" name="timeline" required>
+                        <option value="" disabled selected>Select Timeline...</option>
+                        <option value="1-month">1 Month</option>
+                        <option value="2-months">2 Months</option>
+                        <option value="3-months">3 Months</option>
+                        <option value="more-than-3-months">More than 3 Months</option>
+                    </select>
+                </div>
 
-                <input type="checkbox" id="live-chat" name="features" value="Live Chat">
-                <label for="live-chat">Live Chat</label>
-            </div>
+                <div class="input-group">
+                    <label for="budget"><i class="ri-money-dollar-circle-line"></i> What is your budget range for this project?</label>
+                    <select id="budget" name="budget" required>
+                        <option value="" disabled selected>Select Budget...</option>
+                        <option value="under-1000">Under $1,000</option>
+                        <option value="1000-5000">$1,000 - $5,000</option>
+                        <option value="5000-10000">$5,000 - $10,000</option>
+                        <option value="over-10000">Over $10,000</option>
+                    </select>
+                </div>
 
-            <div class="divider"></div>
+                <div class="divider"></div>
 
-            <label for="timeline">What is your preferred timeline for the project?</label>
-            <select id="timeline" name="timeline" required>
-                <option value="" disabled selected>Select</option>
-                <option value="1-month">1 Month</option>
-                <option value="2-months">2 Months</option>
-                <option value="3-months">3 Months</option>
-                <option value="more-than-3-months">More than 3 Months</option>
-            </select>
+                <!-- Strategy & Branding -->
+                <div class="input-group">
+                    <label for="competitors"><i class="ri-group-line"></i> Who are your main competitors?</label>
+                    <input type="text" id="competitors" name="competitors" placeholder="e.g., Apple, Microsoft...">
+                </div>
 
-            <label for="budget">What is your budget range for this project?</label>
-            <select id="budget" name="budget" required>
-                <option value="" disabled selected>Select</option>
-                <option value="under-1000">Under $1,000</option>
-                <option value="1000-5000">$1,000 - $5,000</option>
-                <option value="5000-10000">$5,000 - $10,000</option>
-                <option value="over-10000">Over $10,000</option>
-            </select>
+                <div class="checkbox-group-wrapper" style="margin-top: 1.5rem;">
+                    <label><i class="ri-focus-3-line"></i> What is the primary goal of your website?</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="increase-sales" name="goal" value="Increase Sales"><label for="increase-sales">Increase Sales</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="generate-leads" name="goal" value="Generate Leads"><label for="generate-leads">Generate Leads</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="build-brand-awareness" name="goal" value="Build Brand Awareness"><label for="build-brand-awareness">Brand Awareness</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="provide-information" name="goal" value="Provide Information"><label for="provide-information">Provide Info</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="engage-customers" name="goal" value="Engage Customers"><label for="engage-customers">Engage Customers</label></div>
+                    </div>
+                </div>
 
-            <div class="divider"></div>
+                <div class="input-group">
+                    <label for="branding"><i class="ri-palette-line"></i> Do you have existing branding materials?</label>
+                    <select id="branding" name="branding" required>
+                        <option value="" disabled selected>Select...</option>
+                        <option value="yes">Yes (Logos, colors, typography ready)</option>
+                        <option value="no">No (I need brand design services)</option>
+                    </select>
+                </div>
 
-            <label for="competitors">Who are your main competitors?</label>
-            <input type="text" id="competitors" name="competitors">
+                <div class="checkbox-group-wrapper" style="margin-top: 1.5rem;">
+                    <label><i class="ri-brush-line"></i> What is your preferred style or theme?</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="modern" name="style" value="Modern"><label for="modern">Modern</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="minimalist" name="style" value="Minimalist"><label for="minimalist">Minimalist</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="professional" name="style" value="Professional"><label for="professional">Professional</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="creative" name="style" value="Creative"><label for="creative">Creative</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="corporate" name="style" value="Corporate"><label for="corporate">Corporate</label></div>
+                    </div>
+                </div>
 
-            <div class="divider"></div>
+                <div class="divider"></div>
 
-            <label>What is the primary goal of your website?</label>
-            <div class="checkbox-group">
-                <input type="checkbox" id="increase-sales" name="goal" value="Increase Sales">
-                <label for="increase-sales">Increase Sales</label>
+                <!-- Final Details -->
+                <div class="input-group">
+                    <label for="source"><i class="ri-search-eye-line"></i> How did you hear about us?</label>
+                    <select id="source" name="source" required>
+                        <option value="" disabled selected>Select Source...</option>
+                        <option value="search-engine">Search Engine</option>
+                        <option value="social-media">Social Media</option>
+                        <option value="word-of-mouth">Word of Mouth</option>
+                        <option value="advertisement">Advertisement</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
 
-                <input type="checkbox" id="generate-leads" name="goal" value="Generate Leads">
-                <label for="generate-leads">Generate Leads</label>
+                <div class="input-group">
+                    <label for="comments"><i class="ri-chat-3-line"></i> Additional Comments or Questions</label>
+                    <textarea id="comments" name="comments" rows="4" placeholder="Tell us more about your vision..."></textarea>
+                </div>
 
-                <input type="checkbox" id="build-brand-awareness" name="goal" value="Build Brand Awareness">
-                <label for="build-brand-awareness">Build Brand Awareness</label>
+                <button type="submit">Initialize Project <i class="ri-arrow-right-line"></i></button>
+            </form>
+        </div>
+    </main>
 
-                <input type="checkbox" id="provide-information" name="goal" value="Provide Information">
-                <label for="provide-information">Provide Information</label>
+    <div id="global-footer"></div>
 
-                <input type="checkbox" id="engage-customers" name="goal" value="Engage Customers">
-                <label for="engage-customers">Engage Customers</label>
-            </div>
-
-            <div class="divider"></div>
-
-            <label for="branding">Do you have existing branding materials?</label>
-            <select id="branding" name="branding" required>
-                <option value="" disabled selected>Select</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-            </select>
-
-            <div class="divider"></div>
-
-            <label>What is your preferred style or theme for the website?</label>
-            <div class="checkbox-group">
-                <input type="checkbox" id="modern" name="style" value="Modern">
-                <label for="modern">Modern</label>
-
-                <input type="checkbox" id="minimalist" name="style" value="Minimalist">
-                <label for="minimalist">Minimalist</label>
-
-                <input type="checkbox" id="professional" name="style" value="Professional">
-                <label for="professional">Professional</label>
-
-                <input type="checkbox" id="creative" name="style" value="Creative">
-                <label for="creative">Creative</label>
-
-                <input type="checkbox" id="corporate" name="style" value="Corporate">
-                <label for="corporate">Corporate</label>
-            </div>
-
-            <div class="divider"></div>
-
-            <label>How did you hear about us?</label>
-            <select id="source" name="source" required>
-                <option value="" disabled selected>Select</option>
-                <option value="search-engine">Search Engine</option>
-                <option value="social-media">Social Media</option>
-                <option value="word-of-mouth">Word of Mouth</option>
-                <option value="advertisement">Advertisement</option>
-                <option value="other">Other</option>
-            </select>
-
-            <div class="divider"></div>
-
-            <label>Additional Comments or Questions</label>
-            <textarea id="comments" name="comments" rows="4" placeholder="Enter any additional comments or questions here..."></textarea>
-
-            <input type="submit" value="Submit">
-        </form>
-    </div>
+    <!-- Vercel Insights & Global Scripts -->
+    <script src="/js/he-fo.js" defer></script>
+    <script src="/js/index.js" defer></script>
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 
 </body>
 </html>
-
