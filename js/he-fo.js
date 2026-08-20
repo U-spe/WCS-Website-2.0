@@ -1,11 +1,14 @@
 /**
  * Simplified he-fo.js
- * Strictly for component injection & navigation state
+ * Strictly for component injection, navigation state, & mobile menu
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Inject Header & Footer
-    injectComponent("#global-header", "/header.html", highlightActiveNav);
+    // Inject Header & Footer, then run the setup functions
+    injectComponent("#global-header", "/header.html", () => {
+        highlightActiveNav();
+        initMobileMenu(); // Initializes mobile nav after header is in the DOM
+    });
     injectComponent("#global-footer", "/footer.html");
 
     // Dynamically import the mobile redirect script
@@ -35,10 +38,43 @@ async function injectComponent(selector, targetUrl, callback) {
 }
 
 function highlightActiveNav() {
-    const currentPath = window.location.pathname;
+    let currentPath = window.location.pathname.replace(/\.html$/, "").replace(/\/$/, "");
+    if (currentPath === "" || currentPath === "/index") currentPath = "/";
+
     document.querySelectorAll(".nav-link").forEach(link => {
-        if (link.getAttribute("href") === currentPath) {
+        const hrefAttr = link.getAttribute("href");
+        if (!hrefAttr || hrefAttr === "#") return;
+
+        let linkPath = new URL(link.href).pathname.replace(/\.html$/, "").replace(/\/$/, "");
+        if (linkPath === "" || linkPath === "/index") linkPath = "/";
+
+        if (linkPath === currentPath) {
             link.classList.add("active-route-token");
         }
+    });
+}
+
+function initMobileMenu() {
+    // Update these selectors if your classes are named differently in header.html
+    const menuToggle = document.querySelector('.mobile-toggle, .hamburger, .menu-btn');
+    const navMenu = document.querySelector('.nav-links, .nav-menu, .mobile-nav');
+
+    if (!menuToggle || !navMenu) return;
+
+    // Toggle menu open/close
+    menuToggle.addEventListener('click', () => {
+        menuToggle.classList.toggle('active');
+        navMenu.classList.toggle('active');
+        // Optional: lock body scrolling when menu is open
+        document.body.classList.toggle('no-scroll');
+    });
+
+    // Close menu when a link is clicked (crucial for mobile user experience)
+    navMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        });
     });
 }

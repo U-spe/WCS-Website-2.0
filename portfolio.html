@@ -17,6 +17,85 @@
     <script src="/js/he-fo.js" defer></script>
     <script src="/js/index.js" defer></script>
     <script src="/wcs-ai-widget/widget.js" defer></script>
+
+    <!-- MOBILE EXCLUSIVE LOCK -->
+    <style>
+        /* 1. DESKTOP KILL-SWITCH: Hides site on anything larger than a tablet/phone */
+        @media screen and (min-width: 769px) {
+            body::before {
+                content: ">_ System.Error: This interface is locked exclusively for mobile devices. Please shrink your browser window or switch to a smartphone.";
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                width: 100vw;
+                background-color: #1E293B; /* Slate background */
+                color: #64FFDA; /* Mint accent */
+                font-family: monospace;
+                text-align: center;
+                padding: 2rem;
+                box-sizing: border-box;
+                font-size: 1.5rem;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 999999;
+            }
+            body {
+                overflow: hidden;
+            }
+            #global-header, .page-wrapper, #global-footer, .bg-grid, .bg-glow {
+                display: none !important;
+            }
+        }
+
+        /* 2. MOBILE OVERRIDES: Forces all structural grids to stack cleanly */
+        @media screen and (max-width: 768px) {
+            .split-grid, 
+            .portfolio-grid, 
+            .conversion-btn-cluster {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 2rem !important;
+            }
+            
+            .visual-panel, 
+            .narrative-block,
+            .portfolio-card {
+                width: 100% !important;
+                text-align: center;
+            }
+            
+            .hero-layout, 
+            .section-header-centered, 
+            .conversion-content {
+                text-align: center !important;
+                padding-left: 1rem;
+                padding-right: 1rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .hero-title {
+                font-size: 2.2rem !important;
+            }
+
+            /* Fixes button margin on the Studio Culture block so it stays centered */
+            .narrative-block .btn {
+                margin-left: auto !important;
+                margin-right: auto !important;
+                display: inline-block;
+            }
+
+            /* Makes CTA buttons full-width for easier mobile tapping */
+            .conversion-btn-cluster .btn {
+                width: 100% !important;
+                box-sizing: border-box;
+                text-align: center;
+                margin: 0 !important;
+            }
+        }
+    </style>
 </head>
 <body class="slate-theme">
 

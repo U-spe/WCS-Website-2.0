@@ -12,6 +12,119 @@
     <script src="/js/he-fo.js" defer></script>
     <script src="/js/services.js" defer></script>
     <script src="/wcs-ai-widget/widget.js" defer></script>
+
+    <!-- MOBILE EXCLUSIVE LOCK -->
+    <style>
+        /* 1. DESKTOP KILL-SWITCH: Hides site on anything larger than a tablet/phone */
+        @media screen and (min-width: 769px) {
+            body::before {
+                content: ">_ System.Error: This interface is locked exclusively for mobile devices. Please shrink your browser window or switch to a smartphone.";
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                width: 100vw;
+                background-color: #1E293B; /* Slate background */
+                color: #64FFDA; /* Mint accent */
+                font-family: monospace;
+                text-align: center;
+                padding: 2rem;
+                box-sizing: border-box;
+                font-size: 1.5rem;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 999999;
+            }
+            body {
+                overflow: hidden;
+            }
+            #global-header, .wcs-services-wrapper, #global-footer, .bg-grid, .bg-glow {
+                display: none !important;
+            }
+        }
+
+        /* 2. MOBILE OVERRIDES: Forces all structural grids to stack cleanly */
+        @media screen and (max-width: 768px) {
+            .services-hero-container, 
+            .services-layout-grid-3, 
+            .services-split-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 2rem !important;
+            }
+            
+            .hero-panel-left, .hero-panel-right, 
+            .engine-info-panel, .engine-visuals-panel {
+                width: 100% !important;
+                text-align: center; /* Centers text for mobile flow */
+            }
+
+            .services-custom-container {
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+                overflow-x: hidden;
+            }
+
+            .hero-display-title {
+                font-size: 2.2rem !important;
+            }
+
+            .tier-heading-block h2,
+            .engine-info-panel h2,
+            .services-cta-card h2,
+            .identity-banner-content h2 {
+                font-size: 1.8rem !important;
+            }
+
+            .hero-telemetry {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+                margin-top: 1.5rem;
+            }
+
+            .blueprint-body pre {
+                overflow-x: auto;
+                font-size: 0.8rem;
+                text-align: left; /* Keep JSON code left-aligned */
+            }
+            
+            /* Adjustments for the Identity Banner to ensure it doesn't break mobile */
+            .identity-banner-frame {
+                height: auto !important;
+                min-height: 300px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            
+            .identity-banner-content {
+                position: relative !important;
+                padding: 2rem 1rem !important;
+                background: rgba(30, 41, 59, 0.85); /* Semi-transparent slate to ensure text readability over the image */
+                border-radius: 12px;
+                margin: 1rem;
+            }
+
+            .bg-pan-image {
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+                z-index: -1;
+            }
+            
+            .tier-heading-block.text-right {
+                text-align: center !important;
+            }
+            
+            .heading-accent-line.line-right {
+                margin: 0 auto !important; /* Centers the accent line on mobile */
+            }
+        }
+    </style>
 </head>
 <body class="slate-theme">
 
